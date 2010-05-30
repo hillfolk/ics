@@ -1,9 +1,9 @@
 object NsLookupForm: TNsLookupForm
   Left = 257
   Top = 327
+  Width = 526
+  Height = 231
   Caption = 'Name Server Lookup'
-  ClientHeight = 197
-  ClientWidth = 518
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

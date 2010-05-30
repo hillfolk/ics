@@ -3,7 +3,7 @@
 Author:       François PIETTE
 Description:  Version defines for ICS (Internet Component Suite)
 Creation:     2003
-Version:      1.07
+Version:      1.09
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
@@ -45,6 +45,7 @@ Mar 13, 2005 V1.04 Changed conditional symbol for streams supporting 64 bits
                    seek.
 Jul 30, 2005 V1.05 Updated for Delphi 10. Not tested !
 Sept 2, 2005 V1.06 64-bit streams are Delphi 6 and later
+Oct 05, 2008 V1.09 USE_LINE for COMPILER10_UP, removed UNICODE check for .NET.
 
 
   SYMBOL           Compiler version
@@ -65,10 +66,12 @@ Sept 2, 2005 V1.06 64-bit streams are Delphi 6 and later
   DELPHI5_UP       Delphi 5  or higher
   DELPHI6_UP       Delphi 6  or higher
   DELPHI7_UP       Delphi 7  or higher  (Delphi 8 is .NET only. No way here)
-  DELPHI9_UP       Delphi 9  or higher  (Delphi 2005 has W32 compiler)
-  DELPHI10_UP      Delphi 10 or higher  (Delphi 2006)
+  DELPHI9_UP       Delphi 9  or higher  (Delphi 2005 - Diamondback, has W32 compiler)
+  DELPHI10_UP      Delphi 10 or higher  (Delphi 2006 - Dexter)
   DELPHI11_UP      Delphi 11 or higher  (Delphi 2007 - Highlander)
-  DELPHI12_UP      Delphi 12 or higher  (Tiburon)
+  DELPHI12_UP      Delphi 12 or higher  (Delphi 2009 - Tiburon)
+  DELPHI14_UP      Delphi 14 or higher  (Delphi 2010 - Weaver)
+  DELPHI15_UP      ?
 
   BCB1             C++ Builder 1
   BCB3             C++ Builder 3
@@ -105,9 +108,33 @@ Sept 2, 2005 V1.06 64-bit streams are Delphi 6 and later
   COMPILER10_UP    Delphi 10 or C++ Builder 10 or higher
   COMPILER11_UP    Delphi or C++ Builder 2007 or higher (Highlander)
   COMPILER12_UP    Delphi or C++ Builder 12 or higher (Tiburon)
+  COMPILER14_UP    Delphi or C++ Builder 14 or higher (Weaver)
+  COMPILER15_UP    ?
 
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * }
 
+{ User defines: Enable or disable these defines depending on how you want    }
+{ your ICS Packages to be compiled.                                          }
+
+{ If NO_ADV_MT is defined, then there is less multithread code compiled.     }
+{.$DEFINE NO_ADV_MT}
+
+{ Uncomment next line to always include SSL code into the binary.            }
+{ In most cases leave it commented and define USE_SSL in the project options }
+{ if required.                                                               }
+{.$DEFINE USE_SSL}
+
+{ Next line specifies to link the ZLIB .obj files.                           }
+{$DEFINE ZLIB_OBJ}
+
+{ Next symbol affects D2010 and later only. If defined adds RTTI directive   }
+{ "$RTTI EXPLICIT METHODS([]) FIELDS([]) PROPERTIES([])" to all units which  }
+{ disables all the inherited RTTI options and sets the new ones to not emit  }
+{ any extended RTTI information.                                             }
+{.$DEFINE NO_EXTENDED_RTTI}
+
+{ Do not change anything below this line !                                   }
+{----------------------------------------------------------------------------}
 {$IFDEF FPC}
   {$MODE Delphi}                           { delphi mode            }
   {$H+}                                    { Use long strings       }
@@ -137,6 +164,26 @@ Sept 2, 2005 V1.06 64-bit streams are Delphi 6 and later
   {$DEFINE COMPILER1_UP}
 {$ENDIF}
 
+{$IFDEF VER220}
+  {$DEFINE COMPILER15}
+  {$IFDEF BCB}
+    {$DEFINE BCB15}
+  {$ELSE}
+    {$DEFINE DELPHI15}
+    {$DEFINE DELPHI}
+  {$ENDIF}
+{$ENDIF}
+
+{$IFDEF VER210}
+  {$DEFINE COMPILER14}
+  {$IFDEF BCB}
+    {$DEFINE BCB14}
+  {$ELSE}
+    {$DEFINE DELPHI14}
+    {$DEFINE DELPHI}
+  {$ENDIF}
+{$ENDIF}
+
 {$IFDEF VER200}
   {$DEFINE COMPILER12}
   {$IFDEF BCB}
@@ -147,7 +194,8 @@ Sept 2, 2005 V1.06 64-bit streams are Delphi 6 and later
   {$ENDIF}
 {$ENDIF}
 
-{$IFDEF VER190}   {Some preliminary Tiburon version use that symbol}
+(*
+{$IFDEF VER190}   {Some preliminary Tiburon version use that symbol and .NET 2007}
   {$DEFINE COMPILER12}
   {$IFDEF BCB}
     {$DEFINE BCB12}
@@ -156,6 +204,7 @@ Sept 2, 2005 V1.06 64-bit streams are Delphi 6 and later
     {$DEFINE DELPHI}
   {$ENDIF}
 {$ENDIF}
+*)
 
 {$IFDEF VER185}
   {$DEFINE COMPILER11}
@@ -258,6 +307,37 @@ Sept 2, 2005 V1.06 64-bit streams are Delphi 6 and later
   {$DEFINE DELPHI}
 {$ENDIF}
 
+{$IFDEF DELPHI15}
+  {$DEFINE DELPHI15_UP}
+  {$DEFINE DELPHI14_UP}
+  {$DEFINE DELPHI12_UP}
+  {$DEFINE DELPHI11_UP}
+  {$DEFINE DELPHI10_UP}
+  {$DEFINE DELPHI9_UP}
+  {$DEFINE DELPHI7_UP}
+  {$DEFINE DELPHI6_UP}
+  {$DEFINE DELPHI5_UP}
+  {$DEFINE DELPHI4_UP}
+  {$DEFINE DELPHI3_UP}
+  {$DEFINE DELPHI2_UP}
+  {$DEFINE DELPHI1_UP}
+{$ENDIF}
+
+{$IFDEF DELPHI14}
+  {$DEFINE DELPHI14_UP} 
+  {$DEFINE DELPHI12_UP}
+  {$DEFINE DELPHI11_UP}
+  {$DEFINE DELPHI10_UP}
+  {$DEFINE DELPHI9_UP}
+  {$DEFINE DELPHI7_UP}
+  {$DEFINE DELPHI6_UP}
+  {$DEFINE DELPHI5_UP}
+  {$DEFINE DELPHI4_UP}
+  {$DEFINE DELPHI3_UP}
+  {$DEFINE DELPHI2_UP}
+  {$DEFINE DELPHI1_UP}
+{$ENDIF}
+
 {$IFDEF DELPHI12}
   {$DEFINE DELPHI12_UP}
   {$DEFINE DELPHI11_UP}
@@ -355,6 +435,39 @@ Sept 2, 2005 V1.06 64-bit streams are Delphi 6 and later
 
 {$IFDEF DELPHI1}
   {$DEFINE DELPHI1_UP}
+{$ENDIF}
+
+{$IFDEF COMPILER15}
+  {$DEFINE COMPILER15_UP}
+  {$DEFINE COMPILER14_UP}
+  {$DEFINE COMPILER12_UP}
+  {$DEFINE COMPILER11_UP}
+  {$DEFINE COMPILER10_UP}
+  {$DEFINE COMPILER9_UP}
+  {$DEFINE COMPILER7_UP}
+  {$DEFINE COMPILER6_UP}
+  {$DEFINE COMPILER5_UP}
+  {$DEFINE COMPILER4_UP}
+  {$DEFINE COMPILER35_UP}
+  {$DEFINE COMPILER3_UP}
+  {$DEFINE COMPILER2_UP}
+  {$DEFINE COMPILER1_UP}
+{$ENDIF}
+
+{$IFDEF COMPILER14}
+  {$DEFINE COMPILER14_UP}
+  {$DEFINE COMPILER12_UP}
+  {$DEFINE COMPILER11_UP}
+  {$DEFINE COMPILER10_UP}
+  {$DEFINE COMPILER9_UP}
+  {$DEFINE COMPILER7_UP}
+  {$DEFINE COMPILER6_UP}
+  {$DEFINE COMPILER5_UP}
+  {$DEFINE COMPILER4_UP}
+  {$DEFINE COMPILER35_UP}
+  {$DEFINE COMPILER3_UP}
+  {$DEFINE COMPILER2_UP}
+  {$DEFINE COMPILER1_UP}
 {$ENDIF}
 
 {$IFDEF COMPILER12}
@@ -471,6 +584,19 @@ Sept 2, 2005 V1.06 64-bit streams are Delphi 6 and later
   {$DEFINE COMPILER1_UP}
 {$ENDIF}
 
+{$IFDEF BCB14}
+  {$DEFINE BCB14_UP}
+  {$DEFINE BCB12_UP}
+  {$DEFINE BCB11_UP}
+  {$DEFINE BCB10_UP}
+  {$DEFINE BCB7_UP}
+  {$DEFINE BCB6_UP}
+  {$DEFINE BCB5_UP}
+  {$DEFINE BCB4_UP}
+  {$DEFINE BCB3_UP}
+  {$DEFINE BCB1_UP}
+{$ENDIF}
+
 {$IFDEF BCB12}
   {$DEFINE BCB12_UP}
   {$DEFINE BCB11_UP}
@@ -570,8 +696,28 @@ Sept 2, 2005 V1.06 64-bit streams are Delphi 6 and later
   {$DEFINE VCL}
 {$ENDIF}
 
-{$IFNDEF FPC}             { Not for FPC ?                           }
-  {$IFDEF VCL}            { Not for .NET                            }
-    //{$DEFINE USE_SSL}     { Uncommend this line to include SSL code }
+{$IFDEF COMPILER10_UP}
+    {$DEFINE USE_INLINE}
+{$ENDIF}
+
+{$IFDEF COMPILER12_UP}
+  {$IFNDEF BCB}
+    {$STRINGCHECKS OFF}
+  {$ENDIF}
+{$ENDIF}
+
+{ ICS SSL code doesn't work with FPC }
+{$IFDEF FPC}
+  {$UNDEF USE_SSL}
+{$ENDIF}
+
+{ ICS SSL code doesn't work with .NET }
+{$IFNDEF VCL}
+  {$UNDEF USE_SSL}  
+{$ENDIF}                       
+
+{$IFNDEF MSWINDOWS}
+  {$IFNDEF USE_ICONV}
+    {$DEFINE USE_ICONV}
   {$ENDIF}
 {$ENDIF}
