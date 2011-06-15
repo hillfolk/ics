@@ -48,15 +48,27 @@ unit OverbyteIcsDprUpdFix;
 {.$DEFINE DEBUGLOG}
 {$I OverbyteIcsDefs.inc}
 
+{$IFDEF COMPILER12_UP}
+  {$IFNDEF COMPILER15_UP}
+    {$DEFINE DPRFIX2009}
+  {$ENDIF}
+{$ENDIF}
+{$IF CompilerVersion > 22}
+  {$DEFINE DPRFIXXE2}
+{$IFEND}
+
 interface
 
 uses
-    SysUtils, Classes, Forms, IniFiles, TypInfo, ToolsApi;
+    SysUtils, Classes, Forms, IniFiles, TypInfo,
+{$IFDEF DPRFIXXE2}
+    PlatformAPI,
+{$ENDIF}
+    ToolsApi;
 
 type
     TIdeNotifier = class(TNotifierObject, IOTAIDENotifier)
     private
-        FIni : TIniFile;
         FLastDpr : string;
         FPossibleUpd: Boolean;
     protected
@@ -73,13 +85,18 @@ implementation
 uses
     DCCStrs;
 
+const
+    sDofSectDir     = 'Directories';
+    sDofSectCustom  = 'IcsCustom';
+
 var
     IDENotifierIndex : Integer = -1;
+    GMessageService: IOTAMessageServices = nil;
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure DebugLog(const Msg: string);
 begin
-    (BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Msg);
+    GMessageService.AddTitleMessage(Msg);
 end;
 
 
@@ -88,18 +105,17 @@ procedure Register;
 var
     Services : IOTAServices;
 begin
-{$IFDEF COMPILER12_UP}
-{$IFNDEF COMPILER15_UP}
+{$IF DEFINED(DPRFIX2009) or DEFINED(DPRFIXXE2)}
     Services := BorlandIDEServices as IOTAServices;
-    if (Services <> nil) and (IDENotifierIndex = -1) then
+    GMessageService := (BorlandIDEServices as IOTAMessageServices);
+    if (IDENotifierIndex = -1) then
     begin
         IDENotifierIndex := Services.AddNotifier(TIdeNotifier.Create);
     {$IFDEF DEBUGLOG}
         DebugLog('OverbyteIcsDprUpdFix Installed NotifierIndex: #' + IntToStr(IDENotifierIndex));
     {$ENDIF}
     end;
-{$ENDIF}
-{$ENDIF}
+{$IFEND}
 end;
 
 
@@ -138,20 +154,25 @@ end;
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure TIdeNotifier.FileNotification(NotifyCode: TOTAFileNotification;
   const FileName: string; var Cancel: Boolean);
-const
-    sDofSectDir = 'Directories';
 var
     Project               : IOTAProject;
     OptionsConfigurations : IOTAProjectOptionsConfigurations;
     BaseConfig            : IOTABuildConfiguration;
     IniValues             : TStringList;
     Values                : TStringList;
+    Ini                   : TIniFile;
+{$IFDEF DPRFIX2009}
     RS                    : array of string;
+    I                     : Integer;
     S1                    : string;
     S2                    : string;
+{$ENDIF}
     Dirty                 : Boolean;
-    I                     : Integer;
     DofFile               : string;
+{$IFDEF DPRFIXXE2}
+    ProjectPlatforms      : IOTAProjectPlatforms;
+    bFlag                 : Boolean;
+{$ENDIF}
 begin
     try
     {$IFDEF DEBUGLOG}
@@ -165,10 +186,7 @@ begin
                     begin
                         FLastDpr := ChangeFileExt(FileName, '.dproj');
                         if FileExists(FLastDpr) then
-                        begin
-                            FLastDpr     := '';
-                            FPossibleUpd := False;
-                        end
+                            FLastDpr     := ''
                         else
                             FPossibleUpd := True;
                     end;
@@ -184,23 +202,24 @@ begin
                         Dirty         := False;
                         Values        := nil;
                         IniValues     := nil;
-                        FIni          := nil;
+                        Ini           := nil;
                         if FileExists(DofFile) and IsProjectFile(FileName, Project) and
                           Supports(Project.ProjectOptions,
                                    IOTAProjectOptionsConfigurations,
                                    OptionsConfigurations) then
                         try
-                            BaseConfig  := OptionsConfigurations.BaseConfiguration;
-                            if BaseConfig = nil then // Should never happen
+                            BaseConfig := OptionsConfigurations.BaseConfiguration;
+                            if BaseConfig = nil then // Should never happen on UPD from .dpr
                                 Exit;
-                            FIni := TIniFile.Create(DofFile);
+                        {$IFDEF DPRFIX2009} // And D2010
+                            Ini := TIniFile.Create(DofFile);
                             IniValues := TStringList.Create;
                             IniValues.Delimiter := ';';
                             IniValues.StrictDelimiter := True;
                             Values := TStringList.Create;
-
                             //-----------------------------------
-                            IniValues.DelimitedText := FIni.ReadString(sDofSectDir, 'SearchPath', '');
+
+                            IniValues.DelimitedText := Ini.ReadString(sDofSectDir, 'SearchPath', '');
                             if IniValues.Count > 0 then
                             begin
                                 BaseConfig.GetValues(sUnitSearchPath, Values, False);
@@ -216,13 +235,12 @@ begin
                                         RS[I] := Trim(IniValues[I]);
                                     BaseConfig.InsertValues(sUnitSearchPath, RS);
                                     Dirty := True;
-                                    (BorlandIDEServices as IOTAMessageServices).AddWideTitleMessage(
-                                      'ICS UpdateFix from .dof: Base SearchPath');
+                                    DebugLog('ICS UpdateFix from .dof: Base SearchPath');
                                 end;
                             end;
 
                             //-----------------------------------
-                            IniValues.DelimitedText := FIni.ReadString(sDofSectDir, 'Conditionals', '');
+                            IniValues.DelimitedText := Ini.ReadString(sDofSectDir, 'Conditionals', '');
                             if IniValues.Count > 0 then
                             begin
                                 Values.Clear;
@@ -239,13 +257,12 @@ begin
                                         RS[I] := Trim(IniValues[I]);
                                     BaseConfig.InsertValues(sDefine, RS);
                                     Dirty := True;
-                                    (BorlandIDEServices as IOTAMessageServices).AddWideTitleMessage(
-                                      'ICS UpdateFix from .dof: Base Conditionals');
+                                    DebugLog('ICS UpdateFix from .dof: Base Conditionals');
                                 end;
                             end;
 
                             //-----------------------------------
-                            S2 := Trim(FIni.ReadString(sDofSectDir, 'OutputDir', ''));
+                            S2 := Trim(Ini.ReadString(sDofSectDir, 'OutputDir', ''));
                             if S2 <> '' then
                             begin
                                 S1 := BaseConfig.GetValue(sExeOutput, False);
@@ -253,13 +270,12 @@ begin
                                 begin
                                     BaseConfig.Value[sExeOutput] := S2;
                                     Dirty := True;
-                                    (BorlandIDEServices as IOTAMessageServices).AddWideTitleMessage(
-                                      'ICS UpdateFix from .dof: Base OutputDir');
+                                    DebugLog('ICS UpdateFix from .dof: Base OutputDir');
                                 end;
                             end;
 
                             //-----------------------------------
-                            S2 := Trim(FIni.ReadString(sDofSectDir, 'UnitOutputDir', ''));
+                            S2 := Trim(Ini.ReadString(sDofSectDir, 'UnitOutputDir', ''));
                             if S2 <> '' then
                             begin
                                 S1 := BaseConfig.GetValue(sDcuOutput, False);
@@ -267,17 +283,80 @@ begin
                                 begin
                                     BaseConfig.Value[sDcuOutput] := S2;
                                     Dirty := True;
-                                    (BorlandIDEServices as IOTAMessageServices).AddWideTitleMessage(
-                                      'ICS UpdateFix from .dof: Base UnitOutputDir');
+                                    DebugLog('ICS UpdateFix from .dof: Base UnitOutputDir');
                                 end;
                             end;
-
+                        {$ENDIF}
+                        {$IFDEF DPRFIXXE2}
+                            { Read values from our custom ini-section added to .dof files }
+                            { This is just the bare minimum to update the ICS samples     }
+                            { from .dpr / .dof with the platforms and framework type we   }
+                            { want reliable.                                              }
+                            if not Assigned(Ini) then
+                                Ini := TIniFile.Create(DofFile);
+                            if Supports(Project, IOTAProjectPlatforms, ProjectPlatforms) then
+                            begin
+                                if (UpperCase(Trim(Ini.ReadString(sDofSectCustom, 'FrameworkType', ''))) = sFrameworkTypeVCL) and
+                                    ProjectPlatforms.Supported[cOSX32Platform] then
+                                begin
+                                    { It is very likely that FrameworkType was set to "None" }
+                                    { This sets the FrameworkType in Base, not the one I'm   }
+                                    { after and seems to enable correct namespaces.          }
+                                    Project.ProjectOptions.Values['FrameworkType'] := sFrameworkTypeVCL;
+                                    Dirty := True;
+                                end;
+                                bFlag := Ini.ReadBool(sDofSectCustom, 'Win32Supported', TRUE);
+                                if ProjectPlatforms.Supported[cWin32Platform] <> bFlag then
+                                begin
+                                    ProjectPlatforms.Supported[cWin32Platform] := bFlag;
+                                    Dirty := True;
+                                end;
+                                bFlag := Ini.ReadBool(sDofSectCustom, 'Win32Enabled', TRUE);
+                                if ProjectPlatforms.Enabled[cWin32Platform] <> bFlag then
+                                begin
+                                    if bFlag and not ProjectPlatforms.Supported[cWin32Platform] then
+                                        ProjectPlatforms.Supported[cWin32Platform] := TRUE;
+                                    ProjectPlatforms.Enabled[cWin32Platform] := bFlag;
+                                    Dirty := True;
+                                end;
+                                bFlag := Ini.ReadBool(sDofSectCustom, 'Win64Supported', TRUE);
+                                if ProjectPlatforms.Supported[cWin64Platform] <> bFlag then
+                                begin
+                                    ProjectPlatforms.Supported[cWin64Platform]   := bFlag;
+                                    Dirty := True;
+                                end;
+                                bFlag := Ini.ReadBool(sDofSectCustom, 'Win64Enabled', FALSE);
+                                if ProjectPlatforms.Enabled[cWin64Platform] <> bFlag then
+                                begin
+                                    if bFlag and not ProjectPlatforms.Supported[cWin64Platform] then
+                                        ProjectPlatforms.Supported[cWin64Platform] := TRUE;
+                                    ProjectPlatforms.Enabled[cWin64Platform] := bFlag;
+                                    Dirty := True;
+                                end;
+                                bFlag := Ini.ReadBool(sDofSectCustom, 'OSX32Supported', FALSE);
+                                if ProjectPlatforms.Supported[cOSX32Platform] <> bFlag then
+                                begin
+                                    ProjectPlatforms.Supported[cOSX32Platform] := bFlag;
+                                    Dirty := True;
+                                end;
+                                bFlag := Ini.ReadBool(sDofSectCustom, 'OSX32Enabled', FALSE);
+                                if ProjectPlatforms.Enabled[cOSX32Platform] <> bFlag then
+                                begin
+                                    if bFlag and not ProjectPlatforms.Supported[cOSX32Platform] then
+                                        ProjectPlatforms.Supported[cOSX32Platform] := TRUE;
+                                    ProjectPlatforms.Enabled[cOSX32Platform] := bFlag;
+                                    Dirty := True;
+                                end;
+                                if Dirty then
+                                    DebugLog('ICS project update from custom .dof section');
+                            end;
+                        {$ENDIF}
                             //-----------------------------------
                             if Dirty then
                                 Project.Save(False, True);
 
                         finally
-                            FIni.Free;
+                            Ini.Free;
                             Values.Free;
                             IniValues.Free;
                         end;
