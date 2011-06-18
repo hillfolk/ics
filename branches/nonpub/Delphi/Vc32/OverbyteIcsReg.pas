@@ -139,7 +139,10 @@ const
     sIcsLongProductName = 'Internet Component Suite V7';
     sIcsFreeware        = 'Freeware';
     sIcsDescription     = sIcsLongProductName + #13#10 +
-                          'Copyright (C) 1996-2011 by François PIETTE'+ #13#10 +
+                          //'Copyright (C) 1996-2011 by François PIETTE'+ #13#10 +
+                          // Actually there's source included with different
+                          // copyright, so either all or none should be mentioned
+                          // here.
                           'http://www.overbyte.be/' + #13#10 +
                           'svn://svn.overbyte.be/ics/trunk' + #13#10 +
                           'http://svn.overbyte.be:8443/svn/ics/trunk' + #13#10 +
