@@ -3,7 +3,7 @@
 Author:       François PIETTE
 Description:  TWSocket class encapsulate the Windows Socket paradigm
 Creation:     April 1996
-Version:      7.80
+Version:      7.81
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
@@ -906,7 +906,7 @@ May 17, 2011 v7.79 Arno added Sha1Hex, Sha1Digest, IssuedBy, IssuerOf and
                    and Sha1Digest are cached. Reworked TX509List and added new
                    methods.
 Jun 08, 2011 v7.80 Arno added x64 assembler routines, untested so far.
-
+Jun 18, 2011 v7.81 aguser removed some compiler hints.
 
 }
 
@@ -1020,8 +1020,8 @@ uses
   OverbyteIcsWinsock;
 
 const
-  WSocketVersion            = 780;
-  CopyRight    : String     = ' TWSocket (c) 1996-2011 Francois Piette V7.80 ';
+  WSocketVersion            = 781;
+  CopyRight    : String     = ' TWSocket (c) 1996-2011 Francois Piette V7.81 ';
   WSA_WSOCKET_TIMEOUT       = 12001;
 {$IFNDEF BCB}
   { Manifest constants for Shutdown }
@@ -10684,11 +10684,12 @@ function TCustomSyncWSocket.WaitUntilReady(var DoneFlag : Boolean) : Integer;
 begin
     Result := 0;           { Suppose success }
     FTimeStop := Integer(_GetTickCount) + FTimeout;
-    while TRUE do begin
+    while not DoneFlag do begin
+    {while TRUE do begin                     V7.81
         if DoneFlag then begin
             Result := 0;
             break;
-        end;
+        end;}
 
         if ((FTimeout > 0) and (Integer(_GetTickCount) > FTimeStop)) or
            Terminated then begin
@@ -14065,7 +14066,9 @@ var
     LastPos : Integer;
 begin
     Result := '';
-    Entry  := nil;
+{$IFNDEF WIN64}    { V7.81 }
+    Entry  := nil; { Make dcc32 happy }
+{$ENDIF}
     if not Assigned(FX509) then
         Exit;
     Subj := f_X509_get_subject_name(FX509);

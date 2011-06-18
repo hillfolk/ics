@@ -2,7 +2,7 @@
 
 Author:       François PIETTE
 Creation:     May 1996
-Version:      V7.24
+Version:      V7.25
 Object:       TFtpClient is a FTP client (RFC 959 implementation)
               Support FTPS (SSL) if ICS-SSL is used (RFC 2228 implementation)
 EMail:        http://www.overbyte.be        francois.piette@overbyte.be
@@ -1033,7 +1033,7 @@ Apr 15, 2011 V7.23 Arno prepared for 64-bit.
 May 21, 2011 V7.24 Arno - Call CloseDelayed rather than Close in
              TCustomFtpCli.DoneQuitAsync in order to avoid error #10053 in
              OnSessionClosed event with SSL.
-             
+Jun 18, 2011 V7.25 aguser removed one compiler hint.
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit OverbyteIcsFtpCli;
@@ -1105,9 +1105,9 @@ OverbyteIcsZlibHigh,     { V2.102 }
     OverbyteIcsWSocket, OverbyteIcsWndControl, OverByteIcsFtpSrvT;
 
 const
-  FtpCliVersion      = 724;
-  CopyRight : String = ' TFtpCli (c) 1996-2011 F. Piette V7.24 ';
-  FtpClientId : String = 'ICS FTP Client V7.24 ';   { V2.113 sent with CLNT command  }
+  FtpCliVersion      = 725;
+  CopyRight : String = ' TFtpCli (c) 1996-2011 F. Piette V7.25 ';
+  FtpClientId : String = 'ICS FTP Client V7.25 ';   { V2.113 sent with CLNT command  }
 
 const
 //  BLOCK_SIZE       = 1460; { 1514 - TCP header size }
@@ -6681,7 +6681,9 @@ function TFtpClient.WaitUntilReady : Boolean;
 var
     DummyHandle     : THandle;
 begin
-    Result    := TRUE;           { Assume success }
+{$IFNDEF WIN64}                  { V7.25 }
+    Result    := TRUE;           { Make dcc32 happy }
+{$ENDIF}
     FTimeStop := LongInt(GetTickCount) + LongInt(FTimeout) * 1000;
     DummyHandle := INVALID_HANDLE_VALUE;
     while TRUE do begin

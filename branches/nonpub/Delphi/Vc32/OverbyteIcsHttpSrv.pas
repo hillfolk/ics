@@ -9,12 +9,12 @@ Description:  THttpServer implement the HTTP server protocol, that is a
               check for '..\', '.\', drive designation and UNC.
               Do the check in OnGetDocument and similar event handlers.
 Creation:     Oct 10, 1999
-Version:      7.35
+Version:      7.36
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
-Legal issues: Copyright (C) 1999-2010 by François PIETTE
-              Rue de Grady 24, 4053 Embourg, Belgium. Fax: +32-4-365.74.56
+Legal issues: Copyright (C) 1999-2011 by François PIETTE
+              Rue de Grady 24, 4053 Embourg, Belgium.
               <francois.piette@overbyte.be>
               SSL implementation includes code written by Arno Garrels,
               Berlin, Germany, contact: <arno.garrels@gmx.de>
@@ -322,7 +322,7 @@ Feb 17, 2011 V7.35 FPiette fixed ExtractURLEncodedValue which returned a nul
                    byte when last character was a '%'. Now return a '%'.
 Jun 15, 2011 V7.36 Arno removed the check for empty password string in
                    THttpConnection.AuthDigestCheckPassword.
-
+Jun 18, 2011 V7.37 aguser removed one compiler hint.
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit OverbyteIcsHttpSrv;
@@ -407,8 +407,8 @@ uses
     OverbyteIcsWndControl, OverbyteIcsWSocket, OverbyteIcsWSocketS;
 
 const
-    THttpServerVersion = 736;
-    CopyRight : String = ' THttpServer (c) 1999-2011 F. Piette V7.36 ';
+    THttpServerVersion = 737;
+    CopyRight : String = ' THttpServer (c) 1999-2011 F. Piette V7.37 ';
     CompressMinSize = 5000;  { V7.20 only compress responses within a size range, these are defaults only }
     CompressMaxSize = 5000000;
 
@@ -5957,7 +5957,9 @@ var
     SizeRead  : Integer;
     Rec       : THttpPartStream;
 begin
+{$IFNDEF WIN64}  { V7.37 }
     Rec := nil;  { Just to remove a compiler warning }
+{$ENDIF}
     if (FPosition >= 0) and (Count >= 0) then begin
         //Result := FSize - FPosition;
         //if Result > 0 then begin
