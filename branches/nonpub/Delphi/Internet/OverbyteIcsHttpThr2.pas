@@ -2,14 +2,14 @@
 
 Author:       François PIETTE (From a work done by Ed Hochman <ed@mbhsys.com>)
 Creation:     Jan 13, 1998
-Version:      1.00
+Version:      1.01
 Description:  HttpThrd is a demo program showing how to use THttpCli component
               in a multi-threaded program.
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
-Legal issues: Copyright (C) 1997-2010 by François PIETTE
-              Rue de Grady 24, 4053 Embourg, Belgium. Fax: +32-4-365.74.56
+Legal issues: Copyright (C) 1997-2011 by François PIETTE
+              Rue de Grady 24, 4053 Embourg, Belgium.
               <francois.piette@overbyte.be>
 
               This software is provided 'as-is', without any express or
@@ -34,6 +34,8 @@ Legal issues: Copyright (C) 1997-2010 by François PIETTE
                  distribution.
 
 Updates:
+Jun 19 2011 V1.0.1 Arno - Make use of an event object rather than
+                   TThread.Suspend/Resume, both are deprecated since D2010.
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit OverbyteIcsHttpThr2;
@@ -45,18 +47,17 @@ uses
   OverbyteIcsHttpProt;
 
 type
-  {$M+}       { Needed for Published to take effect }
   THTTPThread = class(TThread)
   private
     FProgress : String;
+    FEvent    : THandle;
     procedure UpdateStatus;
     procedure ShowProgress;
     procedure Progress(Msg : String);
     procedure DocBegin(Sender : TObject);
     procedure DocData(Sender : TObject; Buffer : Pointer; Len : Integer);
     procedure DocEnd(Sender : TObject);
-  published
-    procedure Setup(i: Integer);
+  protected
     procedure Execute; override;
   public
     FURL          : String;
@@ -64,6 +65,9 @@ type
     FThreadNumber : Integer;
     FHttpCli      : THTTPCli;
     Success       : Boolean;
+    constructor Create(AThreadNumber: Integer);
+    destructor Destroy; override;
+    procedure Wakeup;
   end;
 
 implementation
@@ -73,9 +77,25 @@ uses
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure THTTPThread.Setup(i: Integer);
+constructor THTTPThread.Create(AThreadNumber: Integer);
 begin
-    FThreadNumber := i;
+    inherited Create(TRUE);
+    FThreadNumber := AThreadNumber;
+    FEvent := CreateEvent(nil, False, False, nil);
+    if FEvent = 0 then
+        RaiseLastOSError;
+end;
+
+
+{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+destructor THTTPThread.Destroy;
+begin
+    if FEvent <> 0 then begin
+        Terminate;
+        SetEvent(FEvent);
+        CloseHandle(FEvent);
+    end;
+    inherited Destroy;
 end;
 
 
@@ -83,6 +103,13 @@ end;
 procedure THTTPThread.UpdateStatus;
 begin
     HttpThreadForm.ProcessResults(FThreadNumber, Success);
+end;
+
+
+{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+procedure THTTPThread.Wakeup;
+begin
+    SetEvent(FEvent);
 end;
 
 
@@ -97,7 +124,7 @@ end;
 procedure THTTPThread.Progress(Msg : String);
 begin
     FProgress := Msg;
-    SynChronize(ShowProgress);
+    Synchronize(ShowProgress);
 end;
 
 
@@ -111,6 +138,9 @@ begin
     FHttpCli.OnDocEnd      := DocEnd;
     FHttpCli.OnDocData     := DocData;
     while not Terminated do begin
+        WaitForSingleObject(FEvent, INFINITE);
+        if Terminated then
+            Break;
         Progress(IntToStr(FThreadNumber) + ' Start get');
         with FHttpCli do begin
             URL   := FURL;
