@@ -2,7 +2,7 @@
 
 Author:       François PIETTE (From a work done by Ed Hochman <ed@mbhsys.com>)
 Creation:     Jan 13, 1998
-Version:      1.01
+Version:      1.02
 Description:  HttpThrd is a demo program showing how to use THttpCli component
               in a multi-threaded program.
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
@@ -34,8 +34,9 @@ Legal issues: Copyright (C) 1997-2011 by François PIETTE
                  distribution.
 
 Updates:
-Jun 19 2011 V1.0.1 Arno - Make use of an event object rather than
-                   TThread.Suspend/Resume, both are deprecated since D2010.
+Jun 19 2011 V1.01 Arno - Make use of an event object rather than
+                  TThread.Suspend/Resume, both are deprecated since D2010.
+Jun 20 2011 V1.02 Arno reworked it, was needed.
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit OverbyteIcsHttpThr1;
@@ -44,12 +45,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  OverbyteIcsHttpProt, StdCtrls, OverbyteIcsIniFiles;
+  OverbyteIcsHttpProt, StdCtrls, OverbyteIcsIniFiles,
+  OverbyteIcsHttpThr2;  // The thread class is defined there;
 
+const
+  WM_THREAD_RESULT   = WM_USER + 1;
+  WM_LOG             = WM_USER + 2;
 
 type
-  TThreadState = (tsInexistant, tsReady, tsInUse);
-
   THttpThreadForm = class(TForm)
     URLEdit: TEdit;
     ResultsMemo: TMemo;
@@ -74,13 +77,17 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormDestroy(Sender: TObject);
   private
     FInitialized : Boolean;
     FIniFileName : String;
-    procedure CreateThread(Sender: TObject);
-    procedure SetThreadState(Which : Integer; State: TThreadState);
+    FTerminating : Boolean;
+    procedure DisplayThreadState(Which : Integer; State: TThreadState);
+  protected
+    procedure WmLog(var Msg: TMessage); message WM_LOG;
+    procedure WmThreadResult(var Msg: TMessage); message WM_THREAD_RESULT;
   public
-    procedure ProcessResults(ThreadNumber: Integer; Success : Boolean);
+    procedure ProcessResults(AThread: THTTPThread; Success : Boolean);
   end;
 
 const
@@ -101,16 +108,13 @@ implementation
 {$R *.DFM}
 
 uses
-    OverbyteIcsHttpThr2,             // The thread class is defined there
     OverbyteIcsStreams;
 
 const
-    MaxThreads    = 6;    // If you change this, change labels on the form
+    MaxThreads    = 6;    { If you change this, change labels on the form }
 var
-    // The array with all our threads components
+    { The array with all our threads components }
     ThreadsObjects : array [0..MaxThreads - 1] of THTTPThread;
-    // The array with all thread states
-    ThreadsState   : array [0..MaxThreads - 1] of TThreadState;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
@@ -118,10 +122,26 @@ procedure THttpThreadForm.FormCreate(Sender: TObject);
 var
     i: Integer;
 begin
-    FIniFileName := GetIcsIniFileName;
+    { Initialize the array with zeros (nil it) }
+    FillChar(ThreadsObjects[0], SizeOf(ThreadsObjects), 0);
+    FIniFileName := GetIcsIniFileName;    
     for i := Low(ThreadsObjects) to High(ThreadsObjects) do
-        SetThreadState(i, tsInexistant);  //Not created.
+        DisplayThreadState(i, tsInvalid);  //None created and ready yet.
     ResultsMemo.Clear;
+end;
+
+
+{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+procedure THttpThreadForm.FormDestroy(Sender: TObject);
+var
+    i: Integer;
+begin
+    FTerminating := True;
+    { Free all THttpThread objects, this is blocking }
+    for i := Low(ThreadsObjects) to High(ThreadsObjects) do begin
+        if ThreadsObjects[i] <> nil then
+            ThreadsObjects[i].Free;
+    end;
 end;
 
 
@@ -173,20 +193,33 @@ end;
 procedure THttpThreadForm.DoItButtonClick(Sender: TObject);
 var
     i: Integer;
+    LThread : THTTPThread;
 begin
     for i := Low(ThreadsObjects) to High(ThreadsObjects) do begin
-        if ThreadsState[i] = tsInexistant then  //Thread has not been created yet
-            CreateThread(Self);
+        if ThreadsObjects[i] = nil then begin
+            LThread := THTTPThread.Create(i);
+            { Setting the State is safe since we read/write it only from main thread }
+            LThread.State := tsReady;
+            DisplayThreadState(i, tsReady);
+        {$IF CompilerVersion >= 21}
+            LThread.Start;
+        {$ELSE}
+            LThread.Resume;
+        {$IFEND}
+            ThreadsObjects[i] := LThread;
+        end
+        else
+            LThread := ThreadsObjects[i];
 
-        if ThreadsState[i] = tsReady then begin  //Thread is ready for use
-            with ThreadsObjects[i] do begin
-                FURL     := UrlEdit.Text;
-                FProxy   := ProxyEdit.Text;
-                SetThreadState(i, tsInUse);   // In use
-                //get the page
-                Wakeup;  //Signal the event in Execute method
-                Exit;    //For now, only start one thread for each click of DoIt
-            end;
+        if LThread.State = tsReady then begin
+            { Writing the next tree properties is safe only in State tsReady }
+            LThread.URL   := UrlEdit.Text;
+            LThread.Proxy := ProxyEdit.Text;
+            LThread.State := tsBusy;
+            DisplayThreadState(i, tsBusy);
+            //get the page
+            LThread.Wakeup;  //Signal the event in Execute method
+            Exit;            //For now, only one per click
         end;
     end;
     MessageBeep(MB_OK);
@@ -195,29 +228,9 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure THttpThreadForm.CreateThread(Sender: TObject);
-var
-    i: Integer;
+procedure THttpThreadForm.DisplayThreadState(Which : Integer;
+  State: TThreadState);
 begin
-    for i := Low(ThreadsObjects) to High(ThreadsObjects) do begin
-        if ThreadsObjects[i] = nil then begin
-            ThreadsObjects[i] := THTTPThread.Create(i);
-            SetThreadState(i, tsReady);
-        {$IF CompilerVersion >= 21}
-            ThreadsObjects[i].Start;
-        {$ELSE}
-            ThreadsObjects[i].Resume;
-        {$IFEND}
-            Exit;  //Found and activated an unused thread
-        end;
-    end;
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure THttpThreadForm.SetThreadState(Which : Integer; State: TThreadState);
-begin
-    ThreadsState[Which] := State;
     case which of
         0: Thread0Label.Caption := IntToStr(Ord(State));
         1: Thread1Label.Caption := IntToStr(Ord(State));
@@ -230,45 +243,81 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure LoadMemoFromMemoryStream(Memo : TMemo; Stream : TMemoryStream);
+procedure THttpThreadForm.WmLog(var Msg: TMessage);
+var
+    LThread: THTTPThread;
+    LLogList: TStringList;
+begin
+    { A thread notification message that log data is available in the log list }
+    if not FTerminating then begin
+        { We can be sure that the thread object is valid }
+        LThread := THTTPThread(Msg.WParam);
+        { Access to the log list is protected by a critical section }
+        LLogList := LThread.LockLogList;
+        try
+            ProgressListBox.Items.AddStrings(LLogList);
+            LLogList.Clear;
+        finally
+            LThread.UnlockLogList;
+        end;
+    end;
+    if ProgressListBox.Items.Count > 0 then
+        ProgressListBox.ItemIndex := ProgressListBox.Items.Count -1
+end;
+
+
+{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+procedure THttpThreadForm.WmThreadResult(var Msg: TMessage);
+begin
+    { A thread notification message that GET has finished }
+    if not FTerminating then
+        { We can be sure that the thread object is valid }
+        ProcessResults(THTTPThread(Msg.WParam), Boolean(Msg.LParam));
+end;
+
+
+{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+procedure LoadMemoFromStream(Memo : TMemo; Stream : TStream);
 var
     Reader : TIcsStreamReader;
     Line : String;
 begin
-    Stream.Position := 0;
-    Reader := TIcsStreamReader.Create(Stream, TRUE, CP_ACP);
+    Memo.Lines.BeginUpdate;
     try
-        while Reader.ReadLine(Line) do
-            Memo.Lines.Add(Line);
+        Stream.Position := 0;
+        Reader := TIcsStreamReader.Create(Stream, TRUE, CP_ACP);
+        try
+            while Reader.ReadLine(Line) do
+                Memo.Lines.Add(Line);
+        finally
+            Reader.Free;
+        end;
     finally
-        Reader.Free;
+        Memo.Lines.EndUpdate;
     end;
 end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-// To be called by each thread as it completes (using Synchronize !)
-procedure THttpThreadForm.ProcessResults
-   (ThreadNumber: Integer; Success : Boolean);
-var
-    Stream : TMemoryStream;
+procedure THttpThreadForm.ProcessResults(AThread : THTTPThread;
+  Success : Boolean);
 begin
+    AThread.State := tsReady;
+    DisplayThreadState(AThread.ThreadNumber, AThread.State);
+    { We know this is safe since the thread currently does nothing, }
+    { waiting for the event being signaled.                         }
     if Success then begin
         ResultsMemo.Lines.Add('* * * * * * THREAD ' +
-                        IntToStr(ThreadNumber) + ' * * * * * *');
-        Stream := ThreadsObjects[ThreadNumber].FHttpCli.RcvdStream
-                  as TMemoryStream;
-        LoadMemoFromMemoryStream(ResultsMemo, Stream);
+                    IntToStr(AThread.ThreadNumber) + ' * * * * * *');
+        LoadMemoFromStream(ResultsMemo, AThread.DataStream);
         ResultsMemo.Lines.Add('');
     end
     else begin
-        // There was an error getting data.
+        { There was an error getting data.                          }
         ResultsMemo.Lines.Add('Nothing returned by thread: ' +
-                              IntToStr(ThreadNumber));
+                              IntToStr(AThread.ThreadNumber));
     end;
     ResultsMemo.Lines.Add('* * * * * * * * * * * * * * * * * * * *');
-    SetThreadState(ThreadNumber, tsReady);
-    //Waiting for something to do (get next url here)
 end;
 
 
