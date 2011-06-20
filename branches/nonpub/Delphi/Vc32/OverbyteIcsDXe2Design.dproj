@@ -43,12 +43,11 @@
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<DCC_DcuOutput>.\$(Config)\$(Platform)</DCC_DcuOutput>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+			<VerInfo_IncludeVerInfo>false</VerInfo_IncludeVerInfo>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 			<DCC_Define>USE_SSL;$(DCC_Define)</DCC_Define>
-			<DCC_Description>Overbyte ICS Design-Time Package for Delphi XE</DCC_Description>
+			<DCC_Description>Overbyte ICS Design-Time Package for Delphi XE2</DCC_Description>
 			<DesignOnlyPackage>true</DesignOnlyPackage>
-			<DCC_DependencyCheckOutputName>C:\Users\Public\Documents\RAD Studio\7.0\Bpl\OverbyteIcsD2010Design.bpl</DCC_DependencyCheckOutputName>
 			<GenPackage>true</GenPackage>
 			<GenDll>true</GenDll>
 			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
@@ -137,6 +136,9 @@
 					<VersionControl>
 						<VersionControl Name="VersionControlID"/>
 					</VersionControl>
+					<Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\fmidesigner160.bpl">FMI Form designer and property and component editors</Excluded_Packages>
+					</Excluded_Packages>
 				</Delphi.Personality>
 				<Platforms>
 					<Platform value="Win32">True</Platform>

@@ -50,8 +50,7 @@
 			<DCC_Define>USE_SSL;$(DCC_Define)</DCC_Define>
 			<RuntimeOnlyPackage>true</RuntimeOnlyPackage>
 			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-			<DCC_Description>Overbyte ICS Run-Time Package for Delphi XE</DCC_Description>
-			<DCC_DependencyCheckOutputName>C:\Dokumente und Einstellungen\All Users\Dokumente\RAD Studio\7.0\Bpl\OverbyteIcsD2010Run.bpl</DCC_DependencyCheckOutputName>
+			<DCC_Description>Overbyte ICS Run-Time Package for Delphi XE2</DCC_Description>			
 			<DCC_RangeChecking>true</DCC_RangeChecking>
 			<DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
 			<GenDll>true</GenDll>

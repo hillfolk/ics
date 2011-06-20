@@ -52,10 +52,10 @@ unit OverbyteIcsDprUpdFix;
   {$IFNDEF COMPILER15_UP}
     {$DEFINE DPRFIX2009}
   {$ENDIF}
+  {$IFDEF COMPILER16_UP}
+    {$DEFINE DPRFIXXE2}
+  {$ENDIF}
 {$ENDIF}
-{$IF CompilerVersion > 22}
-  {$DEFINE DPRFIXXE2}
-{$IFEND}
 
 interface
 
@@ -108,8 +108,7 @@ begin
 {$IF DEFINED(DPRFIX2009) or DEFINED(DPRFIXXE2)}
     Services := BorlandIDEServices as IOTAServices;
     GMessageService := (BorlandIDEServices as IOTAMessageServices);
-    if (IDENotifierIndex = -1) then
-    begin
+    if (IDENotifierIndex = -1) then begin
         IDENotifierIndex := Services.AddNotifier(TIdeNotifier.Create);
     {$IFDEF DEBUGLOG}
         DebugLog('OverbyteIcsDprUpdFix Installed NotifierIndex: #' + IntToStr(IDENotifierIndex));
@@ -181,187 +180,183 @@ begin
     {$ENDIF}
         case NotifyCode of
             ofnFileOpening :
+                if (not FPossibleUpd) and (ExtractFileExt(FileName) = '.dpr') then
                 begin
-                    if (not FPossibleUpd) and (ExtractFileExt(FileName) = '.dpr') then
-                    begin
-                        FLastDpr := ChangeFileExt(FileName, '.dproj');
-                        if FileExists(FLastDpr) then
-                            FLastDpr     := ''
-                        else
-                            FPossibleUpd := True;
-                    end;
+                    FLastDpr := ChangeFileExt(FileName, '.dproj');
+                    if FileExists(FLastDpr) then
+                        FLastDpr     := ''
+                    else
+                        FPossibleUpd := True;
                 end;
+
 
             ofnFileOpened :
+                if FPossibleUpd and (FLastDpr = FileName) then
                 begin
-                    if FPossibleUpd and (FLastDpr = FileName) then
-                    begin
-                        FLastDpr      := '';
-                        FPossibleUpd  := False;
-                        DofFile       := ChangeFileExt(FileName, '.dof');
-                        Dirty         := False;
-                        Values        := nil;
-                        IniValues     := nil;
-                        Ini           := nil;
-                        if FileExists(DofFile) and IsProjectFile(FileName, Project) and
-                          Supports(Project.ProjectOptions,
-                                   IOTAProjectOptionsConfigurations,
-                                   OptionsConfigurations) then
-                        try
-                            BaseConfig := OptionsConfigurations.BaseConfiguration;
-                            if BaseConfig = nil then // Should never happen on UPD from .dpr
-                                Exit;
-                        {$IFDEF DPRFIX2009} // And D2010
-                            Ini := TIniFile.Create(DofFile);
-                            IniValues := TStringList.Create;
-                            IniValues.Delimiter := ';';
-                            IniValues.StrictDelimiter := True;
-                            Values := TStringList.Create;
-                            //-----------------------------------
+                    FLastDpr      := '';
+                    FPossibleUpd  := False;
+                    DofFile       := ChangeFileExt(FileName, '.dof');
+                    Dirty         := False;
+                    Values        := nil;
+                    IniValues     := nil;
+                    Ini           := nil;
+                    if FileExists(DofFile) and IsProjectFile(FileName, Project) and
+                      Supports(Project.ProjectOptions,
+                               IOTAProjectOptionsConfigurations,
+                               OptionsConfigurations) then
+                    try
+                        BaseConfig := OptionsConfigurations.BaseConfiguration;
+                        if BaseConfig = nil then // Should never happen on UPD from .dpr
+                            Exit;
+                    {$IFDEF DPRFIX2009} // And D2010
+                        Ini := TIniFile.Create(DofFile);
+                        IniValues := TStringList.Create;
+                        IniValues.Delimiter := ';';
+                        IniValues.StrictDelimiter := True;
+                        Values := TStringList.Create;
 
-                            IniValues.DelimitedText := Ini.ReadString(sDofSectDir, 'SearchPath', '');
+                        //-----------------------------------
+                        IniValues.DelimitedText := Ini.ReadString(sDofSectDir, 'SearchPath', '');
+                        if IniValues.Count > 0 then
+                        begin
+                            BaseConfig.GetValues(sUnitSearchPath, Values, False);
+                            for I := IniValues.Count - 1 downto 0 do
+                            begin
+                                if Values.IndexOf(Trim(IniValues[I])) > 0 then
+                                    IniValues.Delete(I);
+                            end;
                             if IniValues.Count > 0 then
                             begin
-                                BaseConfig.GetValues(sUnitSearchPath, Values, False);
-                                for I := IniValues.Count - 1 downto 0 do
-                                begin
-                                    if Values.IndexOf(Trim(IniValues[I])) > 0 then
-                                        IniValues.Delete(I);
-                                end;
-                                if IniValues.Count > 0 then
-                                begin
-                                    SetLength(RS, IniValues.Count);
-                                    for I := 0 to IniValues.Count - 1 do
-                                        RS[I] := Trim(IniValues[I]);
-                                    BaseConfig.InsertValues(sUnitSearchPath, RS);
-                                    Dirty := True;
-                                    DebugLog('ICS UpdateFix from .dof: Base SearchPath');
-                                end;
+                                SetLength(RS, IniValues.Count);
+                                for I := 0 to IniValues.Count - 1 do
+                                    RS[I] := Trim(IniValues[I]);
+                                BaseConfig.InsertValues(sUnitSearchPath, RS);
+                                Dirty := True;
+                                DebugLog('ICS UpdateFix from .dof: Base SearchPath');
                             end;
-
-                            //-----------------------------------
-                            IniValues.DelimitedText := Ini.ReadString(sDofSectDir, 'Conditionals', '');
-                            if IniValues.Count > 0 then
-                            begin
-                                Values.Clear;
-                                BaseConfig.GetValues(sDefine, Values, False);
-                                for I := IniValues.Count - 1 downto 0 do
-                                begin
-                                    if Values.IndexOf(Trim(IniValues[I])) > 0 then
-                                        IniValues.Delete(I);
-                                end;
-                                if IniValues.Count > 0 then
-                                begin
-                                    SetLength(RS, IniValues.Count);
-                                    for I := 0 to IniValues.Count - 1 do
-                                        RS[I] := Trim(IniValues[I]);
-                                    BaseConfig.InsertValues(sDefine, RS);
-                                    Dirty := True;
-                                    DebugLog('ICS UpdateFix from .dof: Base Conditionals');
-                                end;
-                            end;
-
-                            //-----------------------------------
-                            S2 := Trim(Ini.ReadString(sDofSectDir, 'OutputDir', ''));
-                            if S2 <> '' then
-                            begin
-                                S1 := BaseConfig.GetValue(sExeOutput, False);
-                                if S1 <> S2 then
-                                begin
-                                    BaseConfig.Value[sExeOutput] := S2;
-                                    Dirty := True;
-                                    DebugLog('ICS UpdateFix from .dof: Base OutputDir');
-                                end;
-                            end;
-
-                            //-----------------------------------
-                            S2 := Trim(Ini.ReadString(sDofSectDir, 'UnitOutputDir', ''));
-                            if S2 <> '' then
-                            begin
-                                S1 := BaseConfig.GetValue(sDcuOutput, False);
-                                if S1 <> S2 then
-                                begin
-                                    BaseConfig.Value[sDcuOutput] := S2;
-                                    Dirty := True;
-                                    DebugLog('ICS UpdateFix from .dof: Base UnitOutputDir');
-                                end;
-                            end;
-                        {$ENDIF}
-                        {$IFDEF DPRFIXXE2}
-                            { Read values from our custom ini-section added to .dof files }
-                            { This is just the bare minimum to update the ICS samples     }
-                            { from .dpr / .dof with the platforms and framework type we   }
-                            { want reliable.                                              }
-                            if not Assigned(Ini) then
-                                Ini := TIniFile.Create(DofFile);
-                            if Supports(Project, IOTAProjectPlatforms, ProjectPlatforms) then
-                            begin
-                                if (UpperCase(Trim(Ini.ReadString(sDofSectCustom, 'FrameworkType', ''))) = sFrameworkTypeVCL) and
-                                    ProjectPlatforms.Supported[cOSX32Platform] then
-                                begin
-                                    { It is very likely that FrameworkType was set to "None" }
-                                    { This sets the FrameworkType in Base, not the one I'm   }
-                                    { after and seems to enable correct namespaces.          }
-                                    Project.ProjectOptions.Values['FrameworkType'] := sFrameworkTypeVCL;
-                                    Dirty := True;
-                                end;
-                                bFlag := Ini.ReadBool(sDofSectCustom, 'Win32Supported', TRUE);
-                                if ProjectPlatforms.Supported[cWin32Platform] <> bFlag then
-                                begin
-                                    ProjectPlatforms.Supported[cWin32Platform] := bFlag;
-                                    Dirty := True;
-                                end;
-                                bFlag := Ini.ReadBool(sDofSectCustom, 'Win32Enabled', TRUE);
-                                if ProjectPlatforms.Enabled[cWin32Platform] <> bFlag then
-                                begin
-                                    if bFlag and not ProjectPlatforms.Supported[cWin32Platform] then
-                                        ProjectPlatforms.Supported[cWin32Platform] := TRUE;
-                                    ProjectPlatforms.Enabled[cWin32Platform] := bFlag;
-                                    Dirty := True;
-                                end;
-                                bFlag := Ini.ReadBool(sDofSectCustom, 'Win64Supported', TRUE);
-                                if ProjectPlatforms.Supported[cWin64Platform] <> bFlag then
-                                begin
-                                    ProjectPlatforms.Supported[cWin64Platform]   := bFlag;
-                                    Dirty := True;
-                                end;
-                                bFlag := Ini.ReadBool(sDofSectCustom, 'Win64Enabled', FALSE);
-                                if ProjectPlatforms.Enabled[cWin64Platform] <> bFlag then
-                                begin
-                                    if bFlag and not ProjectPlatforms.Supported[cWin64Platform] then
-                                        ProjectPlatforms.Supported[cWin64Platform] := TRUE;
-                                    ProjectPlatforms.Enabled[cWin64Platform] := bFlag;
-                                    Dirty := True;
-                                end;
-                                bFlag := Ini.ReadBool(sDofSectCustom, 'OSX32Supported', FALSE);
-                                if ProjectPlatforms.Supported[cOSX32Platform] <> bFlag then
-                                begin
-                                    ProjectPlatforms.Supported[cOSX32Platform] := bFlag;
-                                    Dirty := True;
-                                end;
-                                bFlag := Ini.ReadBool(sDofSectCustom, 'OSX32Enabled', FALSE);
-                                if ProjectPlatforms.Enabled[cOSX32Platform] <> bFlag then
-                                begin
-                                    if bFlag and not ProjectPlatforms.Supported[cOSX32Platform] then
-                                        ProjectPlatforms.Supported[cOSX32Platform] := TRUE;
-                                    ProjectPlatforms.Enabled[cOSX32Platform] := bFlag;
-                                    Dirty := True;
-                                end;
-                                if Dirty then
-                                    DebugLog('ICS project update from custom .dof section');
-                            end;
-                        {$ENDIF}
-                            //-----------------------------------
-                            if Dirty then
-                                Project.Save(False, True);
-
-                        finally
-                            Ini.Free;
-                            Values.Free;
-                            IniValues.Free;
                         end;
+
+                        //-----------------------------------
+                        IniValues.DelimitedText := Ini.ReadString(sDofSectDir, 'Conditionals', '');
+                        if IniValues.Count > 0 then
+                        begin
+                            Values.Clear;
+                            BaseConfig.GetValues(sDefine, Values, False);
+                            for I := IniValues.Count - 1 downto 0 do
+                            begin
+                                if Values.IndexOf(Trim(IniValues[I])) > 0 then
+                                    IniValues.Delete(I);
+                            end;
+                            if IniValues.Count > 0 then
+                            begin
+                                SetLength(RS, IniValues.Count);
+                                for I := 0 to IniValues.Count - 1 do
+                                    RS[I] := Trim(IniValues[I]);
+                                BaseConfig.InsertValues(sDefine, RS);
+                                Dirty := True;
+                                DebugLog('ICS UpdateFix from .dof: Base Conditionals');
+                            end;
+                        end;
+
+                        //-----------------------------------
+                        S2 := Trim(Ini.ReadString(sDofSectDir, 'OutputDir', ''));
+                        if S2 <> '' then
+                        begin
+                            S1 := BaseConfig.GetValue(sExeOutput, False);
+                            if S1 <> S2 then
+                            begin
+                                BaseConfig.Value[sExeOutput] := S2;
+                                Dirty := True;
+                                DebugLog('ICS UpdateFix from .dof: Base OutputDir');
+                            end;
+                        end;
+
+                        //-----------------------------------
+                        S2 := Trim(Ini.ReadString(sDofSectDir, 'UnitOutputDir', ''));
+                        if S2 <> '' then
+                        begin
+                            S1 := BaseConfig.GetValue(sDcuOutput, False);
+                            if S1 <> S2 then
+                            begin
+                                BaseConfig.Value[sDcuOutput] := S2;
+                                Dirty := True;
+                                DebugLog('ICS UpdateFix from .dof: Base UnitOutputDir');
+                            end;
+                        end;
+
+                        //-----------------------------------
+                    {$ENDIF}
+                    {$IFDEF DPRFIXXE2}
+                        { Read values from our custom ini-section added to .dof files }
+                        { This is just the bare minimum to update the ICS samples     }
+                        { from .dpr / .dof with the platforms and framework type we   }
+                        { want reliable.                                              }
+                        if not Assigned(Ini) then
+                            Ini := TIniFile.Create(DofFile);
+                        if Supports(Project, IOTAProjectPlatforms, ProjectPlatforms) then
+                        begin
+                            if (UpperCase(Trim(Ini.ReadString(sDofSectCustom, 'FrameworkType', ''))) = sFrameworkTypeVCL) and
+                               (Project.FrameworkType <> sFrameworkTypeVCL) then
+                            begin
+                                Project.ProjectOptions.Values['FrameworkType'] := sFrameworkTypeVCL;
+                                Dirty := True;
+                            end;
+                            bFlag := Ini.ReadBool(sDofSectCustom, 'Win32Supported', TRUE);
+                            if ProjectPlatforms.Supported[cWin32Platform] <> bFlag then
+                            begin
+                                ProjectPlatforms.Supported[cWin32Platform] := bFlag;
+                                Dirty := True;
+                            end;
+                            bFlag := Ini.ReadBool(sDofSectCustom, 'Win32Enabled', TRUE);
+                            if ProjectPlatforms.Enabled[cWin32Platform] <> bFlag then
+                            begin
+                                if bFlag and not ProjectPlatforms.Supported[cWin32Platform] then
+                                    ProjectPlatforms.Supported[cWin32Platform] := TRUE;
+                                ProjectPlatforms.Enabled[cWin32Platform] := bFlag;
+                                Dirty := True;
+                            end;
+                            bFlag := Ini.ReadBool(sDofSectCustom, 'Win64Supported', TRUE);
+                            if ProjectPlatforms.Supported[cWin64Platform] <> bFlag then
+                            begin
+                                ProjectPlatforms.Supported[cWin64Platform]   := bFlag;
+                                Dirty := True;
+                            end;
+                            bFlag := Ini.ReadBool(sDofSectCustom, 'Win64Enabled', FALSE);
+                            if ProjectPlatforms.Enabled[cWin64Platform] <> bFlag then
+                            begin
+                                if bFlag and not ProjectPlatforms.Supported[cWin64Platform] then
+                                    ProjectPlatforms.Supported[cWin64Platform] := TRUE;
+                                ProjectPlatforms.Enabled[cWin64Platform] := bFlag;
+                                Dirty := True;
+                            end;
+                            bFlag := Ini.ReadBool(sDofSectCustom, 'OSX32Supported', FALSE);
+                            if ProjectPlatforms.Supported[cOSX32Platform] <> bFlag then
+                            begin
+                                ProjectPlatforms.Supported[cOSX32Platform] := bFlag;
+                                Dirty := True;
+                            end;
+                            bFlag := Ini.ReadBool(sDofSectCustom, 'OSX32Enabled', FALSE);
+                            if ProjectPlatforms.Enabled[cOSX32Platform] <> bFlag then
+                            begin
+                                if bFlag and not ProjectPlatforms.Supported[cOSX32Platform] then
+                                    ProjectPlatforms.Supported[cOSX32Platform] := TRUE;
+                                ProjectPlatforms.Enabled[cOSX32Platform] := bFlag;
+                                Dirty := True;
+                            end;
+                            if Dirty then
+                                DebugLog('ICS project updated from custom .dof section');
+                        end;
+                    {$ENDIF}
+                        if Dirty then
+                            Project.Save(False, True);
+
+                    finally
+                        Ini.Free;
+                        Values.Free;
+                        IniValues.Free;
                     end;
                 end;
+
         end;
     except
         FLastDpr := '';
