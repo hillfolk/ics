@@ -185,7 +185,11 @@ const
 {$IFDEF COMPILER14_UP}
     sIcsSplashImg       = 'ICSPRODUCTICONBLACK';
 {$ELSE}
-    sIcsSplashImg       = 'ICSPRODUCTICON';
+    {$IFDEF COMPILER10}
+        sIcsSplashImg   = 'ICSPRODUCTICONBLACK';
+    {$ELSE}
+        sIcsSplashImg   = 'ICSPRODUCTICON';
+    {$ENDIF}
 {$ENDIF}
     sIcsLongProductName = 'Internet Component Suite V7';
     sIcsFreeware        = 'Freeware';
