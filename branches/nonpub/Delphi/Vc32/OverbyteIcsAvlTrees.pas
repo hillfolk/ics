@@ -757,6 +757,7 @@ end;
 
 
 /////////////////////////////////////////////////////////////////////////////
+{$HINTS OFF}
 // a < self :-1  a=self :0  a > self :+1
 function TCacheTree.Compare(Node1, Node2: TAvlTreeNode): Integer;
 begin
@@ -766,7 +767,7 @@ begin
         Result := AnsiCompareText(TCacheNode(Node1).FKey, TCacheNode(Node2).FKey);
 
 end;
-
+{$HINTS ON}
 
 /////////////////////////////////////////////////////////////////////////////
 procedure TCacheTree.CopyNode(Source, Destination: TAvlTreeNode);
