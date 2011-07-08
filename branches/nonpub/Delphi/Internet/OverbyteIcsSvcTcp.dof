@@ -5,6 +5,7 @@ UnitPlatform=0
 UnsafeType=0
 UnsafeCode=0
 UnsafeCast=0
+NameSpacePrefix=Vcl
 [Directories]
 OutputDir=
 UnitOutputDir=.\dcu
