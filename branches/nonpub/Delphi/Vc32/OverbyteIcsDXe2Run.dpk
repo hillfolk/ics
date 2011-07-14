@@ -55,7 +55,7 @@ package OverbyteIcsDXe2Run;
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'Overbyte ICS Run-Time Package for Delphi XE2'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   rtl,
@@ -123,6 +123,7 @@ contains
   OverbyteIcsWSocketTS in 'OverbyteIcsWSocketTS.pas',
   OverbyteIcsCsc in 'OverbyteIcsCsc.pas',
   OverbyteIcsIconv in 'OverbyteIcsIconv.pas',
-  OverbyteIcsMLang in 'OverbyteIcsMLang.pas';
+  OverbyteIcsMLang in 'OverbyteIcsMLang.pas',
+  OverbyteIcsWinnls in 'OverbyteIcsWinnls.pas';
 
 end.
