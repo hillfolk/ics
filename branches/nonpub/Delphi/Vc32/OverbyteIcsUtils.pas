@@ -1382,7 +1382,7 @@ end;
 function UsAsciiToUnicode(const Str: RawByteString; FailCh: AnsiChar): UnicodeString;
 var
     I  : Integer;
-    P  : PByte;
+    P  : PSmallInt;
 begin
     SetLength(Result, Length(Str));
     P := Pointer(Result);
@@ -1391,8 +1391,6 @@ begin
             P^ := Byte(FailCh)
         else
             P^ := Byte(Str[I]);
-        Inc(P);
-        P^ := 0;
         Inc(P);
     end;
 end;
