@@ -7,7 +7,7 @@ Object:       Delphi component which implement the TCP/IP telnet protocol
 Author:       François PIETTE
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Creation:     April, 1996
-Version:      7.01
+Version:      7.02
 Support:      Use the mailing list twsocket@elists.org See website for details.
 Legal issues: Copyright (C) 1996-2010 by François PIETTE
               Rue de Grady 24, 4053 Embourg, Belgium. Fax: +32-4-365.74.56
@@ -60,6 +60,7 @@ Mar 26, 2006 V6.00 New version 6 started from V5
 Aug 15, 2008 V7.00 Delphi 2009 (Unicode) support. The communication is not
              unicode, but the component support unicode strings.
 Jul 17, 2011 V7.01 Arno fixed some bugs with non-Windows-1252 code pages.
+Jul 18, 2011 V7.02 Arno reverted breaking changes from V7.01.
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit OverbyteIcsTnCnx;
@@ -100,49 +101,49 @@ uses
     OverbyteIcsWndControl, OverbyteIcsWSocket, OverbyteIcsWinsock;
 
 const
-  TnCnxVersion       = 701;
-  CopyRight : String = ' TTnCnx (c) 1996-2011 F. Piette V7.01 ';
+  TnCnxVersion       = 702;
+  CopyRight : String = ' TTnCnx (c) 1996-2011 F. Piette V7.02 ';
 
   { Telnet command characters                                            }
-  TNCH_EOR        = 239;     { $EF End Of Record (preceded by IAC)       }
-  TNCH_SE         = 240;     { $F0 End of subnegociation parameters      }
-  TNCH_NOP        = 241;     { $F1 No operation                          }
-  TNCH_DATA_MARK  = 242;     { $F2 Data stream portion of a Synch        }
-  TNCH_BREAK      = 243;     { $F3 NVT charcater break                   }
-  TNCH_IP         = 244;     { $F4 Interrupt process                     }
-  TNCH_AO         = 245;     { $F5 Abort output                          }
-  TNCH_AYT        = 246;     { $F6 Are you there                         }
-  TNCH_EC         = 247;     { $F7 Erase character                       }
-  TNCH_EL         = 248;     { $F8 Erase line                            }
-  TNCH_GA         = 249;     { $F9 Go ahead                              }
-  TNCH_SB         = 250;     { $FA Subnegociation                        }
-  TNCH_WILL       = 251;     { $FB Will                                  }
-  TNCH_WONT       = 252;     { $FC Wont                                  }
-  TNCH_DO         = 253;     { $FD Do                                    }
-  TNCH_DONT       = 254;     { $FE Dont                                  }
-  TNCH_IAC        = 255;     { $FF IAC                                   }
+  TNCH_EOR        = #239;     { $EF End Of Record (preceded by IAC)       }
+  TNCH_SE         = #240;     { $F0 End of subnegociation parameters      }
+  TNCH_NOP        = #241;     { $F1 No operation                          }
+  TNCH_DATA_MARK  = #242;     { $F2 Data stream portion of a Synch        }
+  TNCH_BREAK      = #243;     { $F3 NVT charcater break                   }
+  TNCH_IP         = #244;     { $F4 Interrupt process                     }
+  TNCH_AO         = #245;     { $F5 Abort output                          }
+  TNCH_AYT        = #246;     { $F6 Are you there                         }
+  TNCH_EC         = #247;     { $F7 Erase character                       }
+  TNCH_EL         = #248;     { $F8 Erase line                            }
+  TNCH_GA         = #249;     { $F9 Go ahead                              }
+  TNCH_SB         = #250;     { $FA Subnegociation                        }
+  TNCH_WILL       = #251;     { $FB Will                                  }
+  TNCH_WONT       = #252;     { $FC Wont                                  }
+  TNCH_DO         = #253;     { $FD Do                                    }
+  TNCH_DONT       = #254;     { $FE Dont                                  }
+  TNCH_IAC        = #255;     { $FF IAC                                   }
 
   { Telnet options                                                        }
-  TN_TRANSMIT_BINARY      = 0;   { $00 }
-  TN_ECHO                 = 1;   { $01 }
-  TN_RECONNECTION         = 2;   { $02 }
-  TN_SUPPRESS_GA          = 3;   { $03 }
-  TN_MSG_SZ_NEGOC         = 4;   { $04 }
-  TN_STATUS               = 5;   { $05 }
-  TN_TIMING_MARK          = 6;   { $06 }
-  TN_NOPTIONS             = 6;   { $06 }
-  TN_DET                  = 20;  { $14 }
-  TN_SEND_LOC             = 23;  { $17 }
-  TN_TERMTYPE             = 24;  { $18 }
-  TN_EOR                  = 25;  { $19 }
-  TN_NAWS                 = 31;  { $1F }
-  TN_TERMSPEED            = 32;  { $20 }
-  TN_TFC                  = 33;  { $21 }
-  TN_XDISPLOC             = 35;  { $23 }
-  TN_EXOPL                = 255; { $FF }
+  TN_TRANSMIT_BINARY      = #0;   { $00 }
+  TN_ECHO                 = #1;   { $01 }
+  TN_RECONNECTION         = #2;   { $02 }
+  TN_SUPPRESS_GA          = #3;   { $03 }
+  TN_MSG_SZ_NEGOC         = #4;   { $04 }
+  TN_STATUS               = #5;   { $05 }
+  TN_TIMING_MARK          = #6;   { $06 }
+  TN_NOPTIONS             = #6;   { $06 }
+  TN_DET                  = #20;  { $14 }
+  TN_SEND_LOC             = #23;  { $17 }
+  TN_TERMTYPE             = #24;  { $18 }
+  TN_EOR                  = #25;  { $19 }
+  TN_NAWS                 = #31;  { $1F }
+  TN_TERMSPEED            = #32;  { $20 }
+  TN_TFC                  = #33;  { $21 }
+  TN_XDISPLOC             = #35;  { $23 }
+  TN_EXOPL                = #255; { $FF }
 
-  TN_TTYPE_SEND           = 1;
-  TN_TTYPE_IS             = 0;
+  TN_TTYPE_SEND           = #1;
+  TN_TTYPE_IS             = #0;
 
 type
   TTnCnx = class;
@@ -163,7 +164,7 @@ type
     FLocalEcho          : Boolean;
     Spga                : Boolean;
     FTType              : Boolean;
-    FBuffer             : array [0..2048] of Byte;
+    FBuffer             : array [0..2048] of AnsiChar;
     FBufferCnt          : Integer;
     FOnSessionConnected : TTnSessionConnected;
     FOnSessionClosed    : TTnSessionClosed;
@@ -181,11 +182,11 @@ type
     procedure SocketSessionClosed(Sender: TObject; Error : word);
     procedure SocketDataAvailable(Sender: TObject; Error : word);
     procedure Display(Str : String);
-    procedure AddChar(Ch : Byte);
-    procedure ReceiveChar(Ch : Byte);
-    procedure Answer(chAns : Byte; chOption : Byte);
+    procedure AddChar(Ch : AnsiChar);
+    procedure ReceiveChar(Ch : AnsiChar);
+    procedure Answer(chAns : AnsiChar; chOption : AnsiChar);
     procedure NegociateSubOption(const strSubOption : RawByteString);
-    procedure NegociateOption(chAction : Byte; chOption : Byte);
+    procedure NegociateOption(chAction : AnsiChar; chOption : AnsiChar);
     procedure FlushBuffer;
     function  GetState : TSocketState;
   public
@@ -402,7 +403,7 @@ end;
 procedure TTnCnx.SocketDataAvailable(Sender: TObject; Error : word);
 var
     Len, I : Integer;
-    Buffer : array [1..2048] of Byte;
+    Buffer : array [1..2048] of AnsiChar;
     Socket : TWSocket;
 begin
     Socket := Sender as TWSocket;
@@ -491,9 +492,9 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure TTnCnx.Answer(chAns : Byte; chOption : Byte);
+procedure TTnCnx.Answer(chAns : AnsiChar; chOption : AnsiChar);
 var
-    Buf   : array[0..2] of Byte;
+    Buf   : array[0..2] of AnsiChar;
 begin
 {    DebugString('Answer ' + IntToHex(ord(chAns), 2) + ' ' + IntToHex(ord(ChOption), 2) + #13 + #10); }
     Buf[0] := TNCH_IAC;
@@ -506,28 +507,28 @@ end;
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure TTnCnx.WillOption(chOption : AnsiChar);
 begin
-    Answer(TNCH_WILL, Byte(chOption));
+    Answer(TNCH_WILL, chOption);
 end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure TTnCnx.WontOption(chOption : AnsiChar);
 begin
-    Answer(TNCH_WONT, Byte(chOption));
+    Answer(TNCH_WONT, chOption);
 end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure TTnCnx.DontOption(chOption : AnsiChar);
 begin
-    Answer(TNCH_DONT, Byte(chOption));
+    Answer(TNCH_DONT, chOption);
 end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure TTnCnx.DoOption(chOption : AnsiChar);
 begin
-    Answer(TNCH_DO, Byte(chOption));
+    Answer(TNCH_DO, chOption);
 end;
 
 
@@ -540,10 +541,10 @@ begin
                 IntToHex(ord(strSubOption[1]), 2) + ' ' +
                 IntToHex(ord(strSubOption[2]), 2) + #13 + #10); }
 
-    case Ord(strSubOption[1]) of
+    case strSubOption[1] of
     TN_TERMTYPE:
         begin
-            if Ord(strSubOption[2]) = TN_TTYPE_SEND then begin
+            if strSubOption[2] = TN_TTYPE_SEND then begin
 {                DebugString('Send TermType' + #13 + #10); }
                 if Assigned(FOnTermType) then
                     FOnTermType(Self);
@@ -560,7 +561,7 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure TTnCnx.NegociateOption(chAction : Byte; chOption : Byte);
+procedure TTnCnx.NegociateOption(chAction : AnsiChar; chOption : AnsiChar);
 var
     Buf : RawByteString;
 begin
@@ -677,7 +678,7 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure TTnCnx.AddChar(Ch : Byte);
+procedure TTnCnx.AddChar(Ch : AnsiChar);
 begin
     FBuffer[FBufferCnt] := Ch;
     Inc(FBufferCnt);
@@ -687,16 +688,16 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure TTnCnx.ReceiveChar(Ch : Byte);
+procedure TTnCnx.ReceiveChar(Ch : AnsiChar);
 const
     bIAC         : Boolean  = FALSE;
-    chVerb       : Byte = 0;
+    chVerb       : AnsiChar = #0;
     strSubOption : RawByteString = '';
     bSubNegoc    : Boolean  = FALSE;
 begin
-    if chVerb <> 0 then begin
+    if chVerb <> #0 then begin
         NegociateOption(chVerb, Ch);
-        chVerb       := 0;
+        chVerb       := #0;
         strSubOption := '';
         Exit;
     end;
