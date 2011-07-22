@@ -3,7 +3,7 @@
 Author:       François PIETTE
 Description:  TWSocket class encapsulate the Windows Socket paradigm
 Creation:     April 1996
-Version:      7.81
+Version:      7.82
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
@@ -908,6 +908,11 @@ May 17, 2011 v7.79 Arno added Sha1Hex, Sha1Digest, IssuedBy, IssuerOf and
 Jun 08, 2011 v7.80 Arno added x64 assembler routines, untested so far.
 Jun 18, 2011 v7.81 aguser removed some compiler hints.
 
+May 21, 2011 V7.82 Arno - Make sure receipt of a SSL shutdown notification
+                   closes the connection if no bidirectional SSL shutdown is
+                   wanted. There are servers in the wild expecting a SSL
+                   shutdown confirmation before they close the connection.
+
 }
 
 {
@@ -1020,8 +1025,8 @@ uses
   OverbyteIcsWinsock;
 
 const
-  WSocketVersion            = 781;
-  CopyRight    : String     = ' TWSocket (c) 1996-2011 Francois Piette V7.81 ';
+  WSocketVersion            = 782;
+  CopyRight    : String     = ' TWSocket (c) 1996-2011 Francois Piette V7.82 ';
   WSA_WSOCKET_TIMEOUT       = 12001;
 {$IFNDEF BCB}
   { Manifest constants for Shutdown }
@@ -2381,6 +2386,8 @@ type
 {$ENDIF}
 
   TCustomSslWSocket = class(TCustomSocksWSocket)
+  private
+      procedure SslShutDownAsync(How: Integer); { V7.80 }
   protected
         FSslContext                 : TSslContext;
         FOnSslSvrNewSession         : TSslSvrNewSession;
@@ -15161,8 +15168,18 @@ begin
             else if (FSslVersNum >= SSL3_VERSION) then begin // Doesn't work in SSLv2 - 12/06/05
                 if f_SSL_get_Error(FSSL, Res) = SSL_ERROR_ZERO_RETURN then begin
                 { SSL closure alert received }
-                    if FSslState < sslInShutdown then
+                    if FSslState < sslInShutdown then begin
                         FSslState := sslInShutdown;
+                        { V7.80 }
+                        if (not FSslBiShutDownFlag) then // May be set later in the message handler if a SSL bi-shutdown message is pending
+                        begin
+                            SslShutDownAsync(1); // If a SSL bi-shutdown is pending this will be ignored in the message handler
+                            WSocket_WSASetLastError(WSAEWOULDBLOCK);
+                            FLastError := WSAEWOULDBLOCK;
+                            Exit;
+                        end;
+                        { / V7.80 }
+                    end;
                     if (not FSslBiShutDownFlag) and (FSslIntShutDown = 2) then
                         TriggerEvent(sslFdClose, FNetWorkError);
                 end;
@@ -15416,10 +15433,22 @@ begin
     Numread := my_BIO_read(FSslbio, Buffer, BufferSize);
 
     if Numread = 0 then begin
-        if f_SSL_get_error(FSsl, Numread) = SSL_ERROR_ZERO_RETURN then begin
+        if (FSslVersNum >= SSL3_VERSION) and { V7.80 }
+           (f_SSL_get_error(FSsl, Numread) = SSL_ERROR_ZERO_RETURN) then begin
             { SSL closure alert received }
-            if  FSslState < sslInShutdown then
+            if FSslState < sslInShutdown then begin
                 FSslState := sslInShutdown;
+                { V7.80 }
+                if (not FSslBiShutDownFlag) then // May be set later in the message handler if a SSL bi-shutdown message is pending
+                begin
+                    SslShutDownAsync(1); // If SSL bi-shutdown is pending this will be ignored in the message handler
+                    WSocket_WSASetLastError(WSAEWOULDBLOCK);
+                    FLastError := WSAEWOULDBLOCK;
+                    Result := SOCKET_ERROR;
+                    Exit;
+                end;
+                { / V7.80 }
+            end;
         end;
         FMayTriggerDoRecv := TRUE;
         TriggerEvents;
@@ -15715,7 +15744,7 @@ end;
 procedure TCustomSslWSocket.WMTriggerSslShutDownComplete(var msg: TMessage);
 begin
     TriggerSslShutDownComplete(msg.LParam);
-end;    
+end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
@@ -16345,7 +16374,7 @@ begin
     end;
     if FState = wsClosed then
         Exit;
-    
+
 
     if bShut then begin
         if (not (csDestroying in Componentstate)) and (FSslIntShutDown = 0) then // AG 03/03/06
@@ -17028,11 +17057,18 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+procedure TCustomSslWSocket.SslShutDownAsync(How: Integer);         { V7.80 }
+begin
+    _PostMessage(FWindowHandle, FMsg_WM_BI_SSL_SHUTDOWN, How, 1);
+end;
+
+
+{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure TCustomSslWSocket.WMSslBiShutDown(var msg: TMessage);
 begin
     if FSslEnable and (FSslIntShutDown = 0) then begin
-        FSslBiShutDownFlag  := TRUE;
-        InternalShutdown(0);
+        FSslBiShutDownFlag := (msg.LParam = 0);                     { V7.80 }
+        InternalShutdown(msg.WParam);                               { V7.80 }
     end;
 end;
 
