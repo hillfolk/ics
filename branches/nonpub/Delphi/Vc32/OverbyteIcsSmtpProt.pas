@@ -7,7 +7,7 @@ Object:       TSmtpCli class implements the SMTP protocol (RFC-821)
               Support authentification (RFC-2104)
               Support HTML mail with embedded images.
 Creation:     09 october 1997
-Version:      7.37
+Version:      7.38
 EMail:        http://www.overbyte.be        francois.piette@overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
@@ -391,6 +391,7 @@ Nov 08, 2010 V7.35  Arno improved final exception handling, more details
                     in OverbyteIcsWndControl.pas (V1.14 comments).
 Feb 15, 2011 V7.36  Arno added proxy-support (SOCKS and HTTP) from TWSocket.
 Jun 18, 2011 V7.37  aguser removed one compiler hint.
+Jul 22, 2011 V7.38  Arno - OEM NTLM changes.
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit OverbyteIcsSmtpProt;
@@ -455,8 +456,8 @@ uses
     OverbyteIcsMimeUtils;
 
 const
-  SmtpCliVersion     = 737;
-  CopyRight : String = ' SMTP component (c) 1997-2011 Francois Piette V7.37 ';
+  SmtpCliVersion     = 738;
+  CopyRight : String = ' SMTP component (c) 1997-2011 Francois Piette V7.38 ';
   smtpProtocolError  = 20600; {AG}
   SMTP_RCV_BUF_SIZE  = 4096;
   
@@ -2662,7 +2663,9 @@ begin
     NtlmMsg3 := NtlmGetMessage3('',
                                 '',  // the Host param seems to be ignored
                                 FUsername, FPassword,
-                                NtlmMsg2Info.Challenge);
+                                NtlmMsg2Info.Challenge,
+                                CP_ACP,
+                                NtlmMsg2Info.Unicode);
     FState := smtpInternalReady;
     ExecAsync(smtpAuth, NtlmMsg3, [235], nil);
 end;
