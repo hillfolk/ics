@@ -463,7 +463,7 @@ void __fastcall THttpTestForm::SslHttpCli1SslHandshakeDone(TObject *Sender,
         return;
 
     IP   = HttpCli->CtrlSocket->GetPeerAddr();
-    Hash = PeerCert->Sha1Hash;
+    Hash = PeerCert->Sha1Hex;
 
     if (HttpCli->SslAcceptableHosts->IndexOf(IP + Hash) > -1)
         return;
@@ -530,7 +530,7 @@ void __fastcall THttpTestForm::SslHttpCli1SslCliCertRequest(TObject *Sender,
     if (FClientCerts == NULL) {
         // Create a pool of client certs
         ClientCertDlg->CertListBox->Clear();
-        FClientCerts = new TX509List(this);
+        FClientCerts = new TX509List(this, false);
         try {
             X = FClientCerts->Add();
             X->LoadFromPemFile("01cert.pem");
