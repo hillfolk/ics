@@ -37,7 +37,6 @@
 			<LinkPackageImports>rtl.bpi;vcl.bpi;OverbyteIcsCBXe2Run.bpi</LinkPackageImports>
 			<BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
 			<OutputExt>exe</OutputExt>
-			<Defines>NO_STRICT</Defines>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<DynamicRTL>true</DynamicRTL>
 			<UsePackages>true</UsePackages>
