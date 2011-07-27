@@ -1210,7 +1210,7 @@ begin
                     Obj := TObject(WParam);
                 {$ENDIF}
                     if (not IsBadReadPtr(Obj, GUIDOffSet + SizeOf(INT_PTR))) and
-                       (PINT_PTR(WParam + GUIDOffSet)^ = WParam) and
+                       (PUINT_PTR(WParam + LongWord(GUIDOffSet))^ = WParam) and
                        (Obj is TIcsTimer) then
                         TIcsTimer(Obj).WmTimer(MsgRec);
                 end
@@ -1222,7 +1222,7 @@ begin
                     Obj := TObject(WParam);
                 {$ENDIF}
                     if (not IsBadReadPtr(Obj, GUIDOffSet + SizeOf(INT_PTR))) and
-                       (PINT_PTR(WParam + GUIDOffSet)^ = LParam) and
+                       (PINT_PTR(WParam + LongWord(GUIDOffSet))^ = LParam) and
                        (Obj is TIcsThreadTimer) then
                        { Actually the overridden method       }
                        { TIcsThreadTimer.WMTimer is called!   }

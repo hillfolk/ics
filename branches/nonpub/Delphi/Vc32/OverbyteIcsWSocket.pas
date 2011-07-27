@@ -6681,7 +6681,7 @@ const
 begin
 {TriggerDisplay('AsyncSelect ' + IntToStr(msg.wParam) + ', ' + IntToStr(msg.LParamLo));}
     { Verify that the socket handle is ours handle }
-    if msg.wParam <> FHSocket then
+    if msg.wParam <> WPARAM(FHSocket) then
         Exit;
 
     if FPaused then
@@ -17088,7 +17088,7 @@ begin
                       _IntToStr(msg.LParamLo) + WinsockMsgToString(Msg));
     end;
 {$ENDIF}
-    if (msg.wParam <> FHSocket) then
+    if (msg.wParam <> WPARAM(FHSocket)) then
         Exit;
     {  ?
     if FPaused then
