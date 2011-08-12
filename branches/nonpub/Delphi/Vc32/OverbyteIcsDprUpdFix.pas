@@ -70,7 +70,6 @@ type
     TIdeNotifier = class(TNotifierObject, IOTAIDENotifier)
     private
         FLastDpr : string;
-        FPossibleUpd: Boolean;
     protected
         procedure AfterCompile(Succeeded: Boolean);
         procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
@@ -157,12 +156,13 @@ var
     Project               : IOTAProject;
     OptionsConfigurations : IOTAProjectOptionsConfigurations;
     BaseConfig            : IOTABuildConfiguration;
+    DebugConfig           : IOTABuildConfiguration;
     IniValues             : TStringList;
     Values                : TStringList;
     Ini                   : TIniFile;
+    I                     : Integer;
 {$IFDEF DPRFIX2009}
     RS                    : array of string;
-    I                     : Integer;
     S1                    : string;
     S2                    : string;
 {$ENDIF}
@@ -180,21 +180,17 @@ begin
     {$ENDIF}
         case NotifyCode of
             ofnFileOpening :
-                if (not FPossibleUpd) and (ExtractFileExt(FileName) = '.dpr') then
+                if ExtractFileExt(FileName) = '.dpr' then
                 begin
                     FLastDpr := ChangeFileExt(FileName, '.dproj');
                     if FileExists(FLastDpr) then
-                        FLastDpr     := ''
-                    else
-                        FPossibleUpd := True;
+                        FLastDpr     := '';
                 end;
 
-
             ofnFileOpened :
-                if FPossibleUpd and (FLastDpr = FileName) then
+                if FLastDpr = FileName then
                 begin
                     FLastDpr      := '';
-                    FPossibleUpd  := False;
                     DofFile       := ChangeFileExt(FileName, '.dof');
                     Dirty         := False;
                     Values        := nil;
@@ -327,6 +323,21 @@ begin
                                 if bFlag and not ProjectPlatforms.Supported[cWin64Platform] then
                                     ProjectPlatforms.Supported[cWin64Platform] := TRUE;
                                 ProjectPlatforms.Enabled[cWin64Platform] := bFlag;
+                                if bFlag then
+                                begin
+                                    { Enable remote debug symbols for Win64 }
+                                    for I := 0 to OptionsConfigurations.ConfigurationCount -1 do
+                                    begin
+                                        if OptionsConfigurations.Configurations[I].Name = 'Debug' then
+                                        begin
+                                            DebugConfig :=
+                                              OptionsConfigurations.Configurations[I].PlatformConfiguration[cWin64Platform];
+                                            if Assigned(DebugConfig) then
+                                                DebugConfig.Value[sRemoteDebug] := 'true';
+                                            Break;
+                                        end;
+                                    end;
+                                end;
                                 Dirty := True;
                             end;
                             bFlag := Ini.ReadBool(sDofSectCustom, 'OSX32Supported', FALSE);
