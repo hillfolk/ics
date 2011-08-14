@@ -3,7 +3,7 @@
 Author:       Arno Garrels <arno.garrels@gmx.de>
 Description:  A place for common utilities.
 Creation:     Apr 25, 2008
-Version:      7.41
+Version:      7.42
 EMail:        http://www.overbyte.be       francois.piette@overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
@@ -114,6 +114,7 @@ May 06, 2011 V7.39 Arno moved TThreadID to OverbyteIcsTypes.
 Jun 08, 2011 v7.40 Arno added x64 assembler routines, untested so far.
 Jun 14, 2011 v7.41 aguser added Unicode Normalization as IcsNormalizeString()
              see http://www.unicode.org/reports/tr15/tr15-33.html.
+Aug 14, 2011 v7.42 Arno fixed IcsSwap64 BASM 32-bit (not yet used in ICS)
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit OverbyteIcsUtils;
@@ -1631,8 +1632,8 @@ asm
     MOV    RAX, RCX
     BSWAP  RAX
 {$ELSE}
-    MOV   EDX,  [EBP - 8]
-    MOV   EAX,  [EBP - 4]
+    MOV   EDX,  [EBP + $08]
+    MOV   EAX,  [EBP + $0C]
     BSWAP EAX
     BSWAP EDX
 {$ENDIF}
@@ -2479,7 +2480,7 @@ begin
     while (PBuf <> PEndBuf) do
     begin
         Ch := PBuf^;
-        Inc(INT_PTR(PBuf));
+        Inc(PBuf);
         if Trailing <> 0 then
         begin
             if Ch and $C0 = $80 then // Does trailing byte follow UTF-8 format?
