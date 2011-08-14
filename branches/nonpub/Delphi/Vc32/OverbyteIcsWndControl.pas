@@ -1210,7 +1210,11 @@ begin
                     Obj := TObject(WParam);
                 {$ENDIF}
                     if (not IsBadReadPtr(Obj, GUIDOffSet + SizeOf(INT_PTR))) and
-                       (PUINT_PTR(WParam + LongWord(GUIDOffSet))^ = WParam) and
+                    {$IFDEF COMPILER16_UP} { WPARAM changed to unsigned }
+                       (PUINT_PTR(WParam + Windows.WPARAM(GUIDOffSet))^ = WParam) and
+                    {$ELSE}
+                       (PINT_PTR(WParam + GUIDOffSet)^ = WParam) and
+                    {$ENDIF}
                        (Obj is TIcsTimer) then
                         TIcsTimer(Obj).WmTimer(MsgRec);
                 end
@@ -1222,7 +1226,7 @@ begin
                     Obj := TObject(WParam);
                 {$ENDIF}
                     if (not IsBadReadPtr(Obj, GUIDOffSet + SizeOf(INT_PTR))) and
-                       (PINT_PTR(WParam + LongWord(GUIDOffSet))^ = LParam) and
+                       (PINT_PTR(WParam + Windows.WPARAM(GUIDOffSet))^ = LParam) and
                        (Obj is TIcsThreadTimer) then
                        { Actually the overridden method       }
                        { TIcsThreadTimer.WMTimer is called!   }
@@ -1545,3 +1549,4 @@ finalization
     GUnitFinalized := True; { V1.09 }
 
 end.
+
