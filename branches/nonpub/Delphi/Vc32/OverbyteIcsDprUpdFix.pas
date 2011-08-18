@@ -63,6 +63,7 @@ uses
     SysUtils, Classes, Forms, IniFiles, TypInfo,
 {$IFDEF DPRFIXXE2}
     PlatformAPI,
+    CommonOptionStrs,
 {$ENDIF}
     ToolsApi;
 
@@ -289,7 +290,9 @@ begin
                         { want reliable.                                              }
                         if not Assigned(Ini) then
                             Ini := TIniFile.Create(DofFile);
-                        if Supports(Project, IOTAProjectPlatforms, ProjectPlatforms) then
+
+                        if Supports(Project, IOTAProjectPlatforms, ProjectPlatforms) and
+                            Ini.SectionExists(sDofSectCustom) then
                         begin
                             if (UpperCase(Trim(Ini.ReadString(sDofSectCustom, 'FrameworkType', ''))) = sFrameworkTypeVCL) and
                                (Project.FrameworkType <> sFrameworkTypeVCL) then
@@ -357,10 +360,34 @@ begin
                             if Dirty then
                                 DebugLog('ICS project updated from custom .dof section');
                         end;
+
+                        { No internal manifest in 32-bit }
+                        for I := 0 to OptionsConfigurations.ConfigurationCount -1 do
+                        begin
+                            DebugConfig :=
+                              OptionsConfigurations.Configurations[I].PlatformConfiguration[cWin32Platform];
+                            if Assigned(DebugConfig) then
+                            begin
+                                if LowerCase(DebugConfig.Value[sManifest_File]) <> 'none' then
+                                begin
+                                    DebugConfig.Value[sManifest_File] := 'None';
+                                    Dirty := True;
+                                end;
+                            end;
+                        end;
+                        { No version info in 32-bit }
+                        DebugConfig := BaseConfig.PlatformConfiguration[cWin32Platform];
+                        if Assigned(DebugConfig) then
+                        begin
+                            if LowerCase(DebugConfig.Value[sVerInfo_IncludeVerInfo]) <> 'false' then
+                            begin
+                                DebugConfig.Value[sVerInfo_IncludeVerInfo] := 'false';
+                                Dirty := True;
+                            end;
+                        end;
                     {$ENDIF}
                         if Dirty then
                             Project.Save(False, True);
-
                     finally
                         Ini.Free;
                         Values.Free;
