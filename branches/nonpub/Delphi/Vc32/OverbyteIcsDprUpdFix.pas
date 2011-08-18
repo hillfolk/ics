@@ -170,6 +170,7 @@ var
     Dirty                 : Boolean;
     DofFile               : string;
 {$IFDEF DPRFIXXE2}
+    RS                    : array of string;
     ProjectPlatforms      : IOTAProjectPlatforms;
     bFlag                 : Boolean;
 {$ENDIF}
@@ -219,7 +220,7 @@ begin
                             BaseConfig.GetValues(sUnitSearchPath, Values, False);
                             for I := IniValues.Count - 1 downto 0 do
                             begin
-                                if Values.IndexOf(Trim(IniValues[I])) > 0 then
+                                if Values.IndexOf(Trim(IniValues[I])) >= 0 then
                                     IniValues.Delete(I);
                             end;
                             if IniValues.Count > 0 then
@@ -241,7 +242,7 @@ begin
                             BaseConfig.GetValues(sDefine, Values, False);
                             for I := IniValues.Count - 1 downto 0 do
                             begin
-                                if Values.IndexOf(Trim(IniValues[I])) > 0 then
+                                if Values.IndexOf(Trim(IniValues[I])) >= 0 then
                                     IniValues.Delete(I);
                             end;
                             if IniValues.Count > 0 then
@@ -292,7 +293,7 @@ begin
                             Ini := TIniFile.Create(DofFile);
 
                         if Supports(Project, IOTAProjectPlatforms, ProjectPlatforms) and
-                            Ini.SectionExists(sDofSectCustom) then
+                            Ini.SectionExists(sDofSectCustom) then // It's an ICS demo .dpr
                         begin
                             if (UpperCase(Trim(Ini.ReadString(sDofSectCustom, 'FrameworkType', ''))) = sFrameworkTypeVCL) and
                                (Project.FrameworkType <> sFrameworkTypeVCL) then
@@ -375,6 +376,7 @@ begin
                                 end;
                             end;
                         end;
+
                         { No version info in 32-bit }
                         DebugConfig := BaseConfig.PlatformConfiguration[cWin32Platform];
                         if Assigned(DebugConfig) then
@@ -385,6 +387,34 @@ begin
                                 Dirty := True;
                             end;
                         end;
+
+                        { Fix namespace prefixes }
+
+                        if not Assigned(IniValues) then
+                          IniValues := TStringList.Create;
+                        IniValues.Delimiter := ';';
+                        IniValues.StrictDelimiter := True;
+                        if not Assigned(Values) then
+                          Values := TStringList.Create;
+
+                        { Check if Winapi is set in Base config, if not add it }
+                        IniValues.DelimitedText := 'Winapi';
+                        BaseConfig.GetValues(sNamespace, Values, False);
+                        for I := IniValues.Count - 1 downto 0 do
+                        begin
+                            if Values.IndexOf(IniValues[I]) >= 0 then
+                                IniValues.Delete(I);
+                        end;
+
+                        if IniValues.Count > 0 then
+                        begin
+                            SetLength(RS, IniValues.Count);
+                            for I := 0 to IniValues.Count - 1 do
+                                RS[I] := IniValues[I];
+                            BaseConfig.InsertValues(sNamespace, RS);
+                            Dirty := True;
+                        end;
+
                     {$ENDIF}
                         if Dirty then
                             Project.Save(False, True);
