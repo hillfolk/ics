@@ -24,13 +24,18 @@
 			<CfgParent>Base</CfgParent>
 			<Base>true</Base>
 		</PropertyGroup>
+		<PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
+			<Cfg_1_Win32>true</Cfg_1_Win32>
+			<CfgParent>Cfg_1</CfgParent>
+			<Cfg_1>true</Cfg_1>
+			<Base>true</Base>
+		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
 			<Cfg_2>true</Cfg_2>
 			<CfgParent>Base</CfgParent>
 			<Base>true</Base>
 		</PropertyGroup>
-		<PropertyGroup Condition="'$(Base)'!=''">
-			<PackageImports>vcl;rtl;bcbie;vclx;VclSmp;vclimg;svnui;svn;bindengine;bindcomp;bindcompfmx;bindcompvcl;vclactnband;dbrtl;vcldbx;vcldb;bdertl;vcltouch;xmlrtl;dsnap;dsnapcon;vcldsnap;vclib;ibxpress;adortl;IndyCore;IndySystem;IndyProtocols;vclie;inet;websnap;webdsnap;inetdb;inetdbbde;inetdbxpress;soaprtl;fmx;DbxCommonDriver;DbxClientDriver;DBXMySQLDriver;DBXInterBaseDriver;dbexpress;dbxcds;DataSnapCommon;DBXOdbcDriver;DBXFirebirdDriver;DBXSybaseASEDriver;DBXSybaseASADriver;DBXOracleDriver;DBXMSSQLDriver;DBXInformixDriver;DBXDb2Driver;DataSnapClient;DataSnapIndy10ServerTransport;IPIndyImpl;DataSnapProviderClient;DataSnapServer;DataSnapConnectors;DDServiceRun;OverbyteIcsCBXe2Run;$(PackageImports)</PackageImports>
+		<PropertyGroup Condition="'$(Base)'!=''">			
 			<Debugger_LoadAllSymbols>false</Debugger_LoadAllSymbols>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 			<DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
@@ -38,7 +43,7 @@
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<DCC_Define>USE_SSL;$(DCC_Define)</DCC_Define>
 			<Defines>USE_SSL;$(Defines)</Defines>
-			<LinkPackageStatics>rtl.lib;vcl.lib;OverbyteIcsCBXe2Run.lib</LinkPackageStatics>
+			<LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
 			<ILINK_Description>Overbyte ICS Design-Time Package for C++ Builder XE</ILINK_Description>
 			<DCC_SYMBOL_DEPRECATED>false</DCC_SYMBOL_DEPRECATED>
 			<DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
@@ -60,7 +65,7 @@
 			<DynamicRTL>true</DynamicRTL>
 			<DCC_AdditionalSwitches>-LUDesignIde -NSVcl</DCC_AdditionalSwitches>
 			<ILINK_WinAppType>Package</ILINK_WinAppType>
-			<AllPackageLibs>rtl.lib;vcl.lib;OverbyteIcsCBXe2Run.lib</AllPackageLibs>
+			<AllPackageLibs>rtl.lib;vcl.lib</AllPackageLibs>
 			<BCC_GenerateMultithreaded>true</BCC_GenerateMultithreaded>
 			<DCC_ObjPath>D:\ICSV6\Delphi\Vc32;$(DCC_ObjPath)</DCC_ObjPath>
 			<BCC_Defines>NO_STRICT;$(BCC_Defines)</BCC_Defines>
@@ -88,6 +93,9 @@
 			<TASM_DisplaySourceLines>true</TASM_DisplaySourceLines>
 			<BCC_DebugLineNumbers>true</BCC_DebugLineNumbers>
 			<DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+			<ILINK_GenerateLibFile>false</ILINK_GenerateLibFile>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
 			<BCC_Defines>NDEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
@@ -198,6 +206,9 @@
 					<VersionControl>
 						<VersionControl Name="VersionControlID"/>
 					</VersionControl>
+					<Excluded_Packages>
+						<Excluded_Packages Name="C:\Users\Public\Documents\RAD Studio\9.0\Bpl\OverbyteIcsDXe2Design.bpl">File C:\Users\Public\Documents\RAD Studio\9.0\Bpl\OverbyteIcsDXe2Design.bpl not found</Excluded_Packages>
+					</Excluded_Packages>
 				</CPlusPlusBuilder.Personality>
 				<Platforms>
 					<Platform value="Win32">True</Platform>

@@ -67,7 +67,7 @@
 			<IntermediateOutputDir>Debug</IntermediateOutputDir>
 			<TASM_DisplaySourceLines>true</TASM_DisplaySourceLines>
 			<BCC_StackFrames>true</BCC_StackFrames>
-			<ILINK_LibraryPath>$(BDS)\lib\debug;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<ILINK_LibraryPath>$(BDS)\lib\debug;..\..\..\Delphi\Vc32\Debug_Build;$(ILINK_LibraryPath)</ILINK_LibraryPath>
 			<BCC_DisableOptimizations>true</BCC_DisableOptimizations>
 			<TASM_Debugging>Full</TASM_Debugging>
 			<BCC_SourceDebuggingOn>true</BCC_SourceDebuggingOn>
@@ -75,7 +75,7 @@
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
 			<Defines>NDEBUG;$(Defines)</Defines>
 			<IntermediateOutputDir>Release</IntermediateOutputDir>
-			<ILINK_LibraryPath>$(BDS)\lib\release;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<ILINK_LibraryPath>$(BDS)\lib\release;..\..\..\Delphi\Vc32\Release_Build;$(ILINK_LibraryPath)</ILINK_LibraryPath>
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
 		<ProjectExtensions>
