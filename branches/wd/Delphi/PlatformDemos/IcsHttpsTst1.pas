@@ -64,6 +64,7 @@ unit IcsHttpsTst1;
 {$WARN SYMBOL_LIBRARY    OFF}
 {$WARN SYMBOL_DEPRECATED OFF}
 {$DEFINE USE_MODEZ}
+{$I OverbyteIcsDefs.inc}
 
 interface
 
@@ -84,7 +85,7 @@ uses
   Ics.Posix.Messages,
 {$ENDIF}
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Platform, System.IOUtils, FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs,
+  System.IOUtils, FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs,
   FMX.Layouts, FMX.Memo, FMX.Edit, FMX.ListBox, FMX.TabControl,
   OverbyteIcsWndControl,
   OverbyteIcsWSocket,
@@ -232,7 +233,9 @@ implementation
 
 {$R *.FMX}
 
-uses IcsCliCertDlg;
+uses
+    DemoUtils,
+    IcsCliCertDlg;
 
 const
     SectionWindow      = 'HttpTstMainWindow';
@@ -286,20 +289,6 @@ begin
                                nCols * nLines, sc, N);
 end;
 {$ENDIF}
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenWidth: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.X);
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenHeight: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.Y);
-end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}

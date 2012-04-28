@@ -53,6 +53,7 @@ Oct 24, 2011 V1.04 A. Garrels OS X support.
 program IcsConSmtp;
 
 {$APPTYPE CONSOLE}
+{$I OverbyteIcsDefs.inc}
 
 {$IF CompilerVersion < 23}
   {$MESSAGE FATAL 'This project requires Delphi or RAD Studio XE2 or better'};

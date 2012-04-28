@@ -88,6 +88,7 @@ unit IcsMailSnd1;
 {$WARN SYMBOL_PLATFORM   OFF}
 {$WARN SYMBOL_LIBRARY    OFF}
 {$WARN SYMBOL_DEPRECATED OFF}
+{$I OverbyteIcsDefs.inc}
 
 interface
 
@@ -105,7 +106,7 @@ uses
   Posix.Unistd, // Removes hint: Inline function has not been expanded
 {$ENDIF}
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Platform, FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Layouts,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Layouts,
   FMX.Memo, FMX.Edit, FMX.ListBox, FMX.TabControl,
   OverbyteIcsUtils,
   OverbyteIcsIniFiles,
@@ -258,7 +259,7 @@ implementation
 {$R *.FMX}
 
 uses
-    TypInfo;
+    DemoUtils, TypInfo;
 
 const
     SectionData       = 'Data';
@@ -299,20 +300,6 @@ const
     KeyProxyHttpAuth  = 'ProxyHttpAuth';
     KeyProxyUser      = 'ProxyUser';
     KeyProxyPassword  = 'ProxyPassword';
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenWidth: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.X);
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenHeight: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.Y);
-end;
-
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 { Display a message in display memo box, making sure we don't overflow it.  }

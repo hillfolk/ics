@@ -50,6 +50,7 @@ unit IcsMailRcv1;
 
 interface
 
+{$I OverbyteIcsDefs.inc}
 {$IF CompilerVersion < 23}
   {$MESSAGE FATAL 'This project requires Delphi or RAD Studio XE2 or better'};
 {$IFEND}
@@ -63,7 +64,7 @@ uses
 {$ENDIF}
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Memo, FMX.ListBox,
-  FMX.Edit, FMX.Layouts, FMX.Platform,
+  FMX.Edit, FMX.Layouts,
   OverbyteIcsIniFiles,
   OverbyteIcsMimeDec,
   OverbyteIcsPop3Prot,
@@ -183,7 +184,7 @@ implementation
 {$R *.fmx}
 
 uses
-    IcsMailRcv2;
+    DemoUtils, IcsMailRcv2;
 
 const
     SectionWindow     = 'Window';
@@ -197,20 +198,6 @@ const
     KeyUserName       = 'UserName';
     KeyPassword       = 'Password';
     KeyAuth           = 'Authentication';
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenWidth: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.X);
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenHeight: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.Y);
-end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}

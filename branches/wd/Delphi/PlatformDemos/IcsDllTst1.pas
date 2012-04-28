@@ -48,6 +48,7 @@ Dec 12, 2004 V1.01 Added a few comments, beautified the code, delay DLL loading
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit IcsDllTst1;
 
+{$I OverbyteIcsDefs.inc}
 {$IF CompilerVersion < 23}
   {$MESSAGE FATAL 'This project requires Delphi or RAD Studio XE2 or better'};
 {$IFEND}
@@ -60,7 +61,7 @@ uses
 {$ENDIF}
   System.SysUtils, System.UITypes, System.Classes, System.Variants,
   FMX.Forms, FMX.Types, FMX.Layouts, FMX.Memo, FMX.Edit, FMX.Controls,
-  FMX.Dialogs, FMX.Platform,
+  FMX.Dialogs,
   OverbyteIcsIniFiles;
 
 type
@@ -117,6 +118,9 @@ implementation
 
 {$R *.fmx}
 
+uses
+    DemoUtils;
+
 const
     SectionWindow      = 'Window';
     KeyTop             = 'Top';
@@ -127,20 +131,6 @@ const
                          {$IFDEF MACOS}'libIcsDll1.dylib'{$ENDIF};
     Dll2Name           = {$IFDEF MSWINDOWS}'IcsDll2.dll'{$ENDIF}
                          {$IFDEF MACOS}'libIcsDll2.dylib'{$ENDIF};
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenWidth: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.X);
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenHeight: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.Y);
-end;
-
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure TDllTestForm.FormCreate(Sender: TObject);

@@ -58,6 +58,7 @@ Jan 29, 2012 V1.01 Arno fixed it.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 library IcsDll2;
 
+{$I OverbyteIcsDefs.inc}
 {$IF CompilerVersion < 23}
   {$MESSAGE FATAL 'This project requires Delphi or RAD Studio XE2 or better'};
 {$IFEND}

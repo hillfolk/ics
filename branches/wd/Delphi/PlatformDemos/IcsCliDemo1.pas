@@ -55,13 +55,14 @@ unit IcsCliDemo1;
 
 interface
 
+{$I OverbyteIcsDefs.inc}
 {$IF CompilerVersion < 23}
   {$MESSAGE FATAL 'This project requires Delphi or RAD Studio XE2 or better'};
 {$IFEND}
 
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Platform, System.IOUtils, FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs,
+  System.IOUtils, FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs,
   FMX.Layouts, FMX.Memo, FMX.Edit,
   { Don't forget to add your vc32 directory to Delphi library path }
   OverbyteIcsUtils, OverbyteIcsIniFiles,
@@ -264,6 +265,9 @@ procedure TClientForm.FormCreate(Sender: TObject);
 var
     IniFile : TIcsIniFile;
 begin
+{$IFDEF MSWINDOWS}
+    ReportMemoryLeaksOnShutdown := (DebugHook <> 0);
+{$ENDIF}
     IcsNameThreadForDebugging('Main');
     IniFileName     := GetIcsIniFileName;
     IniFile         := TIcsIniFile.Create(IniFileName);
@@ -280,8 +284,6 @@ begin
     IniFile.Free;
 
     DisplayMemo.Lines.Clear;
-    ActiveControl := SendEdit;
-    SendEdit.SelectAll;
 end;
 
 
