@@ -56,6 +56,7 @@ unit IcsTcpSrv1IPv6;
 
 interface
 
+{$I OverbyteIcsDefs.inc}
 {$IF CompilerVersion < 23}
   {$MESSAGE FATAL 'This project requires Delphi or RAD Studio XE2 or better'};
 {$IFEND}
@@ -73,7 +74,7 @@ uses
   Ics.Posix.Messages,
 {$ENDIF}
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Platform, System.IOUtils, FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs,
+  System.IOUtils, FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs,
   FMX.Layouts, FMX.Memo, FMX.Edit,
   OverbyteIcsUtils, OverbyteIcsIniFiles,
   OverbyteIcsWndControl, OverbyteIcsWSocket, OverbyteIcsWSocketS;
@@ -159,6 +160,9 @@ implementation
 
 {$R *.FMX}
 
+uses
+    DemoUtils;
+
 const
     SectionWindow      = 'WindowTcpSrv';
     KeyTop             = 'Top';
@@ -210,20 +214,6 @@ begin
 {$IFDEF POSIX}
     FMessagePump.Free;
 {$ENDIF}
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenWidth: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.X);
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenHeight: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.Y);
 end;
 
 

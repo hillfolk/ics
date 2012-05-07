@@ -104,6 +104,7 @@ ReadOnly=false
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit IcsFtpServ1;
 
+{$I OverbyteIcsDefs.inc}
 {$IF CompilerVersion < 23}
   {$MESSAGE FATAL 'This project requires Delphi or RAD Studio XE2 or better'};
 {$IFEND}
@@ -131,7 +132,6 @@ uses
   Ics.Posix.WinTypes,
   Ics.Posix.Messages,
 {$ENDIF}
-  FMX.Platform,
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Layouts,
   FMX.Memo, FMX.Edit, FMX.Objects, FMX.Menus,
@@ -354,6 +354,9 @@ implementation
 
 {$R *.fmx}
 
+uses
+    DemoUtils;
+
 { TMyClient }
 
 constructor TMyClient.Create(AOwner: TComponent);
@@ -409,20 +412,6 @@ const
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure TLogMsg.Text(Prefix : Char; Msg : String);
 begin
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenWidth: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.X);
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenHeight: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.Y);
 end;
 
 

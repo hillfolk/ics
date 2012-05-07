@@ -51,6 +51,7 @@ unit IcsWebAppServerMain;
 
 interface
 
+{$I OverbyteIcsDefs.inc}
 {$IF CompilerVersion < 23}
   {$MESSAGE FATAL 'This project requires Delphi or RAD Studio XE2 or better'};
 {$IFEND}
@@ -67,7 +68,7 @@ uses
 {$ENDIF}
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   System.StrUtils, System.SyncObjs,
-  FMX.Platform, System.IOUtils, FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs,
+  System.IOUtils, FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs,
   FMX.Layouts, FMX.Memo,
   OverbyteIcsIniFiles,
   OverbyteIcsUtils,
@@ -158,6 +159,9 @@ implementation
 
 {$R *.FMX}
 
+uses
+    DemoUtils;
+
 const
     SectionWindow      = 'Window';   // Must be unique for each window
     SectionPaths       = 'Paths';
@@ -166,20 +170,6 @@ const
     KeyWidth           = 'Width';
     KeyHeight          = 'Height';
     KeyRootDir         = 'RootDir';
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenWidth: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.X);
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenHeight: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.Y);
-end;
-
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 { simple log file, writes Msg to text file in progam directory with FNameMask

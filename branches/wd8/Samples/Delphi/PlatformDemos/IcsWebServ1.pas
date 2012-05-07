@@ -103,6 +103,7 @@ Feb 4,  2011 V7.21 Angus added bandwidth throttling using TCustomThrottledWSocke
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit IcsWebServ1;
 
+{$I OverbyteIcsDefs.inc}
 {$IF CompilerVersion < 23}
   {$MESSAGE FATAL 'This project requires Delphi or RAD Studio XE2 or better'};
 {$IFEND}
@@ -139,7 +140,7 @@ uses
 {$ENDIF}
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   System.StrUtils, System.SyncObjs,
-  FMX.Platform, System.IOUtils, FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs,
+  System.IOUtils, FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs,
   FMX.Layouts, FMX.Memo, FMX.Edit,
   OverbyteIcsIniFiles, OverbyteIcsUtils,
   OverbyteIcsWSocket, OverbyteIcsWndControl,
@@ -320,6 +321,9 @@ implementation
 
 {$R *.FMX}
 
+uses
+    DemoUtils;
+
 const
     { IniFile layout for persistent data }
     SectionWindow      = 'WindowMain';
@@ -340,20 +344,6 @@ const
     KeyMaxRequests     = 'MaxRequestsKeepAlive';
     KeyKeepAliveSec    = 'KeepAliveTimeSec';
     KeyBandwidthLimit  = 'BandwidthLimit';
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenWidth: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.X);
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function ScreenHeight: Integer;
-begin
-    Result := Trunc(Platform.GetScreenSize.Y);
-end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}

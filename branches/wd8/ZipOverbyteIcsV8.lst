@@ -83,6 +83,34 @@ Packages\IcsVclDXE2Design.dpk
 Packages\IcsVclDXE2Design.dproj
 Packages\IcsVclDXE2Design.res
 
+Packages\OverbyteIcsDXe3Run.dproj
+Packages\OverbyteIcsDXe3Run.dpk
+Packages\OverbyteIcsDXe3Run.res
+Packages\OverbyteIcsDXe3Design.dproj
+Packages\OverbyteIcsDXe3Design.dpk
+Packages\OverbyteIcsDXe3Design.res
+
+Packages\IcsCommonDXE3Run.dpk
+Packages\IcsCommonDXE3Run.dproj
+Packages\IcsCommonDXE3Run.res
+Packages\IcsCommonDXE3Design.dpk
+Packages\IcsCommonDXE3Design.dproj
+Packages\IcsCommonDXE3Design.res
+
+Packages\IcsFmxDXE3Run.dpk
+Packages\IcsFmxDXE3Run.dproj
+Packages\IcsFmxDXE3Run.res
+Packages\IcsFmxDXE3Design.dpk
+Packages\IcsFmxDXE3Design.dproj
+Packages\IcsFmxDXE3Design.res
+
+Packages\IcsVclDXE3Run.dpk
+Packages\IcsVclDXE3Run.dproj
+Packages\IcsVclDXE3Run.res
+Packages\IcsVclDXE3Design.dpk
+Packages\IcsVclDXE3Design.dproj
+Packages\IcsVclDXE3Design.res
+
 Packages\OverbyteIcsCB2006Run.bdsproj
 Packages\OverbyteIcsCB2006Run.cpp
 Packages\OverbyteIcsCB2006Run.res
@@ -1657,6 +1685,8 @@ Samples\Delphi\MiscDemos\OverbyteIcsPrngTst1.dfm
 
 Samples\Delphi\PlatformDemos\xSamples.groupproj
 
+Samples\Delphi\PlatformDemos\Ics.Fmx.DemoUtils.pas
+
 Samples\Delphi\PlatformDemos\IcsMailSnd1.pas
 Samples\Delphi\PlatformDemos\IcsMailSnd1.fmx
 Samples\Delphi\PlatformDemos\IcsMailSnd.dproj
@@ -1743,3 +1773,4 @@ Samples\Delphi\PlatformDemos\IcsMailRcv1.fmx
 Samples\Delphi\PlatformDemos\IcsMailRcv1.pas
 Samples\Delphi\PlatformDemos\IcsMailRcv2.fmx
 Samples\Delphi\PlatformDemos\IcsMailRcv2.pas
+

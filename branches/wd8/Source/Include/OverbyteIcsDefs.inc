@@ -85,7 +85,8 @@ Feb 4,  2011 V1.13 BUILTIN_TIMEOUT and BUILTIN_THROTTLE now enabled by default
   DELPHI12_UP      Delphi 12 or higher  (Delphi 2009 - Tiburon)
   DELPHI14_UP      Delphi 14 or higher  (Delphi 2010 - Weaver)
   DELPHI15_UP      Delphi 15 or higher  (Delphi XE   - Fulcrum)
-  DELPHI16_UP      Delphi 16 or higher  (Delphi XE2   - Pulsar)
+  DELPHI16_UP      Delphi 16 or higher  (Delphi XE2  - Pulsar)
+  DELPHI17_UP      Delphi 17 or higher  (Delphi XE3  - WaterDragon)
 
   BCB1             C++ Builder 1
   BCB3             C++ Builder 3
@@ -103,6 +104,7 @@ Feb 4,  2011 V1.13 BUILTIN_TIMEOUT and BUILTIN_THROTTLE now enabled by default
   BCB14_UP         C++ Builder 2010 or higher
   BCB15_UP         C++ Builder XE   or higher
   BCB16_UP         C++ Builder XE2  or higher
+  BCB17_UP         C++ Builder XE3  or higher
 
   COMPILER1        Delphi 1
   COMPILER2        Delphi 2  or C++ Builder 1
@@ -136,6 +138,7 @@ Feb 4,  2011 V1.13 BUILTIN_TIMEOUT and BUILTIN_THROTTLE now enabled by default
   COMPILER14_UP    Delphi or C++ Builder 2010 or higher (Weaver)
   COMPILER15_UP    Delphi or C++ Builder XE   or higher (Fulcrum)
   COMPILER16_UP    Delphi or C++ Builder XE2  or higher (Pulsar)
+  COMPILER17_UP    Delphi or C++ Builder XE3  or higher (WaterDragon)
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * }
 
@@ -199,6 +202,17 @@ Feb 4,  2011 V1.13 BUILTIN_TIMEOUT and BUILTIN_THROTTLE now enabled by default
 {$ENDIF}
 
 {$DEFINE VER_UNKNOWN}
+
+{$IFDEF VER240}
+  {.$UNDEF VER_UNKNOWN}
+  {$DEFINE COMPILER17}
+  {$IFDEF BCB}
+    {$DEFINE BCB17}
+  {$ELSE}
+    {$DEFINE DELPHI17}
+    {$DEFINE DELPHI}
+  {$ENDIF}
+{$ENDIF}
 
 {$IFDEF VER230}
   {$UNDEF VER_UNKNOWN}
@@ -373,6 +387,25 @@ Feb 4,  2011 V1.13 BUILTIN_TIMEOUT and BUILTIN_THROTTLE now enabled by default
   {$ENDIF}
 {$ENDIF}
 
+{$IFDEF DELPHI17}
+  {$DEFINE DELPHI17_UP}
+  {$DEFINE DELPHI16_UP}
+  {$DEFINE DELPHI15_UP}
+  {$DEFINE DELPHI14_UP}
+  {$DEFINE DELPHI12_UP}
+  {$DEFINE DELPHI11_UP}
+  {$DEFINE DELPHI10_UP}
+  {$DEFINE DELPHI9_UP}
+  {$DEFINE DELPHI8_UP}
+  {$DEFINE DELPHI7_UP}
+  {$DEFINE DELPHI6_UP}
+  {$DEFINE DELPHI5_UP}
+  {$DEFINE DELPHI4_UP}
+  {$DEFINE DELPHI3_UP}
+  {$DEFINE DELPHI2_UP}
+  {$DEFINE DELPHI1_UP}
+{$ENDIF}
+
 {$IFDEF DELPHI16}
   {$DEFINE DELPHI16_UP}
   {$DEFINE DELPHI15_UP}
@@ -536,6 +569,26 @@ Feb 4,  2011 V1.13 BUILTIN_TIMEOUT and BUILTIN_THROTTLE now enabled by default
 
 {$IFDEF DELPHI1}
   {$DEFINE DELPHI1_UP}
+{$ENDIF}
+
+{$IFDEF COMPILER17}
+  {$DEFINE COMPILER17_UP}
+  {$DEFINE COMPILER16_UP}
+  {$DEFINE COMPILER15_UP}
+  {$DEFINE COMPILER14_UP}
+  {$DEFINE COMPILER12_UP}
+  {$DEFINE COMPILER11_UP}
+  {$DEFINE COMPILER10_UP}
+  {$DEFINE COMPILER9_UP}
+  {$DEFINE COMPILER8_UP}
+  {$DEFINE COMPILER7_UP}
+  {$DEFINE COMPILER6_UP}
+  {$DEFINE COMPILER5_UP}
+  {$DEFINE COMPILER4_UP}
+  {$DEFINE COMPILER35_UP}
+  {$DEFINE COMPILER3_UP}
+  {$DEFINE COMPILER2_UP}
+  {$DEFINE COMPILER1_UP}
 {$ENDIF}
 
 {$IFDEF COMPILER16}
@@ -722,6 +775,21 @@ Feb 4,  2011 V1.13 BUILTIN_TIMEOUT and BUILTIN_THROTTLE now enabled by default
   {$DEFINE COMPILER1_UP}
 {$ENDIF}
 
+{$IFDEF BCB17}
+  {$DEFINE BCB17_UP}
+  {$DEFINE BCB16_UP}
+  {$DEFINE BCB15_UP}
+  {$DEFINE BCB14_UP}
+  {$DEFINE BCB12_UP}
+  {$DEFINE BCB11_UP}
+  {$DEFINE BCB10_UP}
+  {$DEFINE BCB6_UP}
+  {$DEFINE BCB5_UP}
+  {$DEFINE BCB4_UP}
+  {$DEFINE BCB3_UP}
+  {$DEFINE BCB1_UP}
+{$ENDIF}
+
 {$IFDEF BCB16}
   {$DEFINE BCB16_UP}
   {$DEFINE BCB15_UP}
@@ -874,6 +942,10 @@ Feb 4,  2011 V1.13 BUILTIN_TIMEOUT and BUILTIN_THROTTLE now enabled by default
   { Since Fulcrum always OFF and ignored }
   {$STRINGCHECKS OFF}
   { No string checks in pure Delphi code }
+{$ENDIF}
+
+{$IFDEF COMPILER17_UP}
+  {$LEGACYIFEND ON}
 {$ENDIF}
 
 { ICS SSL code doesn't work with FPC }
