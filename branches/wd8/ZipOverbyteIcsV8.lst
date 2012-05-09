@@ -57,59 +57,43 @@ Packages\OverbyteIcsDXeDesign.res
 
 Packages\OverbyteIcsDXe2Run.dproj
 Packages\OverbyteIcsDXe2Run.dpk
-Packages\OverbyteIcsDXe2Run.res
 Packages\OverbyteIcsDXe2Design.dproj
 Packages\OverbyteIcsDXe2Design.dpk
-Packages\OverbyteIcsDXe2Design.res
 
 Packages\IcsCommonDXE2Run.dpk
 Packages\IcsCommonDXE2Run.dproj
-Packages\IcsCommonDXE2Run.res
 Packages\IcsCommonDXE2Design.dpk
 Packages\IcsCommonDXE2Design.dproj
-Packages\IcsCommonDXE2Design.res
 
 Packages\IcsFmxDXE2Run.dpk
 Packages\IcsFmxDXE2Run.dproj
-Packages\IcsFmxDXE2Run.res
 Packages\IcsFmxDXE2Design.dpk
 Packages\IcsFmxDXE2Design.dproj
-Packages\IcsFmxDXE2Design.res
 
 Packages\IcsVclDXE2Run.dpk
 Packages\IcsVclDXE2Run.dproj
-Packages\IcsVclDXE2Run.res
 Packages\IcsVclDXE2Design.dpk
 Packages\IcsVclDXE2Design.dproj
-Packages\IcsVclDXE2Design.res
 
 Packages\OverbyteIcsDXe3Run.dproj
 Packages\OverbyteIcsDXe3Run.dpk
-Packages\OverbyteIcsDXe3Run.res
 Packages\OverbyteIcsDXe3Design.dproj
 Packages\OverbyteIcsDXe3Design.dpk
-Packages\OverbyteIcsDXe3Design.res
 
 Packages\IcsCommonDXE3Run.dpk
 Packages\IcsCommonDXE3Run.dproj
-Packages\IcsCommonDXE3Run.res
 Packages\IcsCommonDXE3Design.dpk
 Packages\IcsCommonDXE3Design.dproj
-Packages\IcsCommonDXE3Design.res
 
 Packages\IcsFmxDXE3Run.dpk
 Packages\IcsFmxDXE3Run.dproj
-Packages\IcsFmxDXE3Run.res
 Packages\IcsFmxDXE3Design.dpk
 Packages\IcsFmxDXE3Design.dproj
-Packages\IcsFmxDXE3Design.res
 
 Packages\IcsVclDXE3Run.dpk
 Packages\IcsVclDXE3Run.dproj
-Packages\IcsVclDXE3Run.res
 Packages\IcsVclDXE3Design.dpk
 Packages\IcsVclDXE3Design.dproj
-Packages\IcsVclDXE3Design.res
 
 Packages\OverbyteIcsCB2006Run.bdsproj
 Packages\OverbyteIcsCB2006Run.cpp
@@ -165,6 +149,21 @@ Packages\IcsVclCBXE2Run.cbproj
 Packages\IcsVclCBXE2Run.cpp
 Packages\IcsVclCBXE2Design.cbproj
 Packages\IcsVclCBXE2Design.cpp
+
+Packages\IcsCommonCBXE3Run.cbproj
+Packages\IcsCommonCBXE3Run.cpp
+Packages\IcsCommonCBXE3Design.cbproj
+Packages\IcsCommonCBXE3Design.cpp
+
+Packages\IcsFmxCBXE3Run.cbproj
+Packages\IcsFmxCBXE3Run.cpp
+Packages\IcsFmxCBXE3Design.cbproj
+Packages\IcsFmxCBXE3Design.cpp
+
+Packages\IcsVclCBXE3Run.cbproj
+Packages\IcsVclCBXE3Run.cpp
+Packages\IcsVclCBXE3Design.cbproj
+Packages\IcsVclCBXE3Design.cpp
 
 Packages\OverbyteIcsProductIcon.res
 
@@ -369,6 +368,7 @@ Install\CB2010Install.groupproj
 Install\CBXeInstall.groupproj
 Install\CBXe2Install.groupproj
 Install\CBXe2InstallVclFmx.groupproj
+Install\CBXe3InstallVclFmx.groupproj
 
 Samples\cpp\Internet\OverbyteIcsHttpTst1.cpp
 Samples\cpp\Internet\OverbyteIcsHttpTst1.dfm

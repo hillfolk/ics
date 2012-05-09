@@ -1,9 +1,9 @@
 ﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
-			<ProjectGuid>{5FC71E67-956B-4D17-94A3-EF033AE8F547}</ProjectGuid>
-			<ProjectVersion>13.4</ProjectVersion>
+			<ProjectGuid>{B14DC708-04B5-471F-9127-C94DDF198FA1}</ProjectGuid>
+			<ProjectVersion>14.2</ProjectVersion>
 			<FrameworkType>None</FrameworkType>
-			<MainSource>IcsFmxCBXE2Design.cpp</MainSource>
+			<MainSource>IcsVclCBXE3Design.cpp</MainSource>
 			<Base>True</Base>
 			<Config Condition="'$(Config)'==''">Debug</Config>
 			<Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -34,28 +34,37 @@
 			<CfgParent>Base</CfgParent>
 			<Base>true</Base>
 		</PropertyGroup>
+		<PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+			<Cfg_2_Win32>true</Cfg_2_Win32>
+			<CfgParent>Cfg_2</CfgParent>
+			<Cfg_2>true</Cfg_2>
+			<Base>true</Base>
+		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<BCC_OutputDir>..\Lib\$(Config)\$(Platform)\XE2</BCC_OutputDir>
-			<ILINK_LibraryPath>..\Source\;..\Lib\$(Config)\$(Platform)\XE2;$(ILINK_LibraryPath)</ILINK_LibraryPath>
-			<IncludePath>..\Source\;..\Lib\$(Config)\$(Platform)\XE2;$(IncludePath)</IncludePath>
-			<DCC_ObjOutput>..\Lib\$(Config)\$(Platform)\XE2</DCC_ObjOutput>
-			<DCC_HppOutput>..\Lib\$(Config)\$(Platform)\XE2</DCC_HppOutput>
-			<DCC_UnitSearchPath>..\Source;..\Source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-			<Defines>USE_SSL;SECURITY_WIN32;$(Defines)</Defines>
+			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<DCC_AdditionalSwitches>-LUDesignIde</DCC_AdditionalSwitches>
+			<DCC_ObjOutput>..\Lib\$(Config)\$(Platform)\XE3</DCC_ObjOutput>
+			<ILINK_LibraryPath>..\Source\;..\Lib\$(Config)\$(Platform)\XE3;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<IncludePath>..\Source\;..\Lib\$(Config)\$(Platform)\XE3;$(IncludePath)</IncludePath>
+			<BCC_OutputDir>..\Lib\$(Config)\$(Platform)\XE3</BCC_OutputDir>
+			<DCC_HppOutput>..\Lib\$(Config)\$(Platform)\XE3</DCC_HppOutput>
+			<DCC_UnitSearchPath>..\Source;..\Source\Include;$(BDS)\Source\ToolsAPI;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+			<Defines>USE_SSL;SECURITY_WIN32;$(Defines)</Defines>
+			<DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+			<DesignOnlyPackage>true</DesignOnlyPackage>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-			<VerInfo_Locale>1031</VerInfo_Locale>
-			<ILINK_Description>Overbyte ICS FMX Design-Time Package for C++ Builder XE2</ILINK_Description>
+			<VerInfo_Locale>1033</VerInfo_Locale>
+			<ILINK_Description>Overbyte ICS VCL Design-Time Package for C++ Builder XE3</ILINK_Description>
 			<ILINK_GenerateImportLibrary>true</ILINK_GenerateImportLibrary>
 			<ProjectType>CppPackage</ProjectType>
-			<DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
+			<DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;VCL;$(DCC_Namespace)</DCC_Namespace>
 			<ILINK_GenerateLibFile>true</ILINK_GenerateLibFile>
 			<_TCHARMapping>wchar_t</_TCHARMapping>
 			<Multithreaded>true</Multithreaded>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<DynamicRTL>true</DynamicRTL>
 			<UsePackages>true</UsePackages>
-			<IntermediateOutputDir>..\Lib\$(Config)\$(Platform)\XE2</IntermediateOutputDir>
+			<IntermediateOutputDir>..\Lib\$(Config)\$(Platform)\XE3</IntermediateOutputDir>
 			<BCC_wpar>false</BCC_wpar>
 			<BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
 			<BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
@@ -68,11 +77,11 @@
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
 			<DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
 			<BCC_OptimizeForSpeed>false</BCC_OptimizeForSpeed>
 			<BCC_DisableOptimizations>true</BCC_DisableOptimizations>
 			<DCC_Optimize>false</DCC_Optimize>
-			<DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
 			<Defines>_DEBUG;$(Defines)</Defines>
 			<BCC_InlineFunctionExpansion>false</BCC_InlineFunctionExpansion>
 			<BCC_UseRegisterVariables>None</BCC_UseRegisterVariables>
@@ -86,8 +95,7 @@
 			<ILINK_LibraryPath>$(BDSLIB)\$(PLATFORM)\debug;$(ILINK_LibraryPath)</ILINK_LibraryPath>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<VerInfo_Locale>1033</VerInfo_Locale>
+			<DCC_AdditionalSwitches>-LUDesignIde -NSVcl</DCC_AdditionalSwitches>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
 			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -97,29 +105,33 @@
 			<Defines>NDEBUG;$(Defines)</Defines>
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+			<VerInfo_Locale>1033</VerInfo_Locale>
+		</PropertyGroup>
 		<ItemGroup>
 			<PackageImport Include="designide.bpi">
-				<BuildOrder>6</BuildOrder>
+				<BuildOrder>4</BuildOrder>
 			</PackageImport>
-			<PackageImport Include="fmx.bpi">
+			<PackageImport Include="IcsCommonCBXE3Run.bpi">
 				<BuildOrder>7</BuildOrder>
 			</PackageImport>
-			<PackageImport Include="IcsCommonCBXE2Run.bpi">
-				<BuildOrder>5</BuildOrder>
-			</PackageImport>
-			<CppCompile Include="IcsFmxCBXE2Design.cpp">
+			<CppCompile Include="IcsVclCBXE3Design.cpp">
 				<BuildOrder>0</BuildOrder>
 			</CppCompile>
-			<PackageImport Include="IcsFmxCBXE2Run.bpi">
-				<BuildOrder>4</BuildOrder>
+			<PackageImport Include="IcsVclCBXE3Run.bpi">
+				<BuildOrder>7</BuildOrder>
 			</PackageImport>
 			<PackageImport Include="rtl.bpi">
 				<BuildOrder>1</BuildOrder>
 			</PackageImport>
-			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsReg.pas">
+			<PackageImport Include="vcl.bpi">
+				<BuildOrder>7</BuildOrder>
+			</PackageImport>
+			<DelphiCompile Include="..\Source\Ics.Vcl.OverbyteIcsReg.pas">
 				<BuildOrder>2</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\Ics.Fmx.OverByteIcsWSocketE.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsWSocketE.pas">
 				<BuildOrder>3</BuildOrder>
 			</DelphiCompile>
 			<BuildConfiguration Include="Release">
@@ -139,9 +151,6 @@
 			<Borland.ProjectType>CppPackage</Borland.ProjectType>
 			<BorlandProject>
 				<CPlusPlusBuilder.Personality>
-					<Source>
-						<Source Name="MainSource">IcsFmxCBXE2Design.cpp</Source>
-					</Source>
 					<VersionInfo>
 						<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
@@ -169,14 +178,15 @@
 						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
-					<Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\fmidesigner160.bpl">FMI Form designer and property and component editors</Excluded_Packages>
-					</Excluded_Packages>
+					<Excluded_Packages/>
 					<ProjectProperties>
 						<ProjectProperties Name="AutoShowDeps">False</ProjectProperties>
 						<ProjectProperties Name="ManagePaths">True</ProjectProperties>
 						<ProjectProperties Name="VerifyPackages">True</ProjectProperties>
 					</ProjectProperties>
+					<Source>
+						<Source Name="MainSource">IcsVclCBXE3Design.cpp</Source>
+					</Source>
 				</CPlusPlusBuilder.Personality>
 				<Deployment/>
 				<Platforms>

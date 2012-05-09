@@ -1,13 +1,13 @@
 ﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
-			<ProjectGuid>{CE749E31-F1AF-4B3E-B8DB-8A612EE77630}</ProjectGuid>
-			<ProjectVersion>13.4</ProjectVersion>
-			<FrameworkType>None</FrameworkType>
-			<MainSource>IcsCommonCBXE2Run.cpp</MainSource>
+			<ProjectGuid>{1B2F65E1-82BB-4692-897D-62845B3CED67}</ProjectGuid>
+			<ProjectVersion>14.2</ProjectVersion>
+			<FrameworkType>FMX</FrameworkType>
+			<MainSource>IcsFmxCBXE3Run.cpp</MainSource>
 			<Base>True</Base>
 			<Config Condition="'$(Config)'==''">Debug</Config>
 			<Platform Condition="'$(Platform)'==''">Win32</Platform>
-			<TargetedPlatforms>5</TargetedPlatforms>
+			<TargetedPlatforms>7</TargetedPlatforms>
 			<AppType>Package</AppType>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -34,12 +34,6 @@
 			<Cfg_1>true</Cfg_1>
 			<Base>true</Base>
 		</PropertyGroup>
-		<PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
-			<Cfg_1_Win32>true</Cfg_1_Win32>
-			<CfgParent>Cfg_1</CfgParent>
-			<Cfg_1>true</Cfg_1>
-			<Base>true</Base>
-		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
 			<Cfg_2>true</Cfg_2>
 			<CfgParent>Base</CfgParent>
@@ -52,50 +46,50 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<DCC_ObjOutput>..\Lib\$(Config)\$(Platform)\XE2</DCC_ObjOutput>
-			<ILINK_LibraryPath>..\Source\;..\Lib\$(Config)\$(Platform)\XE2;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+			<_TCHARMapping>wchar_t</_TCHARMapping>
+			<BCC_OutputDir>..\Lib\$(Config)\$(Platform)\XE3</BCC_OutputDir>
+			<DCC_ObjOutput>..\Lib\$(Config)\$(Platform)\XE3</DCC_ObjOutput>
 			<DCC_UnitSearchPath>..\Source;..\Source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-			<BCC_OutputDir>..\Lib\$(Config)\$(Platform)\XE2</BCC_OutputDir>
-			<DCC_HppOutput>..\Lib\$(Config)\$(Platform)\XE2</DCC_HppOutput>
-			<IncludePath>..\Source\;..\Lib\$(Config)\$(Platform)\XE2;$(IncludePath)</IncludePath>
-			<ILINK_Description>Overbyte ICS Common Run-Time Package for C++ Builder XE2</ILINK_Description>
+			<DCC_HppOutput>..\Lib\$(Config)\$(Platform)\XE3</DCC_HppOutput>
+			<IncludePath>..\Source\;..\Lib\$(Config)\$(Platform)\XE3;$(IncludePath)</IncludePath>
+			<ILINK_Description>Overbyte ICS FMX Run-Time Package for C++ Builder XE3</ILINK_Description>
+			<ILINK_LibraryPath>..\Source\;..\Lib\$(Config)\$(Platform)\XE3;$(ILINK_LibraryPath)</ILINK_LibraryPath>
 			<Defines>USE_SSL;SECURITY_WIN32;$(Defines)</Defines>
-			<PackageImports>IPIndyImpl;bindcompfmx;fmx;rtl;dbrtl;IndySystem;DbxClientDriver;bindcomp;inetdb;DBXInterBaseDriver;DataSnapClient;DataSnapCommon;DataSnapServer;DataSnapProviderClient;xmlrtl;ibxpress;DbxCommonDriver;IndyProtocols;DBXMySQLDriver;dbxcds;soaprtl;bindengine;DBXOracleDriver;CustomIPTransport;dsnap;DBXInformixDriver;IndyCore;fmxase;CloudService;DBXFirebirdDriver;inet;fmxobj;inetdbxpress;DBXSybaseASADriver;fmxdae;dbexpress;DataSnapIndy10ServerTransport;$(PackageImports)</PackageImports>
+			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+			<DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
 			<RuntimeOnlyPackage>true</RuntimeOnlyPackage>
-			<Multithreaded>true</Multithreaded>
+			<VerInfo_Locale>1033</VerInfo_Locale>
 			<ProjectType>CppPackage</ProjectType>
+			<PackageImports>IPIndyImpl;bindcompfmx;fmx;rtl;dbrtl;IndySystem;DbxClientDriver;bindcomp;inetdb;DBXInterBaseDriver;DataSnapClient;DataSnapCommon;DataSnapServer;DataSnapProviderClient;xmlrtl;ibxpress;DbxCommonDriver;IndyProtocols;DBXMySQLDriver;dbxcds;soaprtl;bindengine;DBXOracleDriver;CustomIPTransport;dsnap;DBXInformixDriver;IndyCore;fmxase;CloudService;DBXFirebirdDriver;inet;fmxobj;inetdbxpress;DBXSybaseASADriver;fmxdae;dbexpress;DataSnapIndy10ServerTransport;$(PackageImports)</PackageImports>
+			<ILINK_GenerateImportLibrary>true</ILINK_GenerateImportLibrary>
 			<DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
 			<ILINK_GenerateLibFile>true</ILINK_GenerateLibFile>
-			<ILINK_GenerateImportLibrary>true</ILINK_GenerateImportLibrary>
-			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-			<VerInfo_Locale>1031</VerInfo_Locale>
-			<_TCHARMapping>wchar_t</_TCHARMapping>
-			<DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+			<Multithreaded>true</Multithreaded>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<DynamicRTL>true</DynamicRTL>
 			<UsePackages>true</UsePackages>
-			<IntermediateOutputDir>..\Lib\$(Config)\$(Platform)\XE2</IntermediateOutputDir>
+			<IntermediateOutputDir>..\Lib\$(Config)\$(Platform)\XE3</IntermediateOutputDir>
 			<BCC_wpar>false</BCC_wpar>
 			<BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
 			<BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base_OSX32)'!=''">
-			<VerInfo_Keys>CFBundleName=$(MSBuildProjectName);CFBundleDisplayName=$(MSBuildProjectName);CFBundleIdentifier=$(MSBuildProjectName);CFBundleVersion=1.0.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName)</VerInfo_Keys>
 			<Debugger_Launcher>/usr/X11/bin/xterm -e &quot;%debuggee%&quot;</Debugger_Launcher>
+			<IncludePath>$(BDSINCLUDE)\osx\fmx;$(IncludePath)</IncludePath>
+			<VerInfo_Keys>CFBundleName=$(MSBuildProjectName);CFBundleDisplayName=$(MSBuildProjectName);CFBundleIdentifier=$(MSBuildProjectName);CFBundleVersion=1.0.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName)</VerInfo_Keys>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base_Win32)'!=''">
+			<IncludePath>$(BDSINCLUDE)\windows\fmx;$(IncludePath)</IncludePath>
 			<PackageImports>vcldbx;vclib;inetdbbde;DBXOdbcDriver;DBXSybaseASEDriver;vclimg;vclactnband;vcldb;vcldsnap;bindcompvcl;vclie;vcltouch;DBXDb2Driver;bcbsmp;websnap;VclSmp;vcl;DataSnapConnectors;DBXMSSQLDriver;dsnapcon;vclx;webdsnap;bdertl;adortl;bcbie;$(PackageImports)</PackageImports>
 			<DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<VerInfo_Locale>1033</VerInfo_Locale>
-			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
 			<DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
 			<BCC_OptimizeForSpeed>false</BCC_OptimizeForSpeed>
 			<BCC_DisableOptimizations>true</BCC_DisableOptimizations>
 			<DCC_Optimize>false</DCC_Optimize>
-			<DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
 			<Defines>_DEBUG;$(Defines)</Defines>
 			<BCC_InlineFunctionExpansion>false</BCC_InlineFunctionExpansion>
 			<BCC_UseRegisterVariables>None</BCC_UseRegisterVariables>
@@ -111,10 +105,7 @@
 		<PropertyGroup Condition="'$(Cfg_1_OSX32)'!=''">
 			<VerInfo_Keys>CFBundleName=$(MSBuildProjectName);CFBundleDisplayName=$(MSBuildProjectName);CFBundleIdentifier=$(MSBuildProjectName);CFBundleVersion=1.0.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName)</VerInfo_Keys>
 			<Debugger_Launcher>/usr/X11/bin/xterm -e &quot;%debuggee%&quot;</Debugger_Launcher>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<VerInfo_Locale>1033</VerInfo_Locale>
+			<DCC_RemoteDebug>true</DCC_RemoteDebug>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
 			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -128,138 +119,141 @@
 			<DCC_RemoteDebug>true</DCC_RemoteDebug>
 		</PropertyGroup>
 		<ItemGroup>
-			<CppCompile Include="IcsCommonCBXE2Run.cpp">
+			<PackageImport Include="fmx.bpi">
+				<BuildOrder>31</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="IcsCommonCBXE3Run.bpi">
+				<BuildOrder>44</BuildOrder>
+			</PackageImport>
+			<CppCompile Include="IcsFmxCBXE3Run.cpp">
 				<BuildOrder>0</BuildOrder>
 			</CppCompile>
 			<PackageImport Include="rtl.bpi">
 				<BuildOrder>1</BuildOrder>
 			</PackageImport>
-			<DelphiCompile Include="..\Source\Ics.Posix.KEventApi.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsCharsetComboBox.pas">
+				<BuildOrder>0</BuildOrder>
+			</DelphiCompile>
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsDnsQuery.pas">
+				<BuildOrder>1</BuildOrder>
+			</DelphiCompile>
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsFingCli.pas">
 				<BuildOrder>2</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\Ics.Posix.KEventTypes.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsFtpCli.pas">
 				<BuildOrder>3</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\Ics.Posix.WinTypes.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsFtpSrv.pas">
 				<BuildOrder>4</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsAvlTrees.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsHttpAppServer.pas">
 				<BuildOrder>5</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsCharsetUtils.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsHttpProt.pas">
 				<BuildOrder>6</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsCRC.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsHttpSrv.pas">
 				<BuildOrder>7</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsCsc.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsMultipartFtpDownloader.pas">
 				<BuildOrder>8</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsDES.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsMultipartHttpDownloader.pas">
 				<BuildOrder>9</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsDigestAuth.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsNntpCli.pas">
 				<BuildOrder>10</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsHttpCCodZLib.pas">
-				<BuildOrder>44</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsHttpContCod.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsPing.pas">
 				<BuildOrder>11</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsIcmp.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsPop3Prot.pas">
 				<BuildOrder>12</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsIconv.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsSmtpProt.pas">
 				<BuildOrder>13</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsLIBEAY.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsSocketUtils.pas">
 				<BuildOrder>14</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="..\Source\OverbyteIcsLogger.dcr">
-				<BuildOrder>16</BuildOrder>
-			</ResFiles>
-			<DelphiCompile Include="..\Source\OverbyteIcsLogger.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsSslHtmlSmtpProt.pas">
 				<BuildOrder>15</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsMD4.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsSslSessionCache.pas">
+				<BuildOrder>16</BuildOrder>
+			</DelphiCompile>
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsSslThrdLock.pas">
 				<BuildOrder>17</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsMD5.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsThreadTimer.pas">
 				<BuildOrder>18</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="..\Source\OverbyteIcsMimeDec.dcr">
-				<BuildOrder>20</BuildOrder>
-			</ResFiles>
-			<DelphiCompile Include="..\Source\OverbyteIcsMimeDec.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsWndControl.pas">
 				<BuildOrder>19</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="..\Source\OverbyteIcsMimeUtils.dcr">
-				<BuildOrder>22</BuildOrder>
-			</ResFiles>
-			<DelphiCompile Include="..\Source\OverbyteIcsMimeUtils.pas">
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsWSocket.pas">
+				<BuildOrder>20</BuildOrder>
+			</DelphiCompile>
+			<DelphiCompile Include="..\Source\Ics.Fmx.OverbyteIcsWSocketS.pas">
 				<BuildOrder>21</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsMLang.pas">
-				<BuildOrder>23</BuildOrder>
+			<DelphiCompile Include="..\Source\Ics.Posix.Messages.pas">
+				<BuildOrder>22</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsNtlmMsgs.pas">
-				<BuildOrder>24</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsNtlmSsp.pas">
-				<BuildOrder>25</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsOneTimePw.pas">
-				<BuildOrder>26</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsSha1.pas">
-				<BuildOrder>28</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsSSLEAY.pas">
-				<BuildOrder>29</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsSspi.pas">
-				<BuildOrder>30</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsStreams.pas">
-				<BuildOrder>31</BuildOrder>
-			</DelphiCompile>
-			<ResFiles Include="..\Source\OverbyteIcsTimeList.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsCharsetComboBox.dcr">
+				<BuildOrder>32</BuildOrder>
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsDnsQuery.dcr">
 				<BuildOrder>33</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="..\Source\OverbyteIcsTimeList.pas">
-				<BuildOrder>32</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsTypes.pas">
+			<ResFiles Include="..\Source\OverbyteIcsFingCli.dcr">
 				<BuildOrder>34</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsUrl.pas">
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsFtpCli.dcr">
 				<BuildOrder>35</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsUtils.pas">
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsFtpSrv.dcr">
 				<BuildOrder>36</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsWebSession.pas">
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsHttpAppServer.dcr">
 				<BuildOrder>37</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsWinnls.pas">
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsHttpProt.dcr">
 				<BuildOrder>38</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsWinsock.pas">
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsHttpSrv.dcr">
 				<BuildOrder>39</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsWSockBuf.pas">
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsMultipartFtpDownloader.dcr">
 				<BuildOrder>40</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsZLibDll.pas">
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsMultipartHttpDownloader.dcr">
 				<BuildOrder>41</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsZlibHigh.pas">
-				<BuildOrder>42</BuildOrder>
-			</DelphiCompile>
-			<DelphiCompile Include="..\Source\OverbyteIcsZLibObj.pas">
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsNntpCli.dcr">
 				<BuildOrder>43</BuildOrder>
-			</DelphiCompile>
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsPing.dcr">
+				<BuildOrder>44</BuildOrder>
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsPop3Prot.dcr">
+				<BuildOrder>45</BuildOrder>
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsSmtpProt.dcr">
+				<BuildOrder>46</BuildOrder>
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsSslSessionCache.dcr">
+				<BuildOrder>47</BuildOrder>
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsSslThrdLock.dcr">
+				<BuildOrder>48</BuildOrder>
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsWSocket.dcr">
+				<BuildOrder>50</BuildOrder>
+			</ResFiles>
+			<ResFiles Include="..\Source\OverbyteIcsWSocketS.dcr">
+				<BuildOrder>51</BuildOrder>
+			</ResFiles>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
@@ -310,15 +304,14 @@
 						<ProjectProperties Name="VerifyPackages">True</ProjectProperties>
 					</ProjectProperties>
 					<Source>
-						<Source Name="MainSource">IcsCommonCBXE2Run.cpp</Source>
+						<Source Name="MainSource">IcsFmxCBXE3Run.cpp</Source>
 					</Source>
-					<Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\fmidesigner160.bpl">FMI Form designer and property and component editors</Excluded_Packages>
-					</Excluded_Packages>
+					<Excluded_Packages/>
 				</CPlusPlusBuilder.Personality>
 				<Deployment/>
 				<Platforms>
 					<Platform value="OSX32">True</Platform>
+					<Platform value="Win64">True</Platform>
 					<Platform value="Win32">True</Platform>
 				</Platforms>
 			</BorlandProject>
