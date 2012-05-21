@@ -6,7 +6,8 @@
 
 
 
-USEFORMNS("..\Source\OverbyteIcsTnOptFrm.pas", Overbyteicstnoptfrm, OptForm);
+
+USEFORMNS("Z:\Source\OverbyteIcsTnOptFrm.pas", Overbyteicstnoptfrm, OptForm);
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
