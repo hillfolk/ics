@@ -54,10 +54,10 @@
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<DCC_ObjOutput>..\Lib\$(Config)\$(Platform)\XE3</DCC_ObjOutput>
 			<DCC_UnitSearchPath>..\Source;..\Source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-			<ILINK_LibraryPath>Z:\Source\;..\Source\;..\Lib\$(Config)\$(Platform)\XE3;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<ILINK_LibraryPath>..\Source;..\Lib\$(Config)\$(Platform)\XE3;$(ILINK_LibraryPath)</ILINK_LibraryPath>
 			<BCC_OutputDir>..\Lib\$(Config)\$(Platform)\XE3</BCC_OutputDir>
 			<DCC_HppOutput>..\Lib\$(Config)\$(Platform)\XE3</DCC_HppOutput>
-			<IncludePath>Z:\Source\;..\Source\;..\Lib\$(Config)\$(Platform)\XE3;$(IncludePath)</IncludePath>
+			<IncludePath>..\Source;..\Lib\$(Config)\$(Platform)\XE3;$(IncludePath)</IncludePath>
 			<ILINK_Description>Overbyte ICS VCL Run-Time Package for C++ Builder XE3</ILINK_Description>
 			<Defines>USE_SSL;SECURITY_WIN32;$(Defines)</Defines>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -147,161 +147,161 @@ $(PostBuildEvent)]]></PostBuildEvent>
 			<PackageImport Include="vcl.bpi">
 				<BuildOrder>2</BuildOrder>
 			</PackageImport>
-			<ResFiles Include="Z:\Source\OverbyteIcsCharsetComboBox.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsCharsetComboBox.dcr">
 				<BuildOrder>4</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsCharsetComboBox.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsCharsetComboBox.pas">
 				<BuildOrder>3</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsDnsQuery.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsDnsQuery.dcr">
 				<BuildOrder>6</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsDnsQuery.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsDnsQuery.pas">
 				<BuildOrder>5</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsEmulVT.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsEmulVT.dcr">
 				<BuildOrder>8</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsEmulVT.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsEmulVT.pas">
 				<BuildOrder>7</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsFingCli.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsFingCli.dcr">
 				<BuildOrder>10</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsFingCli.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsFingCli.pas">
 				<BuildOrder>9</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsFtpCli.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsFtpCli.dcr">
 				<BuildOrder>12</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsFtpCli.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsFtpCli.pas">
 				<BuildOrder>11</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsFtpSrv.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsFtpSrv.dcr">
 				<BuildOrder>14</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsFtpSrv.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsFtpSrv.pas">
 				<BuildOrder>13</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsHttpAppServer.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsHttpAppServer.dcr">
 				<BuildOrder>16</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsHttpAppServer.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsHttpAppServer.pas">
 				<BuildOrder>15</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsHttpProt.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsHttpProt.dcr">
 				<BuildOrder>18</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsHttpProt.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsHttpProt.pas">
 				<BuildOrder>17</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsHttpSrv.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsHttpSrv.dcr">
 				<BuildOrder>20</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsHttpSrv.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsHttpSrv.pas">
 				<BuildOrder>19</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsIcmp.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsIcmp.pas">
 				<BuildOrder>21</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsMultipartFtpDownloader.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsMultipartFtpDownloader.dcr">
 				<BuildOrder>23</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsMultipartFtpDownloader.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsMultipartFtpDownloader.pas">
 				<BuildOrder>22</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsMultipartHttpDownloader.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsMultipartHttpDownloader.dcr">
 				<BuildOrder>25</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsMultipartHttpDownloader.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsMultipartHttpDownloader.pas">
 				<BuildOrder>24</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsMultiProgressBar.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsMultiProgressBar.dcr">
 				<BuildOrder>27</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsMultiProgressBar.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsMultiProgressBar.pas">
 				<BuildOrder>26</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsNntpCli.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsNntpCli.dcr">
 				<BuildOrder>29</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsNntpCli.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsNntpCli.pas">
 				<BuildOrder>28</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsPing.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsPing.dcr">
 				<BuildOrder>31</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsPing.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsPing.pas">
 				<BuildOrder>30</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsPop3Prot.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsPop3Prot.dcr">
 				<BuildOrder>33</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsPop3Prot.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsPop3Prot.pas">
 				<BuildOrder>32</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsSmtpProt.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsSmtpProt.dcr">
 				<BuildOrder>35</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsSmtpProt.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsSmtpProt.pas">
 				<BuildOrder>34</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsSslSessionCache.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsSslSessionCache.dcr">
 				<BuildOrder>38</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsSslSessionCache.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsSslSessionCache.pas">
 				<BuildOrder>37</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsSslThrdLock.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsSslThrdLock.dcr">
 				<BuildOrder>40</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsSslThrdLock.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsSslThrdLock.pas">
 				<BuildOrder>39</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsThreadTimer.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsThreadTimer.pas">
 				<BuildOrder>41</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsTnCnx.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsTnCnx.dcr">
 				<BuildOrder>43</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsTnCnx.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsTnCnx.pas">
 				<BuildOrder>42</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsTnEmulVT.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsTnEmulVT.dcr">
 				<BuildOrder>45</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsTnEmulVT.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsTnEmulVT.pas">
 				<BuildOrder>44</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsTnOptFrm.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsTnOptFrm.pas">
 				<Form>OptForm</Form>
 				<BuildOrder>46</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsTnScript.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsTnScript.dcr">
 				<BuildOrder>48</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsTnScript.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsTnScript.pas">
 				<BuildOrder>47</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsWebSession.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsWebSession.pas">
 				<BuildOrder>49</BuildOrder>
 			</DelphiCompile>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsWndControl.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsWndControl.pas">
 				<BuildOrder>50</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsWSocket.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsWSocket.dcr">
 				<BuildOrder>52</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsWSocket.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsWSocket.pas">
 				<BuildOrder>51</BuildOrder>
 			</DelphiCompile>
-			<ResFiles Include="Z:\Source\OverbyteIcsWSocketS.dcr">
+			<ResFiles Include="..\Source\OverbyteIcsWSocketS.dcr">
 				<BuildOrder>54</BuildOrder>
 			</ResFiles>
-			<DelphiCompile Include="Z:\Source\OverbyteIcsWSocketS.pas">
+			<DelphiCompile Include="..\Source\OverbyteIcsWSocketS.pas">
 				<BuildOrder>53</BuildOrder>
 			</DelphiCompile>
-			<FormResources Include="Z:\Source\OverbyteIcsTnOptFrm.dfm"/>
+			<FormResources Include="..\Source\OverbyteIcsTnOptFrm.dfm"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
