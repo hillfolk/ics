@@ -264,19 +264,25 @@ After a few seconds, you should have a dialog box telling you the package has
 been installed with a bunch of new components registered in the Tool Palette
 under "Overbyte ICS" and "Overbyte ICS SSL". Then do a "Save All" and a "Close All".
 
+4 - One package is installed, called 'Overbyte ICS Design-Time Package for Delphi xxx'.
 
 FIREMONKEY CROSS PLATFORM PACKAGES:
 
 1 - For XE2 and later, DXe2Install installs VCL components only, while
 DXe2InstallVclFmx also installs FireMonkey cross platform components (three
-run time packages). In order to use this feature first uninstall the old VCL
-design-time package for XE2.
+run time packages). In order to use this feature first uninstall the old
+design-time package.
 
 2 = Build all three run-time packages for all available platforms (32-bit
 and 64-bit Windows and Mac OS X) in the order they are listed in project manager.
 
 3 - Next build and install the three design-time packages in the order they are
 listed in project manager.
+
+4 - Three packages are installed, called:
+    'Overbyte ICS Common Design-Time Package for Delphi xxx'
+    'Overbyte ICS FMX Design-Time Package for Delphi xxx'
+    'Overbyte ICS VCL Design-Time Package for Delphi xxx'
 
 Note that the new packaging is still beta/alpha, both package names and included
 units might change in a future beta drop. The old VCL packages are still there
@@ -293,7 +299,7 @@ For each Delphi and C++ Builder version two package project files exist in the
 The run-time file name contains the "Run" suffix. The design-time file name
 contains the "Design" suffix.
 
-PACKAGE PROJECT FILE NAMES:
+PACKAGE PROJECT FILE NAMES - VCL:
 Delphi 7         :  OverbyteIcsD7Run.dpk, OverbyteIcsD7Design.dpk
 Delphi 2006      :  OverbyteIcsD2006Run.bdsproj, OverbyteIcsD2006Design.bdsproj
 Delphi 2007      :  OverbyteIcsD2007Run.dproj, OverbyteIcsD2007Design.dproj
@@ -301,12 +307,29 @@ Delphi 2009      :  OverbyteIcsD2009Run.dproj, OverbyteIcsD2009Design.dproj
 Delphi 2010      :  OverbyteIcsD2010Run.dproj, OverbyteIcsD2010Design.dproj
 Delphi XE        :  OverbyteIcsDXeRun.dproj, OverbyteIcsDXeDesign.dproj
 Delphi XE2       :  OverbyteIcsDXe2Run.dproj, OverbyteIcsDXe2Design.dproj
+Delphi XE3       :  OverbyteIcsDXe3Run.dproj, OverbyteIcsDXe3Design.dproj
 C++ Builder 2006 :  OverbyteIcsCB2006Run.bdsproj, OverbyteIcsCB2006Design.bdsproj
 C++ Builder 2007 :  OverbyteIcsCB2007Run.cbproj, OverbyteIcsCB2007Design.cbproj
 C++ Builder 2009 :  OverbyteIcsCB2009Run.cbproj, OverbyteIcsCB2009Design.cbproj
 C++ Builder 2010 :  OverbyteIcsCB2010Run.cbproj, OverbyteIcsCB2010Design.cbproj
 C++ Builder XE   :  OverbyteIcsCBXeRun.cbproj, OverbyteIcsCBXeDesign.cbproj
 C++ Builder XE2  :  OverbyteIcsCBXe2Run.cbproj, OverbyteIcsCBXe2Design.cbproj
+C++ Builder XE3  :  OverbyteIcsCBXe3Run.cbproj, OverbyteIcsCBXe3Design.cbproj
+
+PACKAGE PROJECT FILE NAMES - FireMonkey and VCL:
+Delphi XE2 FMX/VCL      :  IcsCommonDXe2Run.dproj, IcsCommonDXe2Design.dproj
+Delphi XE2 VCL          :  IcsVclDXe2Run.dproj, IcsVclDXe2Design.dproj
+Delphi XE2 FMX          :  IcsFmxDXe2Run.dproj, IcsFmxDXe2Design.dproj
+Delphi XE3 FMX/VCL      :  IcsCommonDXe3Run.dproj, IcsCommonDXe3Design.dproj
+Delphi XE3 VCL          :  IcsVclDXe3Run.dproj, IcsVclDXe3Design.dproj
+Delphi XE3 FMX          :  IcsFmxDXe3Run.dproj, IcsFmxDXe3Design.dproj
+C++ Builder XE2 FMX/VCL :  IcsCommonCBXe2Run.dproj, IcsCommonDXe2Design.dproj
+C++ Builder XE2 VCL     :  IcsVclCBXe2Run.dproj, IcsVclCBXe2Design.dproj
+C++ Builder XE2 FMX     :  IcsFmxCBXe2Run.dproj, IcsFmxCBXe2Design.dproj
+C++ Builder XE3 FMX/VCL :  IcsCommonCBXe3Run.dproj, IcsCommonDXe3Design.dproj
+C++ Builder XE3 VCL     :  IcsVclCBXe3Run.dproj, IcsVclCBXe3Design.dproj
+C++ Builder XE3 FMX     :  IcsFmxCBXe3Run.dproj, IcsFmxCBXe3Design.dproj
+
 
 1 - Open and Build the run-time package project (do not install!).
 
