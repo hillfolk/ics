@@ -3,7 +3,7 @@ ICS - Internet Component Suite - V8 Beta - Delphi 7 to RAD Studio XE3
 (Aka FPIETTE's Components)
 
 
-Revised: August 16, 2012
+Revised: August 17, 2012
 http://www.overbyte.be/
 
 Table of content:
@@ -266,6 +266,10 @@ under "Overbyte ICS" and "Overbyte ICS SSL". Then do a "Save All" and a "Close A
 
 4 - One package is installed, called 'Overbyte ICS Design-Time Package for Delphi xxx'.
 
+5 - Various directories under .\Samples\delphi\ include samples that illustrate use
+of all the ICS components, see later.
+
+
 FIREMONKEY CROSS PLATFORM PACKAGES:
 
 1 - For XE2 and later, DXe2Install installs VCL components only, while
@@ -290,6 +294,9 @@ however they do no longer support FireMonkey and of course only one set of
 packages can be installed in the IDE at the same time, if you want both VCL
 and FMX install DXe2InstallVclFmx.groupproj only. Currently the XE2 package
 cache is buggy and should be disabled by adding the -nocache parameter.
+
+5 - The .\Samples\delphi\PlatformDemos\ folder contains FireMonkey sample
+projects that may all be built with FireMonkey for Mac OS X (and Windows).
 
 
 ALTERNATE INSTALLATION USING THE PACKAGE PROJECT FILES:
@@ -376,7 +383,7 @@ opened in all versions of Delphi.
 .\Samples\delphi\MailNewsDemos\MailNewsDemos.bpg
 .\Samples\delphi\MiscDemos\MiscDemos.bpg
 .\Samples\delphi\OtherDemos\OtherDemos.bpg
-.\Samples\delphi\PlatformDemos
+.\Samples\delphi\PlatformDemos\XSamples.groupproj
 .\Samples\delphi\SocketDemos\SocketDemos.bpg
 .\Samples\delphi\sslinternet\SslDemos.bpg
 .\Samples\delphi\WebDemos\WebDemos.bpg
@@ -671,8 +678,9 @@ Delphi Win32/Win64 DNS, Ping, SNMP, Syslog sample applications
 > OverbyteIcsSysLogClientDemo.dpr Demo for SysLog client component
 > OverbyteIcsSysLogServerDemo.dpr Demo for SysLog server component
 
-Delphi FireMonkey and cross-platform samples (Delphi XE2 and later)
--------------------------------------------------------------------
+Delphi FireMonkey cross-platform samples (Delphi XE2 and later)
+---------------------------------------------------------------
+All these samples may be built for Mac OS X (and Windows).
 .\Samples\delphi\PlatformDemos\XSamples.groupproj
 > IcsCliDemo.dproj              Example of client for SRVDEMO, IPV4 only
 > IcsTcpSrvIPv6.dproj           Basic server without client forms, event-driven, IPv4/IPV6
@@ -845,6 +853,61 @@ convert existing certificates in the Windows Certificate Store
 to PEM format understood by OpenSSL and to examine PEM certificates.
 
 You will find more information in IcsSslHowTo.txt file.
+
+
+Commercial SSL certificates:
+To avoid browsers giving certificate warning messages, you need to purchase
+a SSL certificate from one of numerous companies, such as Verisign, Thawte
+GeoTrust or RapidSSL.  Prices vary dramatically and are often cheaper from
+resellers such as Servertastic than from the main issuing companies.
+
+The main purpose of an SSL certificate is to prove the identity of the owner
+of a web site, ideally the company behind the web site.  That usually requires
+paper work identifying the company is submitted and also proof the domain being
+protected is owned by that company, it usually also involves telephone calls.
+Such certificates are usually called fully validated and cost $120 or more each
+year for a single domain, ie secure.website.com.  Wild card certificates cost
+$350 or more, but protect multiple sub-domains, ie web.website.com as well.
+Extended Validation certificates cost from $450 a year, and show the company name
+in green in the address bar.  For testing and simple use, instant issued SSL
+certificates cost from $15 per year and protect a single domain only with automated
+checking reducing the cost (an email to admin@website.com to prove you receive
+email for the domain, perhaps a telephone call as well).  Note these instant
+certificates do not include a company name.
+
+To buy and install an SSL certificate for use with ICS and OpenSSL follow these
+steps:
+
+1 - Build the SSL demo project OverbyteIcsPemTool. Take Extras, Create Certificate
+Requests, fill in the various fields (check other certificates if uncertain, the
+Common Name is the domain to protect, ie secure.website.com and E-Mail should be
+an email address at the than domain, ideally admin or administrator, 2048 bits.
+Click Create, and specify two file names, first for the private key (mykey.pem)
+then the certificate request file (myreq.pem).  The request can also be done using
+OpenSSL command line arguments, or you can build it into your own application.
+
+2 - Choose you SSL supplier and certificate type, at some point during the ordering
+process you will be asked for the certificate request, so open the PEM file you
+saved with a text editor and copy the base64 encoded block starting
+-BEGIN CERTIFICATE REQUEST- into the web form.  It should be decoded and displayed
+so you check it's correct.  The private key is not needed for the certificate to
+be issued.  At this point the validation process starts as mentioned above, which
+might take hours or weeks to complete.
+
+3 - Eventually the SSL certificate should be issued, either by email or made
+available to download from the supplier's web site.  It should be in X.509 format
+in a base64 encoded block starting -BEGIN CERTIFICATE- which should be saved as
+a PEM file (mycert.pem).  There should also be an Intermediate CA certificate,
+with which your new certificate was signed, which should also be saved as a file
+(mycacert.pem). This may also be downloadable from the supplier as a bundle file
+and should be common to any certificates they issue, ie RapidSSL_CA_bundle.pem.
+
+4 - The OverbyteIcsPemTool tool has a View PEM button that allows examination of
+your new PEM files.
+
+5 - The three PEM files now need to be attached to the SslContext component in
+your application, with properties SslCertFile, SslPrivKeyFile and SslCAFile.
+The request certificate file has no further use.
 
 
 Support:
