@@ -7,7 +7,7 @@ Description:  This is a demonstration program for IcsDll1.dll and IcsDll2.dll.
               call it. Then display result from DLL call. Be aware that the two
               DLL use the same function name IcsDllDemo. In the program here,
               we use two different variables to point to two those entry points.
-Version:      1.01
+Version:      8.00
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
@@ -43,6 +43,8 @@ Legal issues: Copyright (C) 2000-2012 by François PIETTE
 History:
 Dec 12, 2004 V1.01 Added a few comments, beautified the code, delay DLL loading
                    until needed. Added code for IcsDll2.dll.
+May 2012 - V8.00 - Arno converted demo for FireMonkey cross platform Mac
+                   OS X support, now XE2 and later only uising FMX components
 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}

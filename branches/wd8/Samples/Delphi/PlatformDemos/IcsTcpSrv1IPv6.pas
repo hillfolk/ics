@@ -2,7 +2,7 @@
 
 Author:       François Piette
 Creation:     Aug 29, 1999
-Version:      7.03
+Version:      8.00
 Description:  Basic TCP server showing how to use TWSocketServer and
               TWSocketClient components and how to send binary data
               which requires OverbyteIcsBinCliDemo as client application.
@@ -49,6 +49,8 @@ Dec 20, 2008 V7.02 F.Piette removed an implicit string conversion warning in
                    WMAppStartup (Hostname).
 Jun 15, 2010 V7.03 A.Garrels changed to demonstrate IPv6 and listening on
                    multiple interfaces.
+May 2012 - V8.00 - Arno converted demo for FireMonkey cross platform Mac
+                   OS X support, now XE2 and later only uising FMX components
 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
@@ -80,8 +82,8 @@ uses
   OverbyteIcsWndControl, OverbyteIcsWSocket, OverbyteIcsWSocketS;
 
 const
-  TcpSrvVersion = 703;
-  CopyRight     = ' TcpSrv (c) 1999-2010 by François PIETTE. V7.03';
+  TcpSrvVersion = 800;
+  CopyRight     = ' TcpSrv (c) 1999-2012 by François PIETTE. V8.00';
   WM_APPSTARTUP = WM_USER + 1;
 
 type

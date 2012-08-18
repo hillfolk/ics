@@ -2,7 +2,7 @@
 
 Author:       François PIETTE
 Creation:     Aug 1997
-Version:      7.09
+Version:      8.00
 Object:       Demo for TFtpClient object (RFC 959 implementation)
               It is a graphical FTP client program
               Compatible with Delphi 1, 2, 3, 4 and 5
@@ -88,6 +88,8 @@ Apr 16, 2009  V7.07 Angus assume STREAM64, USE_ONPROGRESS64_ONLY, removed OnProg
 Feb 15, 2011  V7.08 Arno added proxy demo.
 Mar 01, 2011  V7.09 Arno enable/disable the proxy-controls depending on proxy
               setting.
+May 2012 - V8.00 - Arno converted demo for FireMonkey cross platform Mac
+                   OS X support, now XE2 and later only uising FMX components
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit IcsFtpTst1;
@@ -124,8 +126,8 @@ uses
   OverByteIcsFtpCli;
 
 const
-  FTPTstVersion      = 708;
-  CopyRight : String = ' FtpTst (c) 1997-2011 F. Piette V7.08 ';
+  FTPTstVersion      = 800;
+  CopyRight : String = ' FtpTst (c) 1997-2012 F. Piette V8.00 ';
 
 type
   TSyncCmd   = function : Boolean  of object;

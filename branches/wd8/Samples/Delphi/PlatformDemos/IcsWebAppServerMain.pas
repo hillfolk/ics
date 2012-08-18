@@ -4,7 +4,7 @@ Author:       François PIETTE
 Creation:     April 11, 2009
 Description:  WebAppServer is a demo application showing the HTTP application
               server component (THttpAppSrv).
-Version:      1.04
+Version:      8.00
 EMail:        francois.piette@overbyte.be    http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
@@ -45,6 +45,8 @@ Jul 10, 2009 V1.02 Arno - Assigned correct ClientClass which fixed Access Violat
 Sep 01, 2009 V1.03 Angus - report exceptions creating virtual pages
 Aug 08, 2010 V1.04 F.Piette: OnBgException is now published. Use a different
                    method for listening and client sockets.
+May 2012 - V8.00 - Arno converted demo for FireMonkey cross platform Mac
+                   OS X support, now XE2 and later only uising FMX components
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit IcsWebAppServerMain;

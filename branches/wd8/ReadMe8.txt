@@ -1,9 +1,9 @@
-ICS - Internet Component Suite - V8 Beta - Delphi 7 to RAD Studio XE3
+ICS - Internet Component Suite - V8 Beta - Delphi 7 to RAD Studio XE2
 =====================================================================
 (Aka FPIETTE's Components)
 
 
-Revised: August 17, 2012
+Revised: August 15, 2012
 http://www.overbyte.be/
 
 Table of content:
@@ -264,18 +264,13 @@ After a few seconds, you should have a dialog box telling you the package has
 been installed with a bunch of new components registered in the Tool Palette
 under "Overbyte ICS" and "Overbyte ICS SSL". Then do a "Save All" and a "Close All".
 
-4 - One package is installed, called 'Overbyte ICS Design-Time Package for Delphi xxx'.
-
-5 - Various directories under .\Samples\delphi\ include samples that illustrate use
-of all the ICS components, see later.
-
 
 FIREMONKEY CROSS PLATFORM PACKAGES:
 
 1 - For XE2 and later, DXe2Install installs VCL components only, while
 DXe2InstallVclFmx also installs FireMonkey cross platform components (three
-run time packages). In order to use this feature first uninstall the old
-design-time package.
+run time packages). In order to use this feature first uninstall the old VCL
+design-time package for XE2.
 
 2 = Build all three run-time packages for all available platforms (32-bit
 and 64-bit Windows and Mac OS X) in the order they are listed in project manager.
@@ -283,20 +278,12 @@ and 64-bit Windows and Mac OS X) in the order they are listed in project manager
 3 - Next build and install the three design-time packages in the order they are
 listed in project manager.
 
-4 - Three packages are installed, called:
-    'Overbyte ICS Common Design-Time Package for Delphi xxx'
-    'Overbyte ICS FMX Design-Time Package for Delphi xxx'
-    'Overbyte ICS VCL Design-Time Package for Delphi xxx'
-
 Note that the new packaging is still beta/alpha, both package names and included
 units might change in a future beta drop. The old VCL packages are still there
 however they do no longer support FireMonkey and of course only one set of
 packages can be installed in the IDE at the same time, if you want both VCL
 and FMX install DXe2InstallVclFmx.groupproj only. Currently the XE2 package
 cache is buggy and should be disabled by adding the -nocache parameter.
-
-5 - The .\Samples\delphi\PlatformDemos\ folder contains FireMonkey sample
-projects that may all be built with FireMonkey for Mac OS X (and Windows).
 
 
 ALTERNATE INSTALLATION USING THE PACKAGE PROJECT FILES:
@@ -345,9 +332,9 @@ C++ Builder XE3 FMX     :  IcsFmxCBXe3Run.dproj, IcsFmxCBXe3Design.dproj
 and open it. Then in the project manager view, right-click on the package,
 then click on either the Build or Install button.)
 
-3 - For Delphi XE2 and later, a 64-bit run-time package can be built by changing
-the package target platform to 64-bit Windows. This has the same name as the
-32-bit package, so a different package output directory needs to be specified in
+3 - For Delphi XE2, a 64-bit run-time package can be built by changing the
+package target platform to 64-bit Windows. This has the same name as the 32-bit
+package, so a different package output directory needs to be specified in
 Tools / Options / Delphi Options for 64-bit Windows.
 
 After a few seconds, you should have a dialog box telling you the package has
@@ -363,6 +350,9 @@ Having installed the package, verify that the appropriate Win32 Library Path
 If not, add it manually. It is not mandatory to add .\Lib to the global Delphi path,
 but it will be much easier for you because otherwise you'll have to add it to each
 project.
+
+DELPHI XE2/WIN32 and XE2/WIN64: Similar to above, but the Library path is specified
+separately for 32-bit and 64-bit Windows Platforms.
 
 DELPHI XE2/WIN32, XE3/WIN32, XE2/WIN64 and XE3/WIN64: Similar to above, but the
 Library path is specified separately for 32-bit and 64-bit Windows Platforms.
@@ -383,7 +373,7 @@ opened in all versions of Delphi.
 .\Samples\delphi\MailNewsDemos\MailNewsDemos.bpg
 .\Samples\delphi\MiscDemos\MiscDemos.bpg
 .\Samples\delphi\OtherDemos\OtherDemos.bpg
-.\Samples\delphi\PlatformDemos\XSamples.groupproj
+.\Samples\delphi\PlatformDemos
 .\Samples\delphi\SocketDemos\SocketDemos.bpg
 .\Samples\delphi\sslinternet\SslDemos.bpg
 .\Samples\delphi\WebDemos\WebDemos.bpg
@@ -414,7 +404,7 @@ each one after the other and compile them. For each project, do file/open
 and select the dpr file in the internet directory. Then Project/Build All.
 
 
-C++ BUILDER 2006, 2007, 2009, 2010, XE, XE2, XE3:
+C++ BUILDER 2006, 2007, 2009, 2010, XE, XE2:
 
 Follow the installation procedure described for Delphi 2006. Just change
 the project group and package name: use CB2006, CBXe, etc, see above.
@@ -678,9 +668,8 @@ Delphi Win32/Win64 DNS, Ping, SNMP, Syslog sample applications
 > OverbyteIcsSysLogClientDemo.dpr Demo for SysLog client component
 > OverbyteIcsSysLogServerDemo.dpr Demo for SysLog server component
 
-Delphi FireMonkey cross-platform samples (Delphi XE2 and later)
----------------------------------------------------------------
-All these samples may be built for Mac OS X (and Windows).
+Delphi FireMonkey and cross-platform samples (Delphi XE2+)
+----------------------------------------------------------
 .\Samples\delphi\PlatformDemos\XSamples.groupproj
 > IcsCliDemo.dproj              Example of client for SRVDEMO, IPV4 only
 > IcsTcpSrvIPv6.dproj           Basic server without client forms, event-driven, IPv4/IPV6

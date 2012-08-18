@@ -1,4 +1,8 @@
 unit IcsBatchDnsLookup1;
+{
+May 2012 - V8.00 - Arno converted demo for FireMonkey cross platform Mac
+                   OS X support, now XE2 and later only uising FMX components
+}
 
 interface
 

@@ -6,7 +6,7 @@ Description:  A simple HTTPS client.
               Make use of OpenSSL (http://www.openssl.org).
               Make use of freeware TSslHttpCli and TSslWSocket components
               from ICS (Internet Component Suite).
-Version:      1.07
+Version:      8.00
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list ics-ssl@elists.org
               Follow "SSL" link at http://www.overbyte.be for subscription.
@@ -48,9 +48,11 @@ Oct 22, 2005  V1.03 Arno Garrels implemented client-side SSL session caching,
 Nov 08, 2005  V1.04 Arno Garrels adjusted a few type casts in some event
               handlers. Put in OpenSSL version info.
 Dec 20, 2005  V1.05 Angus Robertson added new LogOptions and GZIP decompression
-                and display more log lines 
+                and display more log lines
 Jul 18, 2008  V1.06 A. Garrels fixed an AV in SslHttpCli1SslCliCertRequest
-               
+May 2012 - V8.00 - Arno converted demo for FireMonkey cross platform Mac
+                   OS X support, now XE2 and later only uising FMX components
+
 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
@@ -102,10 +104,10 @@ uses
 
 
 const
-     HttpsTstVersion     = 107;
+     HttpsTstVersion     = 800;
      HttpsTstDate        = 'Dec 21, 2005';
      HttpsTstName        = 'HttpsTst';
-     CopyRight : String  = ' HttpsTst (c) 2005-2011 Francois Piette V1.07.0 ';
+     CopyRight : String  = ' HttpsTst (c) 2005-2012 Francois Piette V8.00 ';
 
      WM_SSL_NOT_TRUSTED  = WM_USER + 1;
 
