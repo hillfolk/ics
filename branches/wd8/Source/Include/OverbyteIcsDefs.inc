@@ -7,7 +7,7 @@ Version:      8.00
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
-Legal issues: Copyright (C) 1996-2006 by François PIETTE
+Legal issues: Copyright (C) 1996-2012 by François PIETTE
               Rue de Grady 24, 4053 Embourg, Belgium.
               <francois.piette@overbyte.be>
 
@@ -206,7 +206,7 @@ May 2012 - V8.00 - Arno added FireMonkey cross platform support with POSIX/MacOS
 {$DEFINE VER_UNKNOWN}
 
 {$IFDEF VER240}
-  {.$UNDEF VER_UNKNOWN}
+  {$UNDEF VER_UNKNOWN}
   {$DEFINE COMPILER17}
   {$IFDEF BCB}
     {$DEFINE BCB17}
@@ -380,11 +380,11 @@ May 2012 - V8.00 - Arno added FireMonkey cross platform support with POSIX/MacOS
 {$ENDIF}
 
 {$IFDEF VER_UNKNOWN}   { If the compiler version is not detected define latest }
-  {$DEFINE COMPILER16} { supported compiler version.                           }
+  {$DEFINE COMPILER17} { supported compiler version.                           }
   {$IFDEF BCB}
-    {$DEFINE BCB16}
+    {$DEFINE BCB17}
   {$ELSE}
-    {$DEFINE DELPHI16}
+    {$DEFINE DELPHI17}
     {$DEFINE DELPHI}
   {$ENDIF}
 {$ENDIF}
@@ -944,10 +944,6 @@ May 2012 - V8.00 - Arno added FireMonkey cross platform support with POSIX/MacOS
   { Since Fulcrum always OFF and ignored }
   {$STRINGCHECKS OFF}
   { No string checks in pure Delphi code }
-{$ENDIF}
-
-{$IFDEF COMPILER17_UP}
-  {$LEGACYIFEND ON}
 {$ENDIF}
 
 { ICS SSL code doesn't work with FPC }
