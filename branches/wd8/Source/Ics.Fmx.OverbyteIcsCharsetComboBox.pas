@@ -213,12 +213,18 @@ begin
 end;
 
 procedure TIcsCharsetComboBox.SetUserFriendly(const Value: Boolean);
+var
+    LOldCharset: string;
 begin
     if Value <> FUserFriendly then
     begin
         FUserFriendly := Value;
         PopulateItems;
-        SetCharSet(FCharSet);
+        LOldCharset := FCharSet;
+      {$IFDEF COMPILER17_UP}
+        FCharSet := '';
+      {$ENDIF}
+        SetCharSet(LOldCharset);
     end;
 end;
 
