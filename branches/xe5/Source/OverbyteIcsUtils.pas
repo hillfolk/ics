@@ -147,6 +147,9 @@ interface
 {$H+}           { Use long strings                    }
 {$J+}           { Allow typed constant to be modified }
 {$R-}           { no range checking, otherwise DWORD=Integer fails with some Windows APIs }
+{$IFDEF ANDROID}
+  {$DEFINE PUREPASCAL}
+{$ENDIF}
 {$I Include\OverbyteIcsDefs.inc}
 {$IFDEF COMPILER14_UP}
   {$IFDEF NO_EXTENDED_RTTI}
@@ -191,9 +194,10 @@ uses
 {$IFDEF COMPILER16_UP}
     System.SyncObjs,
 {$ENDIF}
-{$IFDEF COMPILER18_UP}
+{$IFDEF COMPILER18}
     AnsiStrings,
 {$ENDIF}
+    OverbyteIcsAnsiStrings,
     OverbyteIcsMD5, OverbyteIcsTypes; // for TBytes and TThreadID
 
 type
@@ -308,7 +312,6 @@ const
     function  IcsGetLocalTimeZoneBias: LongInt;
     function  IcsDateTimeToUTC (dtDT: TDateTime): TDateTime;
     function  IcsUTCToDateTime (dtDT: TDateTime): TDateTime;
-    function  IcsGetTickCount: LongWord;
     function  IcsWcToMb(CodePage: LongWord; Flags: Cardinal;
                         WStr: PWideChar; WStrLen: Integer; MbStr: PAnsiChar;
                         MbStrLen: Integer; DefaultChar: PAnsiChar;
@@ -360,7 +363,6 @@ const
     function  atoi64(const Str: RawByteString): Int64; overload;
     function  atoi64(const Str: UnicodeString): Int64; overload;
 {$ENDIF}
-    function  IcsCalcTickDiff(const StartTick, EndTick: LongWord): LongWord; {$IFDEF USE_INLINE} inline; {$ENDIF}
     function  StringToUtf8(const Str: UnicodeString): RawByteString; {$IFDEF USE_INLINE} inline; {$ENDIF} overload;
     function  StringToUtf8(const Str: RawByteString; ACodePage: LongWord = CP_ACP): RawByteString; {$IFDEF USE_INLINE} inline; {$ENDIF} overload;
     function  Utf8ToStringW(const Str: RawByteString): UnicodeString; {$IFDEF USE_INLINE} inline; {$ENDIF}
@@ -426,7 +428,6 @@ const
     procedure IcsSwap32Buf(Src, Dst: PLongWord; LongWordCount: Integer);
     function  IcsSwap64(Value: Int64): Int64;
     procedure IcsSwap64Buf(Src, Dst: PInt64; QuadWordCount: Integer);
-    procedure IcsNameThreadForDebugging(AThreadName: AnsiString; AThreadID: TThreadID = TThreadID(-1));
     function  IcsNormalizeString(const S: UnicodeString; NormForm: TIcsNormForm): UnicodeString;
     function IcsCryptGenRandom(var Buf; BufSize: Integer): Boolean;
     function IcsRandomInt(const ARange: Integer): Integer;
@@ -492,7 +493,6 @@ const
     function IcsHiByte(W: Word): Byte; {$IFDEF USE_INLINE} inline; {$ENDIF}
     function IcsLoByte(W: Word): Byte; {$IFDEF USE_INLINE} inline; {$ENDIF}
     function IcsLoWord(LW: LongWord): Word; {$IFDEF USE_INLINE} inline; {$ENDIF}
-    procedure IcsCheckOSError(ALastError: Integer); {$IFDEF USE_INLINE} inline; {$ENDIF}
 
 { Moved from OverbyteIcsLibrary.pas prefix "_" replaced by "Ics" }
     function IcsIntToStrA(N : Integer): AnsiString;
@@ -575,27 +575,18 @@ type
                                                     write SetItem; default;
     end;
 
-    TIcsCriticalSection = class
-    protected
-        FSection: {$IFDEF MSWINDOWS} TRTLCriticalSection; {$ELSE} pthread_mutex_t; {$ENDIF}
-    public
-        constructor Create;
-        destructor Destroy; override;
-        procedure Enter; {$IFDEF USE_INLINE} inline; {$ENDIF}
-        procedure Leave; {$IFDEF USE_INLINE} inline; {$ENDIF}
-        function TryEnter: Boolean;
-    end;
-
 implementation
 
+var
+    DefaultFailChar     : AnsiChar;
+    IcsPathDelimA       : AnsiChar;
+
 const
-    DefaultFailChar : AnsiChar  = '?';
     MAX_UTF8_SIZE       = 4;
 
     IcsPathDelimW       : WideChar  = {$IFDEF MSWINDOWS} '\'; {$ELSE} '/'; {$ENDIF}
     IcsPathSepW         : WideChar  = {$IFDEF MSWINDOWS} ';'; {$ELSE} ':'; {$ENDIF}
     IcsPathDriveDelimW  : PWideChar = {$IFDEF MSWINDOWS} '\:';{$ELSE} '/'; {$ENDIF}
-    IcsPathDelimA       : AnsiChar  = {$IFDEF MSWINDOWS} '\'; {$ELSE} '/'; {$ENDIF}
 {$IFDEF MSWINDOWS}
     IcsDriveDelimW      : WideChar  =  ':';
 {$ENDIF}
@@ -613,7 +604,7 @@ var
 type
     TCpAlias = record
         C : LongWord;
-        A : AnsiString;
+        A : String;
     end;
 
 const
@@ -684,6 +675,7 @@ const
 function IcsIconvNameFromCodePage(CodePage: LongWord): AnsiString;
 var
     L, H, I: Integer;
+    Res     : String;
 begin
     if CodePage = CP_ACP then
         IcsGetAcp(CodePage);
@@ -702,14 +694,14 @@ begin
                 H := I - 1;
                 if IconvCodepageMapping[I].C = CodePage then
                 begin
-                    Result := IconvCodepageMapping[I].A;
+                    Result := AnsiString(IconvCodepageMapping[I].A);
                     Exit;
                 end;
             end;
         end;
     end;
-    Str(CodePage, Result);
-    Result := 'CP' + Result;
+    Str(CodePage, Res);
+    Result := AnsiString('CP' + Res);
 end;
 {$ENDIF}
 
@@ -754,6 +746,12 @@ begin
 end;
 {$ENDIF}
 {$IFDEF POSIX}
+{$IFDEF ANDROID}
+{ Iconv functions not implement in Android }
+begin
+    Result := TRUE;  // Arno, it this correct ?
+end;
+{$ELSE}
 var
     Ctx: iconv_t;
 begin
@@ -770,17 +768,19 @@ begin
     end;
 end;
 {$ENDIF}
+{$ENDIF}
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure IcsCharLowerA(var ACh: AnsiChar);
 begin
-    if ACh in [#$41..#$5A] then
-        ACh := AnsiChar(Ord(ACh) + 32);
+    if AnsiCharInSet(ACh, [#$41..#$5A]) then
+        ACh := AnsiChar(AnsiOrd(ACh) + 32);
 end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+// Warning: Duplicated in OverbyteIcsWndCntrol
 function  IcsGetCurrentThreadID: TThreadID;
 begin
   {$IFDEF MSWINDOWS}
@@ -791,28 +791,6 @@ begin
   {$ENDIF}
 end;
 
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function IcsGetTickCount: LongWord;
-{$IFDEF MSWINDOWS}
-begin
-    Result := Windows.GetTickCount;
-end;
-{$ENDIF}
-{$IFDEF POSIX}
-{$IFDEF LINUX}
-var
-    t: tms;
-begin
-    Result := Cardinal(Int64(Cardinal(times(t)) * 1000) div sysconf(_SC_CLK_TCK));
-end;
-{$ENDIF}
-{$IFDEF MACOS}
-begin
-    Result := AbsoluteToNanoseconds(UpTime) div 1000000;
-end;
-{$ENDIF MACOS}
-{$ENDIF POSIX}
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 function IcsGetFreeDiskSpace(const APath: String): Int64;
@@ -826,6 +804,10 @@ begin
         Result := -1;
 {$ENDIF}
 {$IFDEF POSIX}
+{$IFDEF ANDROID}
+begin
+    raise Exception.Create('IcsGetFreeDiskSpace not implemented yet');
+{$ELSE}
 var
     FN  : RawByteString; // Path or file name
     Buf : _statvfs;
@@ -835,6 +817,7 @@ begin
         Result := Int64(Buf.f_bfree) * Buf.f_frsize
     else
         Result := -1;
+{$ENDIF}
 {$ENDIF}
 end;
 
@@ -942,6 +925,11 @@ end;
 function IcsWcToMb(CodePage: LongWord; Flags: Cardinal; WStr: PWideChar;
   WStrLen: Integer; MbStr: PAnsiChar; MbStrLen: Integer; DefaultChar: PAnsiChar;
   UsedDefaultChar: PLongBool): Integer;
+{$IFDEF ANDROID}
+begin
+    raise Exception.Create('IcsWcToMb not implemented yet');
+end;
+{$ELSE}
 var
     CntOnly : Boolean;
     SBuf: array [0..255] of Byte;
@@ -1064,11 +1052,17 @@ begin
         iconv_close(Ctx);
     end;
 end;
+{$ENDIF}
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 function IcsMbToWc(CodePage: LongWord; Flags: Cardinal; MbStr: PAnsiChar;
   MbStrLen: Integer; WStr: PWideChar; WStrLen: Integer): Integer;
+{$IFDEF ANDROID}
+begin
+    raise Exception.Create('IcsMbToWc not implemented yet');
+end;
+{$ELSE}
 var
     CntOnly : Boolean;
     SBuf: array [0..255] of Byte;
@@ -1180,6 +1174,7 @@ begin
     end;
 end;
 {$ENDIF}
+{$ENDIF}
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
@@ -1242,25 +1237,25 @@ end;
 function IcsIsDBCSLeadByte(Ch: AnsiChar; CodePage: LongWord): Boolean;
 begin
     case CodePage of
-        932   : Result := Ch in ICS_LEAD_BYTES_932;
+        932   : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_932);
         936,
         949,
-        950   : Result := Ch in ICS_LEAD_BYTES_936_949_950;
-        1361  : Result := Ch in ICS_LEAD_BYTES_1361;
-        10001 : Result := Ch in ICS_LEAD_BYTES_10001;
-        10002 : Result := Ch in ICS_LEAD_BYTES_10002;
-        10003 : Result := Ch in ICS_LEAD_BYTES_10003;
-        10008 : Result := Ch in ICS_LEAD_BYTES_10008;
-        20000 : Result := Ch in ICS_LEAD_BYTES_20000;
-        20001 : Result := Ch in ICS_LEAD_BYTES_20001;
-        20002 : Result := Ch in ICS_LEAD_BYTES_20002;
-        20003 : Result := Ch in ICS_LEAD_BYTES_20003;
-        20004 : Result := Ch in ICS_LEAD_BYTES_20004;
-        20005 : Result := Ch in ICS_LEAD_BYTES_20005;
-        20261 : Result := Ch in ICS_LEAD_BYTES_20261;
-        20932 : Result := Ch in ICS_LEAD_BYTES_20932;
-        20936 : Result := Ch in ICS_LEAD_BYTES_20936;
-        51949 : Result := Ch in ICS_LEAD_BYTES_51949;
+        950   : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_936_949_950);
+        1361  : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_1361);
+        10001 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_10001);
+        10002 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_10002);
+        10003 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_10003);
+        10008 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_10008);
+        20000 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_20000);
+        20001 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_20001);
+        20002 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_20002);
+        20003 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_20003);
+        20004 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_20004);
+        20005 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_20005);
+        20261 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_20261);
+        20932 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_20932);
+        20936 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_20936);
+        51949 : Result := AnsiCharInSet(Ch, ICS_LEAD_BYTES_51949);
     else
         Result := FALSE;
     end;
@@ -1470,12 +1465,12 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function IsUsAscii(const Str: RawByteString): Boolean;
+function IsUsAscii(const Str: UnicodeString): Boolean;
 var
     I : Integer;
 begin
     for I := 1 to Length(Str) do
-        if Byte(Str[I]) > 127 then begin
+        if Ord(Str[I]) > 127 then begin
             Result := FALSE;
             Exit;
         end;
@@ -1484,12 +1479,12 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function IsUsAscii(const Str: UnicodeString): Boolean;
+function IsUsAscii(const Str: RawByteString): Boolean;
 var
     I : Integer;
 begin
-    for I := 1 to Length(Str) do
-        if Ord(Str[I]) > 127 then begin
+    for I := 1 to RawByteStringLength(Str) do
+        if Byte(Str[I]) > 127 then begin
             Result := FALSE;
             Exit;
         end;
@@ -1507,7 +1502,7 @@ var
     Len : Integer;
 begin
     Len := Length(Str);
-    SetLength(Result, Len);
+    AnsiSetLength(Result, Len);
     for I := 1 to Len do begin
         if Ord(Str[I]) > 127 then
             Result[I] := FailCh
@@ -1526,19 +1521,22 @@ end;
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 { Converts an UnicodeString to an AnsiString.                                 }
-function UnicodeToAnsi(const Str: UnicodeString; ACodePage: LongWord; SetCodePage: Boolean = False): RawByteString;
+function UnicodeToAnsi(
+    const Str   : UnicodeString;
+    ACodePage   : LongWord;
+    SetCodePage : Boolean = False): RawByteString;
 var
     Len, Len2 : Integer;
 begin
     Len := Length(Str);
     if Len > 0 then begin
         Len := IcsWcToMb(ACodePage, 0, Pointer(Str), Len, nil, 0, nil, nil);
-        SetLength(Result, Len);
+        RawByteStringSetLength(Result, Len);
         if Len > 0 then begin
             Len2 := IcsWcToMb(ACodePage, 0, Pointer(Str), Length(Str),
                                 Pointer(Result), Len, nil, nil);
             if Len2 <> Len then // May happen, very rarely
-                SetLength(Result, Len2);                    
+                RawByteStringSetLength(Result, Len2);
         {$IFDEF COMPILER12_UP}
             if SetCodePage and (ACodePage <> CP_ACP) then
                 PWord(INT_PTR(Result) - 12)^ := ACodePage;
@@ -1594,14 +1592,14 @@ begin
     if (Str <> nil) then begin
         Len := IcsWcToMb(ACodePage, 0, Str, -1, nil, 0, nil, nil);
         if Len > 1 then begin // counts the null-terminator
-            SetLength(Result, Len - 1);
+            RawByteStringSetLength(Result, Len - 1);
             Len2 := IcsWcToMb(ACodePage, 0, Str, -1,
                                 Pointer(Result), Len,
                                 nil, nil);
             if Len2 <> Len then // May happen, very rarely
             begin
                 if Len2 > 0 then
-                    SetLength(Result, Len2 - 1)
+                    RawByteStringSetLength(Result, Len2 - 1)
                 else
                     Result := '';
             end;
@@ -1623,14 +1621,15 @@ function AnsiToUnicode(const Str: RawByteString; ACodePage: LongWord): UnicodeSt
 var
     Len, Len2 : Integer;
 begin
-    Len := Length(Str);
+    Len := RawByteStringLength(Str);
     if Len > 0 then begin
         Len := IcsMbToWc(ACodePage, 0, Pointer(Str),
                                    Len, nil, 0);
         SetLength(Result, Len);
         if Len > 0 then
         begin
-            Len2 := IcsMbToWc(ACodePage, 0, Pointer(Str), Length(Str),
+            Len2 := IcsMbToWc(ACodePage, 0, Pointer(Str),
+                              RawByteStringLength(Str),
                                 Pointer(Result), Len);
             if Len2 <> Len then // May happen, very rarely
                 SetLength(Result, Len2);
@@ -1654,9 +1653,9 @@ var
     I  : Integer;
     P  : PSmallInt;
 begin
-    SetLength(Result, Length(Str));
+    SetLength(Result, RawByteStringLength(Str));
     P := Pointer(Result);
-    for I := 1 to Length(Str) do begin
+    for I := 1 to RawByteStringLength(Str) do begin
         if Byte(Str[I]) > 127 then
             P^ := Byte(FailCh)
         else
@@ -2601,16 +2600,6 @@ end;
 {$ENDIF}
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function IcsCalcTickDiff(const StartTick, EndTick : LongWord): LongWord;
-begin
-    if EndTick >= StartTick then
-        Result := EndTick - StartTick
-    else
-        Result := High(LongWord) - StartTick + EndTick;
-end;
-
-
-{ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * }
 function StringToUtf8(const Str: UnicodeString): RawByteString;
 begin
     Result := UnicodeToAnsi(Str, CP_UTF8, True);
@@ -3208,38 +3197,6 @@ begin
     Result := PValue;
     while IsSpaceOrCRLF(Result^) do
         Inc(Result);
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure IcsNameThreadForDebugging(AThreadName: AnsiString; AThreadID: TThreadID);
-{$IFNDEF COMPILER14_UP}
-type
-    TThreadNameInfo = record
-        FType: LongWord;     // must be 0x1000
-        FName: PAnsiChar;    // pointer to name (in user address space)
-        FThreadID: LongWord; // thread ID (-1 indicates caller thread)
-        FFlags: LongWord;    // reserved for future use, must be zero
-    end;
-var
-    ThreadNameInfo: TThreadNameInfo;
-begin
-    if IsDebuggerPresent then
-    begin
-        ThreadNameInfo.FType := $1000;
-        ThreadNameInfo.FName := PAnsiChar(AThreadName);
-        ThreadNameInfo.FThreadID := AThreadID;
-        ThreadNameInfo.FFlags := 0;
-        try
-            RaiseException($406D1388, 0,
-                  SizeOf(ThreadNameInfo) div SizeOf(LongWord), @ThreadNameInfo);
-        except
-        end;
-    end;
-{$ELSE}
-begin
-    TThread.NameThreadForDebugging(AThreadName, AThreadID);
-{$ENDIF}
 end;
 
 
@@ -3859,20 +3816,6 @@ end;
 function IcsLoByte(W: Word): Byte;
 begin
     Result := Byte(W);
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure IcsCheckOSError(ALastError: Integer);
-var
-    Error: EOSError;
-begin
-    if ALastError <> 0 then begin
-        Error := EOSError.CreateResFmt(@SOSError, [ALastError,
-                                       SysErrorMessage(ALastError)]);
-        Error.ErrorCode := ALastError;
-        raise Error;
-    end;
 end;
 
 
@@ -5067,73 +5010,9 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-constructor TIcsCriticalSection.Create;
-{$IFDEF POSIX}
-var
-    LAttr: pthread_mutexattr_t;
-{$ENDIF}
-begin
-    inherited;
-  {$IFDEF MSWINDOWS}
-    InitializeCriticalSection(FSection);
-  {$ENDIF}
-  {$IFDEF POSIX}
-    IcsCheckOSError(pthread_mutexattr_init(LAttr));
-    IcsCheckOSError(pthread_mutexattr_settype(LAttr, PTHREAD_MUTEX_RECURSIVE));
-    IcsCheckOSError(pthread_mutex_init(FSection, LAttr));
-    pthread_mutexattr_destroy(LAttr);
-  {$ENDIF}
-end;
 
+initialization
+    DefaultFailChar := '?';
+    IcsPathDelimA   := {$IFDEF MSWINDOWS} '\'; {$ELSE} '/'; {$ENDIF}
 
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-destructor TIcsCriticalSection.Destroy;
-begin
-  {$IFDEF MSWINDOWS}
-    DeleteCriticalSection(FSection);
-  {$ENDIF}
-  {$IFDEF POSIX}
-    pthread_mutex_destroy(FSection);
-  {$ENDIF}
-    inherited;
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure TIcsCriticalSection.Enter;
-begin
-  {$IFDEF MSWINDOWS}
-    EnterCriticalSection(FSection);
-  {$ENDIF}
-  {$IFDEF POSIX}
-    IcsCheckOSError(pthread_mutex_lock(FSection));
-  {$ENDIF}
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure TIcsCriticalSection.Leave;
-begin
-  {$IFDEF MSWINDOWS}
-    LeaveCriticalSection(FSection);
-  {$ENDIF}
-  {$IFDEF POSIX}
-    IcsCheckOSError(pthread_mutex_unlock(FSection));
-  {$ENDIF}
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function TIcsCriticalSection.TryEnter: Boolean;
-begin
-  {$IFDEF MSWINDOWS}
-    Result := TryEnterCriticalSection(FSection);
-  {$ENDIF}
-  {$IFDEF POSIX}
-    Result := pthread_mutex_trylock(FSection) = 0;
-  {$ENDIF}
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 end.

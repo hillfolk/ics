@@ -71,7 +71,8 @@ uses
   {$ENDIF}
 {$ENDIF}
   Ics.Posix.WinTypes,
-  OverbyteIcsUtils,
+  //OverbyteIcsUtils,
+  OverbyteIcsSysUtils,
   OverbyteIcsAvlTrees;
 
 const
@@ -118,6 +119,12 @@ type
 
   EIcsMessagePump = class(Exception);
   EIcsMessageQueueFull = class(EIcsMessagePump);
+
+{$IFDEF ANDROID}
+  CFRunLoopRef         = NativeInt;
+  CFRunLoopSourceRef   = NativeInt;
+  CFRunLoopObserverRef = NativeInt;
+{$ENDIF}
 
   TWndMethod = procedure (var Msg: TMessage) of object;
 

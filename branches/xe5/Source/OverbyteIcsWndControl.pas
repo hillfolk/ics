@@ -380,6 +380,42 @@ threadvar
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *} { V1.14 }
+// Extracted from OverbyteIcsUtils to avoid including the whole unit here
+function  IcsGetCurrentThreadID: TThreadID;
+begin
+  {$IFDEF MSWINDOWS}
+    Result := Windows.GetCurrentThreadID;
+  {$ENDIF}
+  {$IFDEF POSIX}
+    Result := Posix.PThread.GetCurrentThreadID;
+  {$ENDIF}
+end;
+
+
+{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+// Extracted from OverbyteIcsUtils to avoid including the whole unit here
+function IcsGetTickCount: LongWord;
+{$IFDEF MSWINDOWS}
+begin
+    Result := Windows.GetTickCount;
+end;
+{$ENDIF}
+{$IFDEF POSIX}
+{$IFDEF LINUX}
+var
+    t: tms;
+begin
+    Result := Cardinal(Int64(Cardinal(times(t)) * 1000) div sysconf(_SC_CLK_TCK));
+end;
+{$ENDIF}
+{$IFDEF MACOS}
+begin
+    Result := AbsoluteToNanoseconds(UpTime) div 1000000;
+end;
+{$ENDIF MACOS}
+{$ENDIF POSIX}
+
+{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure SetIcsThreadLocalFinalBgExceptionHandling(
   const Value: TIcsFinalBgExceptionHandling);
 begin
