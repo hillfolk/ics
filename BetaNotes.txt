@@ -1,0 +1,138 @@
+﻿06/05/2012 **** BREAKING CHANGE **** 
+
+The directory structure has changed to:
+
+.\                                    Info directory
+.\Install                             Component packages project groups for all versions
+.\Packages        (was Delphi\Vc32)   Delphi (7 and up) and C++Builder (2006 and up) packages projects
+.\Source          (was Delphi\Vc32)   ICS Delphi source code 
+.\Source\Include  (was Delphi\Vc32)   .inc files (including OverbyteIcsDefs.inc)
+
+.\Lib                                 Unit output directories for all package builds, subdirectories
+    |                                 for 2007+ will be created on building the packages 
+  \$(Config)                          Release / Debug
+      |
+	\$(Platform)                      Win32 / Win64 / OSX32
+        |
+	  \<delphi_version>               D7..XE2 includes .dcu and .dfm files for Delphi
+	                                  and .obj and .hpp files for C++ Builder
+	  
+.\Samples\delphi\internet             Delphi Win32/Win64 sample applications (all Delphi versions)
+.\Samples\delphi\sslinternet          Delphi Win32/Win64 SSL-enabled sample applications (all Delphi versions)
+.\Samples\delphi\PlatformDemos        Delphi FireMonkey and cross-platform samples (Delphi XE2+)
+.\Samples\delphi\internet\WebServData Directory for WebServ demo data files
+.\Samples\cpp\internet                C++Builder sample applications
+.\Samples\cpp\internet\cb2006         C++Builder 2006 projects
+.\Samples\cpp\internet\cb2007         C++Builder 2007 projects
+.\Samples\cpp\internet\cb2009         C++Builder 2009 projects
+.\Samples\cpp\internet\cb2010         C++Builder 2010 projects
+.\Samples\cpp\internet\cbXE           C++Builder XE projects
+.\Samples\cpp\internet\cbXE2          C++Builder XE2 projects
+
+Also read ReadMe8.txt "UPGRADING and REINSTALLING"
+
+
+06/04/2012 **** BREAKING CHANGE ****
+------------------------------------
+TFtpClient
+Request type of two methods changed/corrected:
+1) ConnectFeatAsync() from ftpConnectAsync to ftpConnectFeatAsync.
+2) ConnectFeatHostAsync() from ftpConnectHostAsync to ftpConnectFeatHostAsync.
+These changes may require to adjust your OnRequestDone handler.
+
+24/02/2012
+----------
+Added Install\CBXE2InstallVclFmx.groupproj, note that building 
+the C++ packages for OSX still triggers an ILINK32 error, this 
+is a bug in C++ Builder reported as QC #103668 the Win32 packages
+should build without errors.  
+
+15/02/2012
+----------
+New alternate packages in order to support FireMonkey better,
+both in the IDE and at run-time with run-time packages.
+In order to use this feature first uninstall the old VCL design-time
+package for XE2. Then open Install\DXe2InstallVclFmx.groupproj and
+build all three run-time packages for all available platforms in
+the order they are listed in project manager. Next build and install
+the three design-time packages in the order they are listed in 
+project manager. Note that the new packaging is still beta/alpha,
+both package names and included units might change in a future beta
+drop. The old VCL packages are still there however they do no longer
+support FireMonkey and of course only one set of packages can be 
+installed in the IDE at the same time, if you want both VCL and FMX
+install DXe2InstallVclFmx.groupproj only. Currently the XE2 package
+cache is buggy and should be disabled by adding the -nocache parameter
+to the shortcut that starts bds.exe. 
+ 
+Conditional define "FMX" is *no longer required* in the project options.
+Instead in your existing ICS FireMonkey app. add either "Ics.Fmx" to the
+unit scope names in project options or apply the following changes in 
+the uses clause, rename:
+
+OverbyteIcsWndControl              -> Ics.Fmx.OverbyteIcsWndControl
+OverbyteIcsWSocket                 -> Ics.Fmx.OverbyteIcsWSocket
+OverbyteIcsFtpCli                  -> Ics.Fmx.OverbyteIcsFtpCli
+OverbyteIcsFtpSrv                  -> Ics.Fmx.OverbyteIcsFtpSrv
+OverbyteIcsHttpProt                -> Ics.Fmx.OverbyteIcsHttpProt
+OverbyteIcsWSocketS                -> Ics.Fmx.OverbyteIcsWSocketS
+OverbyteIcsSmtpProt                -> Ics.Fmx.OverbyteIcsSmtpProt.pas
+OverbyteIcsPop3Prot                -> Ics.Fmx.OverbyteIcsPop3Prot.pas
+OverbyteIcsNntpCli                 -> Ics.Fmx.OverbyteIcsNntpCli.pas
+OverbyteIcsPing                    -> Ics.Fmx.OverbyteIcsPing.pas
+OverbyteIcsDnsQuery                -> Ics.Fmx.OverbyteIcsDnsQuery.pas
+OverbyteIcsFingCli                 -> Ics.Fmx.OverbyteIcsFingCli.pas
+OverbyteIcsSslSessionCache         -> Ics.Fmx.OverbyteIcsSslSessionCache.pas
+OverbyteIcsSslThrdLock             -> Ics.Fmx.OverbyteIcsSslThrdLock.pas
+OverbyteIcsHttpSrv                 -> Ics.Fmx.OverbyteIcsHttpSrv.pas
+OverbyteIcsSocketUtils             -> Ics.Fmx.OverbyteIcsSocketUtils.pas
+OverbyteIcsMultipartFtpDownloader  -> Ics.Fmx.OverbyteIcsMultipartFtpDownloader.pas
+OverbyteIcsMultipartHttpDownloader -> Ics.Fmx.OverbyteIcsMultipartHttpDownloader.pas
+OverbyteIcsHttpAppServer           -> Ics.Fmx.OverbyteIcsHttpAppServer.pas
+OverbyteIcsThreadTimer             -> Ics.Fmx.OverbyteIcsThreadTimer.pas
+OverbyteIcsCharsetComboBox         -> Ics.Fmx.OverbyteIcsCharsetComboBox.pas
+{ Demo units }
+OverbyteIcsWebAppServerCounter     -> Ics.Fmx.OverbyteIcsWebAppServerCounter
+OverbyteIcsWebAppServerMailer      -> Ics.Fmx.OverbyteIcsWebAppServerMailer
+
+The list above is also the list of units that now have different names in 
+the FireMonkey framework however most of them share the same source source
+file. 
+
+Dropping a ICS component on the form will add the correct unit name for
+each framework automatically (don't forget to disable the package cache
+as discribed above).         
+
+Unit OverbyteIcsLibrary.pas has been *deprecated* and ICS IPv6 doesn't
+use it anymore. If you used it in your own code read the comment in 
+OverbyteIcsLibrary.pas, search for "deprecated".
+
+-- 
+Arno Garrels
+
+12/11/2011
+----------
+
+This is the first ICS beta version that runs on MacOS and FireMonkey.
+Not all units have been ported yet and currently MacOS support
+has been tested in Delphi only C++ Builder is not yet looked at.
+
+Folder \Delphi\PlatformDemos contains some FireMonkey and
+cross platform console applications, they have been ported
+from their original windows versions.
+
+It is very important that you add conditional define "FMX" to
+any FireMonkey application's project options for _all platforms
+otherwise most of the ICS components won't compile.
+
+Currently ICS components can only be dropped on a FireMonkey form
+if one of the Windows platform targets is active in project manager,
+when OSX target is active ICS components on the Tool Palette are
+greyed out. 
+
+Enjoy
+
+Arno Garrels
+
+ 
+ 
