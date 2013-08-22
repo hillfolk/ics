@@ -93,7 +93,8 @@ uses
 {$ELSE}
   OverbyteIcsWndControl,
 {$ENDIF}
-  OverbyteIcsUtils;
+  OverbyteIcsSysUtils;
+//  OverbyteIcsUtils;
 
 type
   TIcsClock = class;

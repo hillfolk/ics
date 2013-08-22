@@ -92,8 +92,10 @@ unit OverbyteIcsMD5;
 interface
 
 uses
-    SysUtils, Classes,
-    OverbyteIcsTypes;   // For TBytes
+    SysUtils, Classes
+    ,OverbyteIcsTypes   // For TBytes
+    ,OverbyteIcsAnsiStrings
+    ;
 
 const
     MD5Version         = 800;
@@ -198,6 +200,11 @@ procedure HMAC_MD5(const Buffer; BufferSize: Integer; const Key; KeySize: Intege
 {$ENDIF}
 
 procedure MD5DigestInit (var MD5Digest: TMD5Digest);                { V6.09 }
+
+{$IFDEF MD5_SELF_TEST}
+type TSelfTestDisplayProc = procedure (const Msg : String) of object;
+function MD5UnitTest(DisplayProc : TSelfTestDisplayProc) : Boolean;
+{$ENDIF}
 
 implementation
 
@@ -476,7 +483,7 @@ end;
 procedure MD5UpdateBuffer(
     var MD5Context: TMD5Context;
     const Buffer: TBytes;
-    BufSize: Integer);
+    BufSize: Integer); overload;
 var
     BufTmp : TBytes;
     BufPtr : Integer;
@@ -501,7 +508,7 @@ end;
 
 procedure MD5UpdateBuffer(
     var MD5Context : TMD5Context;
-    const Buffer   : String);
+    const Buffer   : String); overload;
 var
     BufTmp : TBytes;
     Bytes  : Integer;
@@ -549,7 +556,7 @@ procedure MD5UpdateBuffer(
     var MD5Context : TMD5Context;
     const Buffer   : AnsiString);
 begin
-    MD5UpdateBuffer(MD5Context, Pointer(Buffer), Length(Buffer));
+    MD5UpdateBuffer(MD5Context, Pointer(Buffer), AnsiLength(Buffer));
 end;
 {$ENDIF}
 
@@ -577,6 +584,10 @@ end;
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 {$IFNDEF SAFE}
 function MD5DigestToHex (const MD5Digest: TMD5Digest): AnsiString;  { V7.01 }
+begin
+     Result := AnsiBytesToHexUpper(@MD5Digest, SizeOf(TMD5Digest));
+end;
+(* OLD CODE
 const
     HexTable : array[0..15] of AnsiChar =
     ('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
@@ -591,10 +602,15 @@ begin
         P[I * 2 + 1] := HexTable[MD5Digest[I] and 15];
     end;
 end;
+*)
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 function MD5DigestToLowerHexA(const MD5Digest: TMD5Digest): RawByteString;
+begin
+     Result := AnsiBytesToRawByteHexLower(@MD5Digest, SizeOf(TMD5Digest));
+end;
+(* OLD CODE
 const                                                  { V7.01 } { V7.02 }
     HexTable : array[0..15] of AnsiChar =
     ('0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f');
@@ -609,6 +625,7 @@ begin
         P[I * 2 + 1] := HexTable[MD5Digest[I] and $0F];
     end;
 end;
+*)
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
@@ -731,13 +748,18 @@ begin
 end;
 {$ELSE}
 begin
-    Result := GetMD5(@Buffer[1], Length(Buffer));
+    Result := GetMD5(PAnsiChar(Buffer), AnsiLength(Buffer));
 end;
 {$ENDIF}
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}  { V6.09 }
-procedure StreamMD5Context(Stream: TStream; Obj: TObject; ProgressCallback : TMD5Progress;
-                      StartPos, EndPos: Int64; var MD5Context: TMD5Context);
+procedure StreamMD5Context(
+    Stream           : TStream;
+    Obj              : TObject;
+    ProgressCallback : TMD5Progress;
+    StartPos         : Int64;
+    EndPos           : Int64;
+    var MD5Context   : TMD5Context);
 const
     ChunkSize : Cardinal = 102400;
 var
@@ -1051,37 +1073,27 @@ const
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-function MD5SelfTest(Verbose : Boolean) : Boolean;
+// Returns FALSE if all tests are passed. returns TRUE if one test failed
+function MD5UnitTest(DisplayProc : TSelfTestDisplayProc) : Boolean;
 var
     I      : Integer;
     MD5Sum : String;
     Buf    : String;
 begin
-    for I := 0 to 6 do begin
-        if Verbose then
+    for I := Low(MD5TestStrings) to High(MD5TestStrings) do begin
+        if Assigned(DisplayProc) then
             Buf := 'MD5 test #' + IntToStr(I + 1) + ': ';
         MD5Sum := StrMD5(MD5TestStrings[I]);
         if not SameText(MD5Sum, MD5TestResults[I]) then begin
-            if Verbose then
-                Form1.Memo1.Lines.Add(Buf + 'failed');
+            if Assigned(DisplayProc) then
+                DisplayProc(Buf + 'failed');
             Result := TRUE;
             Exit;
         end;
-        if Verbose then
-            Form1.Memo1.Lines.Add(Buf + 'passed');
+        if Assigned(DisplayProc) then
+            DisplayProc(Buf + 'passed');
     end;
     Result := FALSE;
-end;
-
-
-{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
-procedure TForm1.RunButtonClick(Sender: TObject);
-begin
-    Form1.Memo1.Clear;
-    if MD5SelfTest(TRUE) then
-        Form1.Memo1.Lines.Add('MD5 library failed')
-    else
-        Form1.Memo1.Lines.Add('MD5 library passed');
 end;
 
 

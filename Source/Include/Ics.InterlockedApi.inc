@@ -1,3 +1,37 @@
+{$IFDEF ANDROID}
+
+function InterlockedIncrement(var Addend: LongInt): LongInt;
+begin
+    Result := AtomicIncrement(Addend);
+end;
+
+function InterlockedDecrement(var Addend: Integer): Integer;
+begin
+    Result := AtomicDecrement(Addend);
+end;
+
+function InterlockedExchange(var Target: Integer; Value: Integer): Integer;
+begin
+    Result := AtomicExchange(Target, Value);
+end;
+
+function InterlockedExchangePointer(var Target: Pointer; Value: Pointer): Pointer;
+begin
+    Result := AtomicExchange(Target, Value);
+end;
+
+function InterlockedAdd(var Addend: Integer; Increment: Integer): Integer;
+begin
+    raise Exception.Create('InterlockedAdd not implemented');
+end;
+
+function InterlockedExchangeAdd(var Addend: Integer; Increment: Integer): Integer;
+begin
+    raise Exception.Create('InterlockedExchangeAdd not implemented');
+end;
+
+{$ELSE}
+
 {$IFDEF CPUX64}
 function InterlockedIncrement(var Addend: LongInt): LongInt;
 asm
@@ -48,6 +82,7 @@ asm
 end;
 
 {$ENDIF CPUX86}
+{$ENDIF ARM}
 
 
 

@@ -69,7 +69,9 @@ uses
     Ics.Posix.WinTypes,
   {$ENDIF}
     SysUtils, Classes, SysConst,
-    OverbyteIcsTypes, OverbyteIcsUtils;
+    OverbyteIcsTypes,
+    OverbyteIcsSysutils;
+//    OverbyteIcsUtils;
 
 const
     MinDT = -657434.0;      { 01/01/0100 12:00:00.000 AM }

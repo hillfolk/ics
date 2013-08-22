@@ -62,7 +62,7 @@ uses
 
 const
   OverbyteIcsTypesVersion = 800;
-  CopyRight : String      = ' OverbyteIcsTypes (c) 2004-2012 F. Piette V8.00 ';
+  CopyRight : String      = ' OverbyteIcsTypes (c) 2004-2013 F. Piette V8.00 ';
 
 type
 {$IFNDEF COMPILER12_UP}
