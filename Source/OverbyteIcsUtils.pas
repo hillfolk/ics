@@ -4195,7 +4195,7 @@ end;
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 function IcsStrLen(const Str: PAnsiChar): Cardinal;
 begin
-{$IFDEF COMPILER18_UP}
+{$IFDEF ANDROID}
   Result := System.AnsiStrings.StrLen(Str);
 {$ELSE}
   Result := StrLen(Str);
@@ -4229,10 +4229,14 @@ end;
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 function IcsStrCopy(Dest: PAnsiChar; const Source: PAnsiChar): PAnsiChar;
 begin
-{$IFDEF COMPILER18_UP}
+{$IFDEF COMPILER19_UP}
+  Result := System.SysUtils.StrCopy(Dest, Source);
+{$ELSE}
+{$IFDEF COMPILER18}
   Result := System.AnsiStrings.StrCopy(Dest, Source);
 {$ELSE}
   Result := StrCopy(Dest, Source);
+{$ENDIF}
 {$ENDIF}
 end;
 
@@ -4256,10 +4260,14 @@ end;
 {$IFDEF COMPILER12_UP}
 function IcsStrPCopy(Dest: PAnsiChar; const Source: AnsiString): PAnsiChar;
 begin
+{$IFDEF COMPILER19_UP}
+  Result := System.SysUtils.StrLCopy(Dest, PAnsiChar(Source), Length(Source));
+{$ELSE}
 {$IFDEF COMPILER18_UP}
   Result := System.AnsiStrings.StrLCopy(Dest, PAnsiChar(Source), Length(Source));
 {$ELSE}
   Result := StrLCopy(Dest, PAnsiChar(Source), Length(Source));
+{$ENDIF}
 {$ENDIF}
 end;
 {$ENDIF}
@@ -4276,10 +4284,14 @@ end;
 {$IFDEF COMPILER12_UP}
 function IcsStrPLCopy(Dest: PAnsiChar; const Source: AnsiString; MaxLen: Cardinal): PAnsiChar;
 begin
+{$IFDEF COMPILER19_UP}
+  Result := System.SysUtils.StrLCopy(Dest, PAnsiChar(Source), MaxLen);
+{$ELSE}
 {$IFDEF COMPILER18_UP}
   Result := System.AnsiStrings.StrLCopy(Dest, PAnsiChar(Source), MaxLen);
 {$ELSE}
   Result := StrLCopy(Dest, PAnsiChar(Source), MaxLen);
+{$ENDIF}
 {$ENDIF}
 end;
 {$ENDIF}

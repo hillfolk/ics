@@ -2,13 +2,16 @@
 
 Author:       François PIETTE
 Description:  Demonstration for Server program using TWSocket.
+              This old demo still use BDE (TTable). You should replace this
+              by some modern database access such as ADO or FireDAC. Anyway
+              as far as TCP/IP is concerned, this doesn't make any change.
 Creation:     8 december 1997
-Version:      1.03
+Version:      1.04
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
-Legal issues: Copyright (C) 1997-2010 by François PIETTE
-              Rue de Grady 24, 4053 Embourg, Belgium. Fax: +32-4-365.74.56
+Legal issues: Copyright (C) 1997-2013 by François PIETTE
+              Rue de Grady 24, 4053 Embourg, Belgium.
               <francois.piette@overbyte.be>
 
               This software is provided 'as-is', without any express or
@@ -33,8 +36,10 @@ Legal issues: Copyright (C) 1997-2010 by François PIETTE
                  distribution.
 
 Updates:
-Dec 28, 1998 V1.02 Use line mode.
-Mar 07, 1999 V1.03 Adapted for Delphi 1
+Dec 28, 1998  V1.02 Use line mode.
+Mar 07, 1999  V1.03 Adapted for Delphi 1
+Aug 24, 2013  V1.04 FPiette removed use of StrPas which is no more required
+                    since Delphi 7.
 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
@@ -82,7 +87,8 @@ implementation
 
 {$R *.DFM}
 
-uses OverbyteIcsUtils ;
+uses
+    OverbyteIcsUtils;
 
 {$IFDEF COMPILER12_UP}
 
@@ -195,7 +201,7 @@ begin
         DataTable.FieldByName('PRENOM').AsString := CommandTail;
     end
     else begin
-        CliSocket.SendStr('Syntax error !' + #13 + #10);
+        CliSocket.SendStr('Syntax error !' + #13#10);
         Exit;
     end;
 
@@ -208,7 +214,7 @@ begin
             '"' + DataTable.FieldByName('LOCALITE').AsString + '"' +
             #13 + #10)
     else
-        CliSocket.SendStr('Pas trouvé' + #13 + #10);
+        CliSocket.SendStr('Not found "' + CommandTail + '"' + #13#10);
 end;
 
 
@@ -230,9 +236,9 @@ begin
     { Nul terminate the string }
     Buffer[Len] := #0;
     { Display command in label }
-    LineLabel.Caption := String(StrPas(Buffer));
+    LineLabel.Caption := String(Buffer);
     { Process command }
-    ProcessCommand(String(StrPas(Buffer)));
+    ProcessCommand(String(Buffer));
 end;
 
 

@@ -7,7 +7,7 @@ Version:      8.00
 EMail:        http://www.overbyte.be       francois.piette@overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
-Legal issues: Copyright (C) 2008 by François PIETTE
+Legal issues: Copyright (C) 2008-2013 by François PIETTE
               Rue de Grady 24, 4053 Embourg, Belgium. 
               <francois.piette@overbyte.be>
 

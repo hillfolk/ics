@@ -126,6 +126,7 @@ uses
 {$ENDIF}
     SysUtils,
     OverbyteIcsUtils,
+    OverbyteIcsSysUtils,
     OverbyteIcsSSLEAY;
 
 const

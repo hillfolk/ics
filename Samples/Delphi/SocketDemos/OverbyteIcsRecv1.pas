@@ -4,12 +4,12 @@ Author:       François PIETTE
 Description:  Simple server program which just listen for clients and display
               all incomming data.
 Creation:     Sep 29, 1998
-Version:      1.03
+Version:      1.04
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
-Legal issues: Copyright (C) 1998-2010 by François PIETTE
-              Rue de Grady 24, 4053 Embourg, Belgium. Fax: +32-4-365.74.56
+Legal issues: Copyright (C) 1998-2013 by François PIETTE
+              Rue de Grady 24, 4053 Embourg, Belgium.
               <francois.piette@overbyte.be>
 
               This software is provided 'as-is', without any express or
@@ -37,6 +37,8 @@ History:
 Oct 28, 1998  V1.01 Added Linger and Banner checkboxes.
 Dec 30, 1998  V1.02 Remove trailing CR/LF on data receive.
 Mar 07, 1999  V1.03 Adapted for Delphi 1
+Aug 24, 2013  V1.04 FPiette removed use of StrPas which is no more required
+                    since Delphi 7.
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit OverbyteIcsRecv1;
@@ -245,7 +247,7 @@ begin
         Dec(Len);
     { Nul terminate the data }
     Buf[Len] := #0;
-    Display('DataAvailable: ''' + String(StrPas(Buf)) + '''');
+    Display('DataAvailable: ''' + String(Buf) + '''');
 end;
 
 

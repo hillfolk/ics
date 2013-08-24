@@ -3,15 +3,15 @@
 Author:       François PIETTE
 Copyright:    You can use this software freely, at your own risks
 Creation:     April 4, 1997
-Version:      2.04
+Version:      2.05
 Object:       Demo program to show how to use TWSocket object to listen
               UDP messages from the network. Use UDPSend or any other
               program to send UDP messages.
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
-Legal issues: Copyright (C) 1997-2010 by François PIETTE
-              Rue de Grady 24, 4053 Embourg, Belgium. Fax: +32-4-365.74.56
+Legal issues: Copyright (C) 1997-2013 by François PIETTE
+              Rue de Grady 24, 4053 Embourg, Belgium.
               <francois.piette@overbyte.be>
 
               This software is provided 'as-is', without any express or
@@ -40,13 +40,15 @@ Legal issues: Copyright (C) 1997-2010 by François PIETTE
                  address, EMail address and any comment you like to say.
 
 Updates:
-Jul 23, 1997 Adapted for Delphi 1, 2 and 3
-Sep 06, 1997 Version 2.01
-Sep 27, 1997 Updated for TWSocket changes
-             Replace loopback address by real localhost IP addr
-Dec 12, 1998 V2.02 Added icomming IP and port number display
-Mar 07, 1999 V2.03 Corrected compatibility bug with Delphi 1
-Jan 11, 2004 V2.04 Beautified code. Removed FormPos dependency.
+Jul 23, 1997  Adapted for Delphi 1, 2 and 3
+Sep 06, 1997  Version 2.01
+Sep 27, 1997  Updated for TWSocket changes
+              Replace loopback address by real localhost IP addr
+Dec 12, 1998  V2.02 Added icomming IP and port number display
+Mar 07, 1999  V2.03 Corrected compatibility bug with Delphi 1
+Jan 11, 2004  V2.04 Beautified code. Removed FormPos dependency.
+Aug 24, 2013  V2.05 FPiette removed use of StrPas which is no more required
+                    since Delphi 7.
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit OverbyteIcsUdpLstn1;
@@ -61,8 +63,8 @@ uses
   OverbyteIcsWndControl;
 
 const
-  UdpLstnVersion     = 204;
-  CopyRight : String = ' UdpLstn (c) 1997-2010 F. Piette V2.04 ';
+  UdpLstnVersion     = 205;
+  CopyRight : String = ' UdpLstn (c) 1997-2013 F. Piette V2.05 ';
 
 type
   TMainForm = class(TForm)
@@ -213,7 +215,7 @@ begin
                 DataAvailableLabel.Caption := IntToStr(atoi(DataAvailableLabel.caption) + 1) +
                                           '  ' + String(WSocket_inet_ntoa(PSockAddr(@Src).sin_addr)) +
                                           ':'  + IntToStr(WSocket_ntohs(PSockAddr(@Src).sin_port)) +
-                                          '--> ' + String(StrPas(Buffer));
+                                          '--> ' + String(Buffer);
             end;
         end;
     end
@@ -227,7 +229,7 @@ begin
                 DataAvailableLabel.Caption := IntToStr(atoi(DataAvailableLabel.caption) + 1) +
                                           '  ' + WSocketIPv6ToStr(PIcsIPv6Address(@Src.sin6_addr)^) +
                                           ':'  + IntToStr(WSocket_ntohs(PSockAddr(@Src).sin_port)) +
-                                          '--> ' + String(StrPas(Buffer));
+                                          '--> ' + String(Buffer);
             end;
         end;
     end;

@@ -8,7 +8,7 @@ UnsafeCast=0
 [Directories]
 OutputDir=
 UnitOutputDir=.\dcu
-SearchPath=..\..\..\Source\Include
+SearchPath=..\..\..\Source;..\..\..\Source\Include
 Conditionals=NOFORMS
 UsePackages=0
 [IcsCustom]

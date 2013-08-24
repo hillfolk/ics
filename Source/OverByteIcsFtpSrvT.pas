@@ -105,6 +105,7 @@ uses
     OverbyteIcsCRC,        { angus V7.7 }
     OverbyteIcsMD5,        { angus V7.7 }
     OverbyteIcsUtils,
+    OverbyteIcsSysUtils,
     OverbyteIcsStreams;    { angus V7.7 }
 
 const

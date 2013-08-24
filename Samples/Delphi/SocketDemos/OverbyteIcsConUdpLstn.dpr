@@ -3,15 +3,15 @@
 Author:       François PIETTE
 Copyright:    You can use this software freely, at your own risks
 Creation:     April 14, 2005
-Version:      1.00
+Version:      1.01
 Object:       Demo program to show how to use TWSocket object inside a console
               mode application to listen UDP messages from the network.
               Use UDPSend or any other program to send UDP messages.
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
-Legal issues: Copyright (C) 2005-2010 by François PIETTE
-              Rue de Grady 24, 4053 Embourg, Belgium. Fax: +32-4-365.74.56
+Legal issues: Copyright (C) 2005-2013 by François PIETTE
+              Rue de Grady 24, 4053 Embourg, Belgium.
               <francois.piette@overbyte.be>
 
               This software is provided 'as-is', without any express or
@@ -40,6 +40,8 @@ Legal issues: Copyright (C) 2005-2010 by François PIETTE
                  address, EMail address and any comment you like to say.
 
 Updates:
+Aug 24, 2013 V1.01 FPiette removed use of StrPas which is no more required
+                    since D7.
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 program OverbyteIcsConUdpLstn;
@@ -65,8 +67,8 @@ uses
 // WinSock functions
 
 const
-  ConUdpLstnVersion     = 100;
-  CopyRight : String = ' ConUdpLstn (c) 2005-2010 F. Piette V1.00 ';
+  ConUdpLstnVersion     = 101;
+  CopyRight : String = ' ConUdpLstn (c) 2005-2013 F. Piette V1.01 ';
 
 type
   TConUdpRcv = class(TConApplication)
@@ -147,10 +149,10 @@ begin
            (FSenderAddr.S_addr = Src.Sin_addr.S_addr) then begin
             Buffer[Len] := #0;
             Inc(FCount);
-            Writeln(IntToStr(fcount) ,
-                    '  ' + StrPas(inet_ntoa(Src.sin_addr)) ,
-                    ':'  + IntToStr(ntohs(Src.sin_port)) ,
-                    '--> ' + String(StrPas(Buffer)));
+            Writeln(IntToStr(fcount),
+                    '  ' + String(inet_ntoa(Src.sin_addr)),
+                    ':'  + IntToStr(ntohs(Src.sin_port)),
+                    '--> ' + String(Buffer));
         end;
     end;
 end;

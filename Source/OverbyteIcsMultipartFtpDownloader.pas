@@ -83,7 +83,8 @@ uses
     OverbyteIcsWndControl,
 {$ENDIF}
     OverbyteIcsUrl,
-    OverbyteIcsUtils;
+    OverbyteIcsUtils,
+    OverbyteIcsSysUtils;
 
 type
     TFtpBigInt                = int64;

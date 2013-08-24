@@ -207,6 +207,7 @@ Packages\IcsVclCBXE3Design.cpp
 
 Packages\OverbyteIcsProductIcon.res
 
+Source\OverbyteIcsAnsiStrings.pas
 Source\OverbyteIcsAsn1Utils.pas
 Source\OverbyteIcsAvlTrees.pas
 Source\OverbyteIcsCRC.pas
@@ -303,6 +304,7 @@ Source\OverbyteIcsTnScript.pas
 Source\OverbyteIcsTypes.pas
 Source\OverbyteIcsURL.pas
 Source\OverbyteIcsUtils.pas
+Source\OverbyteIcsSysUtils.pas
 Source\OverbyteIcsWSockBuf.pas
 Source\OverbyteIcsWSocket.TWSocket.bmp
 Source\OverbyteIcsWSocket.dcr

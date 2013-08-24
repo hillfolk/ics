@@ -97,8 +97,11 @@ uses
 {$ELSE}
     OverbyteIcsWSocket,
 {$ENDIF}
-    OverbyteIcsSSLEAY, OverbyteIcsLIBEAY,
-    OverbyteIcsAvlTrees, OverbyteIcsUtils;
+    OverbyteIcsSSLEAY,
+    OverbyteIcsLIBEAY,
+    OverbyteIcsAvlTrees,
+    OverbyteIcsUtils,
+    OverbyteIcsSysUtils;
 
 type
     ESslSessionCacheException = class(Exception);

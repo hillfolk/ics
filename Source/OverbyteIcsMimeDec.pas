@@ -342,6 +342,9 @@ uses
 {$ENDIF}
     SysUtils,
     Classes,
+{$IFDEF COMPILER19_UP}
+    OverbyteIcsAnsiStrings,
+{$ENDIF}
 {$IFDEF COMPILER12_UP}
     AnsiStrings, { for PosEx }
 {$ELSE}

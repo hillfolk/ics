@@ -65,7 +65,8 @@ type
 {$WARN SYMBOL_DEPRECATED OFF}
     TUnicodeCharSet = TSysCharSet;
 {$WARN SYMBOL_DEPRECATED ON}
-
+{$IFDEF ANDROID}
+type
 {$IFDEF COMPILER19_UP}
 
 type
@@ -120,6 +121,7 @@ type
     UTF8String    = type AnsiString;
 
 {$ENDIF}
+{$ENDIF}
 
 function  AnsiLength(const S : AnsiString) : Integer;
 procedure AnsiSetLength(var S : AnsiString; Len : Integer);
@@ -157,7 +159,7 @@ begin
          Result := Ord('a') + N - 10;
 end;
 
-{$IFDEF COMPILER19_UP}
+{$IFDEF ANDROID}
 
 // Convert bytes to their ascii representation (uppercase)
 function AnsiBytesToHexUpper(
@@ -463,7 +465,7 @@ end;
 
 {$ENDIF}
 
-{$IFNDEF COMPILER19_UP}
+{$IFNDEF ANDROID}
 function  AnsiLength(const S : AnsiString) : Integer;
 begin
     Result := Length(S);
