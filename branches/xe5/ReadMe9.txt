@@ -1,9 +1,9 @@
-ICS - Internet Component Suite - V8 Beta - Delphi 7 to RAD Studio XE3
+ICS - Internet Component Suite - V9 Beta - Delphi 7 to RAD Studio XE5
 =====================================================================
 (Aka FPIETTE's Components)
 
 
-Revised: September 13, 2012
+Revised: Augustus 24, 2013
 http://www.overbyte.be/
 
 Table of content:
@@ -28,7 +28,7 @@ Table of content:
 
 Legal issues:
 -------------
-              Copyright (C) 1997-2012 by François PIETTE
+              Copyright (C) 1997-2013 by François PIETTE
               Rue de Grady 24, 4053 Embourg, Belgium
               <francois.piette@overbyte.be>
 
@@ -166,8 +166,8 @@ This is the new V8 sub-directory layout:
 	                                  and .obj and .hpp files for C++ Builder
 
 .\Samples                             Delphi Win32/Win64 common source for all demos
-.\Samples\delphi\BroswerDemo          Delphi Win32/Win64 Web Browser sample application (all Delphi versions)
-.\Samples\delphi\BroswerDemo\Resources Resource file, web pages and movie linked into browser demo
+.\Samples\delphi\BrowserDemo          Delphi Win32/Win64 Web Browser sample application (all Delphi versions)
+.\Samples\delphi\BrowserDemo\Resources Resource file, web pages and movie linked into browser demo
 .\Samples\delphi\FtpDemos             Delphi Win32/Win64 FTP sample applications (all Delphi versions)
 .\Samples\delphi\MailNewsDemos        Delphi Win32/Win64 SMTP, POP3, NNTP sample applications (all Delphi versions)
 .\Samples\delphi\MiscDemos            Delphi Win32/Win64 Miscellaneous applications (all Delphi versions)

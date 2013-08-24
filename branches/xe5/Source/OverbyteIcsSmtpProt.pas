@@ -487,6 +487,7 @@ uses
     OverbyteIcsMD5,
     OverbyteIcsSha1,
     OverbyteIcsUtils,
+    OverbyteIcsSysUtils,
     OverbyteIcsCharsetUtils;
 
 const

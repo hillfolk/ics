@@ -172,9 +172,10 @@ uses
     OverbyteIcsWndControl,
     OverbyteIcsWSocket,
 {$ENDIF}
-     OverbyteIcsMimeUtils,
-     OverbyteIcsUtils,
-     OverbyteIcsWinSock;
+    OverbyteIcsMimeUtils,
+    OverbyteIcsUtils,
+    OverbyteIcsSysUtils,
+    OverbyteIcsWinSock;
 
 const
     NntpCliVersion     = 801;

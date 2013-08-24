@@ -72,35 +72,18 @@ object ServerForm: TServerForm
     OnClick = ChangePortButtonClick
   end
   object SrvSocket: TWSocket
-    LineMode = False
-    LineLimit = 65536
     LineEnd = #13#10
-    LineEcho = False
-    LineEdit = False
     Addr = '0.0.0.0'
-    SocketFamily = sfIPv4
     Port = 'telnet'
     Proto = 'tcp'
     LocalAddr = '0.0.0.0'
+    LocalAddr6 = '::'
     LocalPort = '0'
-    MultiThreaded = False
-    MultiCast = False
-    MultiCastIpTTL = 1
-    FlushTimeout = 60
-    SendFlags = wsSendNormal
-    LingerOnOff = wsLingerOn
-    LingerTimeout = 0
     KeepAliveOnOff = wsKeepAliveOnSystem
     KeepAliveTime = 30000
     KeepAliveInterval = 1000
     SocksLevel = '5'
-    SocksAuthentication = socksNoAuthentication
-    LastError = 0
-    ReuseAddr = False
     ComponentOptions = []
-    ListenBacklog = 5
-    ReqVerLow = 2
-    ReqVerHigh = 2
     OnSessionClosed = SrvSocketSessionClosed
     OnSessionAvailable = SrvSocketSessionAvailable
     Left = 28

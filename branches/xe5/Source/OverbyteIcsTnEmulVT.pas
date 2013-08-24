@@ -5,11 +5,11 @@ Description:  Delphi component combining both TnCnx and EmulVT components.
               Hence it does ANSI emulation using TCP/IP telnet protocol.
 Author:       François PIETTE
 Creation:     May, 1996
-Version:      8.01
+Version:      8.02
 EMail:        http://www.overbyte.be       francois.piette@overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
-Legal issues: Copyright (C) 1996-2010 by François PIETTE
+Legal issues: Copyright (C) 1996-2013 by François PIETTE
               Rue de Grady 24, 4053 Embourg, Belgium.
               <francois.piette@overbyte.be> 
 
@@ -83,6 +83,7 @@ May 2012 - V8.00 - Arno added FireMonkey cross platform support with POSIX/MacOS
 Apr 11, 2013  V8.01 Angus added SocketFamily, LocalAddr and LocalAddr6 for IPv6
                     Added default font if host not saved yet
                     Free Options form each time it's opened
+Aug 24, 2013  V8.02 FPiette added UITypes for XE4 and up
 
 
 
@@ -119,13 +120,16 @@ uses
 {$ELSE}
     WinTypes, WinProcs,
 {$ENDIF}
+{$IFDEF COMPILER18_UP}
+    UITypes,
+{$ENDIF}
     SysUtils, Classes, Graphics, Controls, IniFiles, Forms,
     OverbyteIcsEmulVT,   OverbyteIcsTnCnx,
     OverbyteIcsTnOptFrm, OverbyteIcsWSocket;
 
 const
   TnEmultVTVersion   = 801;
-  CopyRight : String = ' TTnEmulVT (c) 1996-2013 F. Piette V8.01 ';
+  CopyRight : String = ' TTnEmulVT (c) 1996-2013 F. Piette V8.02 ';
 
 type
   TTnEmulVTDataAvailable = procedure (Sender  : TObject;

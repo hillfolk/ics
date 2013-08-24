@@ -2,7 +2,7 @@
 
 Copyright:    François PIETTE
 Creation:     April 1996
-Version:      1.26
+Version:      1.27
 Description:  TnSrv implement a (very basic) Telnet server (daemon)
               Compatible with both Delphi 1 and Delphi 2
               Uses TWSocket to communicate with WinSock
@@ -35,18 +35,20 @@ Legal issues: Copyright (C) 1996-2010 by François PIETTE
                  distribution.
 
 Updates:
-Sep 18, 1996 Added resize event and about box
-Mar 19, 1997 V1.10 Use enhanced TWSocket object
-Jul 22, 1997 V1.20 Adapted to Delphi 3
-Sep 27, 1997 Adapted for TWSocket converted to support C++Builder
-Oct 03, 1997 V1.22 Added a $DEFINE POP3 to simulate a POP3 server
-                   Added an editbox to select the server port
-Oct 09, 1997 Added a $DEFINE SMTP to simulate a SMTP server
-Oct 11, 1997 V1.23 Added PortNum to client to tell him what he has to serve
-Jul 30, 1998 V1.24 Added some code to the dummy SMTP server
-Aug 20, 1999 V1.25 Added some comments, added Restartserver procedure.
-Sep 26, 2000 V1.26 Replaced TEdit by TMemo for data to be sent to allow
-             multi-line sending (see TnSrv2 source).
+Sep 18, 1996  Added resize event and about box
+Mar 19, 1997  V1.10 Use enhanced TWSocket object
+Jul 22, 1997  V1.20 Adapted to Delphi 3
+Sep 27, 1997  Adapted for TWSocket converted to support C++Builder
+Oct 03, 1997  V1.22 Added a $DEFINE POP3 to simulate a POP3 server
+                    Added an editbox to select the server port
+Oct 09, 1997  Added a $DEFINE SMTP to simulate a SMTP server
+Oct 11, 1997  V1.23 Added PortNum to client to tell him what he has to serve
+Jul 30, 1998  V1.24 Added some code to the dummy SMTP server
+Aug 20, 1999  V1.25 Added some comments, added Restartserver procedure.
+Sep 26, 2000  V1.26 Replaced TEdit by TMemo for data to be sent to allow
+              multi-line sending (see TnSrv2 source).
+Aug 24, 2013  V1.27 FPiette removed use of StrPas which is no more required
+                    since Delphi 7.
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit OverbyteIcsTnSrv1;
@@ -64,7 +66,7 @@ uses
   OverbyteIcsTnSrv2, OverbyteIcsWndControl;
 
 const
-  TnSrvVersion = 126;
+  TnSrvVersion = 127;
 
 type
   { TClient class is used to handle client connections. A TClient is    }
@@ -235,7 +237,7 @@ begin
     Client.Form.AcceptForm := Self;
     Client.Form.Socket.Dup(NewHSocket);
     Client.Form.Socket.GetPeerName(PeerName, Sizeof(PeerName));
-    Client.Peer := String(StrPas(inet_ntoa(PeerName.Sin_addr)));
+    Client.Peer := String(inet_ntoa(PeerName.Sin_addr));
     Display('Remote ' + Client.Peer + ' connected' + #13 + #10);
     Client.Form.Caption := Client.Peer;
     Client.Form.Show;

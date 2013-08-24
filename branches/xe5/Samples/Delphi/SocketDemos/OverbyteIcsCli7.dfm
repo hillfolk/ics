@@ -128,32 +128,13 @@ object Cli7Form: TCli7Form
     TabOrder = 1
   end
   object WSocket1: TWSocket
-    LineMode = False
-    LineLimit = 65536
     LineEnd = #13#10
-    LineEcho = False
-    LineEdit = False
     Proto = 'tcp'
     LocalAddr = '0.0.0.0'
+    LocalAddr6 = '::'
     LocalPort = '0'
-    MultiThreaded = False
-    MultiCast = False
-    MultiCastIpTTL = 1
-    FlushTimeout = 60
-    SendFlags = wsSendNormal
-    LingerOnOff = wsLingerOn
-    LingerTimeout = 0
-    KeepAliveOnOff = wsKeepAliveOff
-    KeepAliveTime = 0
-    KeepAliveInterval = 0
     SocksLevel = '5'
-    SocksAuthentication = socksNoAuthentication
-    LastError = 0
-    ReuseAddr = False
     ComponentOptions = []
-    ListenBacklog = 5
-    ReqVerLow = 2
-    ReqVerHigh = 2
     OnDataAvailable = WSocket1DataAvailable
     OnSessionClosed = WSocket1SessionClosed
     OnSessionConnected = WSocket1SessionConnected

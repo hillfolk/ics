@@ -568,7 +568,9 @@ uses
 {$IFNDEF NO_DEBUG_LOG}
     OverbyteIcsLogger,
 {$ENDIF}
-    OverbyteIcsTypes, OverbyteIcsUtils;
+    OverbyteIcsTypes,
+    OverbyteIcsUtils,
+    OverbyteIcsSysUtils;
 
 const
     HttpCliVersion       = 804;

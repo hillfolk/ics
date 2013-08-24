@@ -100,6 +100,7 @@ uses
     OverbyteIcsWSocket,
 {$ENDIF}
     OverbyteIcsUtils,
+    OverbyteIcsSysUtils,
     OverbyteIcsLIBEAY,
     OverbyteIcsSSLEAY;
 

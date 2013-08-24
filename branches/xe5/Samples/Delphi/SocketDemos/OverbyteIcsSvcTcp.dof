@@ -9,7 +9,7 @@ NameSpacePrefix=Vcl
 [Directories]
 OutputDir=
 UnitOutputDir=.\dcu
-SearchPath=..\..\..\Source\Include
+SearchPath=..\..\..\Source;..\..\..\Source\Include
 Conditionals=
 UsePackages=0
 [IcsCustom]

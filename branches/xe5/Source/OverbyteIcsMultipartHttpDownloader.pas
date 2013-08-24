@@ -97,7 +97,8 @@ uses
     OverbyteIcsWndControl,
 {$ENDIF}
     OverbyteIcsUrl,
-    OverbyteIcsUtils;
+    OverbyteIcsUtils,
+    OverbyteIcsSysUtils;
 
 const
     MultipartHttpDownloaderVersion = 801;

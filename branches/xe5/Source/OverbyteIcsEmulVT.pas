@@ -95,6 +95,7 @@ May 06, 2011 V7.03 Small change to prepare for 64-bit.
 Jul 17, 2011 V7.04 Arno fixed some bugs with non-Windows-1252 code pages.
 May 2012 - V8.00 - Arno added FireMonkey cross platform support with POSIX/MacOS
                    also IPv6 support, include files now in sub-directory
+Aug 24, 2013 V8.02 FPiette added UITypes for XE4 and up
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 unit OverbyteIcsEmulVT;
@@ -133,12 +134,15 @@ uses
 {$ELSE}
     WinTypes, WinProcs,
 {$ENDIF}
+{$IFDEF COMPILER18_UP}
+    UITypes,
+{$ENDIF}
     SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ClipBrd,
     OverbyteIcsUtils;
 
 const
   EmulVTVersion      = 800;
-  CopyRight : String = ' TEmulVT (c) 1996-2012 F. Piette V8.00 ';
+  CopyRight : String = ' TEmulVT (c) 1996-2013 F. Piette V8.02 ';
   MAX_ROW            = 50;
   MAX_COL            = 160;
   NumPaletteEntries  = 16;

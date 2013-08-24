@@ -4,12 +4,12 @@ Author:       François PIETTE
 Description:  Show how to use TWSocket with SOCKS protocol to traverse
               a firewall.
 Creation:     November 21, 1998
-Version:      1.00
+Version:      1.01
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
-Legal issues: Copyright (C) 1998-2010 by François PIETTE
-              Rue de Grady 24, 4053 Embourg, Belgium. Fax: +32-4-365.74.56
+Legal issues: Copyright (C) 1998-2013 by François PIETTE
+              Rue de Grady 24, 4053 Embourg, Belgium.
               <francois.piette@overbyte.be>
 
               This software is provided 'as-is', without any express or
@@ -44,6 +44,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, OverbyteIcsIniFiles, WinSock, OverbyteIcsWSocket, StdCtrls, ExtCtrls,
+{$IF CompilerVersion >= 20}
+  AnsiStrings,
+{$IFEND}
   OverbyteIcsWndControl;
 
 type
@@ -315,7 +318,11 @@ begin
     FRcvBuf[FRcvCnt] := #0;
 
     while FRcvCnt > 0 do begin
-        p := StrScan(FRcvBuf, #10);
+        p :=
+{$IF CompilerVersion >= 20}
+        AnsiStrings.
+{$ENDIF}
+        StrScan(FRcvBuf, #10);
         if p = nil then
             Exit;
         I := p - FRcvBuf;
@@ -324,7 +331,7 @@ begin
         if (I > 0) and (FRcvBuf[I - 1] = #13) then
             FRcvBuf[I - 1] := #0;
 
-        DisplayMemo.Lines.Add('Received: ''' + String(StrPas(FRcvBuf)) + '''');
+        DisplayMemo.Lines.Add('Received: ''' + String(FRcvBuf) + '''');
         Move(FRcvBuf[I + 1], FRcvBuf[0], FRcvCnt - I);
         FRcvCnt := FRcvCnt - I - 1;
     end;

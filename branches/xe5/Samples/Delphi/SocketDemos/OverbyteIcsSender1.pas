@@ -4,12 +4,12 @@ Author:       François PIETTE
 Description:  Simple client program which just send data to a server and display
               all incomming data.
 Creation:     Oct 01, 1998
-Version:      1.03
+Version:      1.04
 EMail:        francois.piette@overbyte.be  http://www.overbyte.be
 Support:      Use the mailing list twsocket@elists.org
               Follow "support" link at http://www.overbyte.be for subscription.
-Legal issues: Copyright (C) 1998-2010 by François PIETTE
-              Rue de Grady 24, 4053 Embourg, Belgium. Fax: +32-4-365.74.56
+Legal issues: Copyright (C) 1998-2013 by François PIETTE
+              Rue de Grady 24, 4053 Embourg, Belgium.
               <francois.piette@overbyte.be>
 
               This software is provided 'as-is', without any express or
@@ -38,6 +38,8 @@ Oct 28, 1998  V1.02 Trapped Connect exceptions.
                     Added AutoStartButton and associated logic.
                     Added LingerCheckBox and associated logic.
 Mar 07, 1999  V1.03 Adapted for Delphi 1
+Aug 24, 2013  V1.04 FPiette removed use of StrPas which is no more required
+                    since Delphi 7.
 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
@@ -546,7 +548,7 @@ begin
         Len := Cli.Receive(Buf, Cnt);
         if Len > 0 then begin
             Buf[Cnt] := #0;
-            Display('Received: ' + String(StrPas(Buf)));
+            Display('Received: ' + String(Buf));
         end;
     finally
         FreeMem(Buf, Cnt + 1);
