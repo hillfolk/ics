@@ -5,8 +5,9 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.TabControl, FMX.StdCtrls,
-  FMX.Layouts, FMX.Memo,
+  FMX.Layouts, FMX.Memo, FMX.Platform.Android,
   Posix.UniStd, Posix.SysSocket, Posix.Errno, Posix.StrOpts,
+  Androidapi.AppGlue,
   Androidapi.Looper,
   OverbyteIcsAnsiStrings,
   OverbyteIcsMD5;
@@ -28,6 +29,7 @@ type
     DisplayMemo: TMemo;
     WritePipeButton: TButton;
     ReadPipeButton: TButton;
+    InstallEventHandlerButton: TButton;
     procedure DontClickButtonClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure TestLibButtonClick(Sender: TObject);
@@ -35,6 +37,7 @@ type
     procedure ClosePipeButtonClick(Sender: TObject);
     procedure WritePipeButtonClick(Sender: TObject);
     procedure ReadPipeButtonClick(Sender: TObject);
+    procedure InstallEventHandlerButtonClick(Sender: TObject);
   protected
     FPipeFD  : TPipeDescriptors;
     FData : Byte;
@@ -140,7 +143,8 @@ begin
             Display('ioctl(FIONBIO) failed. Error code is ' + IntToStr(Result));
             Exit;
         end;
-        Display('Pipe created');
+        Display('Pipe created ReadFD=' + IntToStr(FPipeFD.ReadDes) +
+                            ' WriteFD=' + IntToStr(FPipeFD.WriteDes));
     end;
 end;
 
@@ -210,6 +214,49 @@ begin
         Exit;
     end;
     Display('Read value ' + IntToStr(Buf));
+end;
+
+function LooperCallback(FileDescriptor, Events: Integer; Data: Pointer): Integer; cdecl;
+var
+    Len : Integer;
+    Buf : Byte;
+    Obj : TTabbedForm;
+begin
+    Result := 1;
+    // Data contains a reference to our class
+    if Data = nil then
+        Exit;
+    // Ready to cas to our class
+    Obj := TTabbedForm(Data);
+    Obj.Display('Looper callback FileDescriptor=' + IntToStr(FileDescriptor) +
+                ' Events=' + IntToStr(Events));
+    // Check it is our ReadDes
+    if FileDescriptor <> Obj.FPipeFD.ReadDes then
+        Exit;
+
+    while TRUE do begin
+        Len := __read(FileDescriptor, @Buf, 1);
+        if Len <= 0 then
+            break;
+        Obj.Display('Looper callback read ' + IntToStr(Buf));
+    end;
+end;
+
+procedure TTabbedForm.InstallEventHandlerButtonClick(Sender: TObject);
+var
+    AndroidApp: PAndroid_app;
+    Data : Pointer;
+const
+    LOOPER_ID_MESSAGE_ICS = LOOPER_ID_USER;
+begin
+    AndroidApp := GetAndroidApp;
+
+    Data := Self;
+    ALooper_addFd(AndroidApp.looper, FPipeFD.ReadDes,
+                  LOOPER_ID_MESSAGE_ICS,
+                  ALOOPER_EVENT_INPUT,
+                  LooperCallback, Data);
+    Display('Event handler now installed');
 end;
 
 

@@ -114,6 +114,16 @@ object TabbedForm: TTabbedForm
         Width = 105.000000000000000000
         OnClick = ReadPipeButtonClick
       end
+      object InstallEventHandlerButton: TButton
+        Height = 44.000000000000000000
+        Position.X = 264.000000000000000000
+        Position.Y = 80.000000000000000000
+        TabOrder = 7
+        Text = 'Install Event Handler'
+        Trimming = ttCharacter
+        Width = 185.000000000000000000
+        OnClick = InstallEventHandlerButtonClick
+      end
     end
     object TabItem2: TTabItem
       WordWrap = False
