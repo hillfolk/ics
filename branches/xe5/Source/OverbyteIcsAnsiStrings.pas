@@ -68,8 +68,6 @@ type
 {$IFDEF ANDROID}
 type
 {$IFDEF COMPILER19_UP}
-
-type
     AnsiChar = record
         Buffer : Byte;
         class operator Implicit(A: Char) : AnsiChar;

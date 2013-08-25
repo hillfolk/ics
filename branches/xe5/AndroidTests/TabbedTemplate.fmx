@@ -1,0 +1,163 @@
+object TabbedForm: TTabbedForm
+  Left = 0
+  Top = 0
+  Caption = 'TabbedForm'
+  ClientHeight = 781
+  ClientWidth = 533
+  FormFactor.Width = 1440
+  FormFactor.Height = 900
+  FormFactor.Devices = [dkDesktop]
+  DesignerMobile = True
+  DesignerWidth = 533
+  DesignerHeight = 803
+  DesignerDeviceName = 'Google Nexus 7'
+  DesignerOrientation = 0
+  object HeaderToolBar: TToolBar
+    Anchors = []
+    Height = 48.000000000000000000
+    TabOrder = 0
+    Width = 533.000000000000000000
+    object ToolBarLabel: TLabel
+      Align = alCenter
+      Anchors = [akTop, akBottom]
+      Height = 37.000000000000000000
+      StyleLookup = 'toollabel'
+      Text = 'First App from OverByte'
+      TextAlign = taCenter
+      Width = 341.000000000000000000
+    end
+  end
+  object TabControl1: TTabControl
+    Align = alClient
+    FullSize = True
+    Height = 733.000000000000000000
+    TabHeight = 49.000000000000000000
+    TabIndex = 0
+    TabOrder = 1
+    TabPosition = tpBottom
+    Width = 533.000000000000000000
+    object TabItem1: TTabItem
+      WordWrap = False
+      StyledSettings = []
+      Height = 49.000000000000000000
+      IsSelected = True
+      StyleLookup = 'tabitemfavorites'
+      TabOrder = 0
+      Text = 'TabItem1'
+      Width = 133.000000000000000000
+      object DontClickButton: TButton
+        Height = 65.000000000000000000
+        Position.X = 8.000000000000000000
+        Position.Y = 8.000000000000000000
+        TabOrder = 0
+        Text = 'Do not click here'
+        Trimming = ttCharacter
+        Width = 177.000000000000000000
+        OnClick = DontClickButtonClick
+      end
+      object TestLibButton: TButton
+        StyledSettings = []
+        Height = 44.000000000000000000
+        Position.X = 400.000000000000000000
+        Position.Y = 24.000000000000000000
+        TabOrder = 1
+        Text = 'Test Lib'
+        Trimming = ttCharacter
+        Width = 73.000000000000000000
+        OnClick = TestLibButtonClick
+      end
+      object CreatePipeButton: TButton
+        Height = 44.000000000000000000
+        Position.X = 8.000000000000000000
+        Position.Y = 80.000000000000000000
+        TabOrder = 2
+        Text = 'Create Pipe'
+        Trimming = ttCharacter
+        Width = 129.000000000000000000
+        OnClick = CreatePipeButtonClick
+      end
+      object ClosePipeButton: TButton
+        Height = 44.000000000000000000
+        Position.X = 8.000000000000000000
+        Position.Y = 128.000000000000000000
+        TabOrder = 3
+        Text = 'Close Pipe'
+        Trimming = ttCharacter
+        Width = 129.000000000000000000
+        OnClick = ClosePipeButtonClick
+      end
+      object DisplayMemo: TMemo
+        Touch.InteractiveGestures = [igPan, igLongTap, igDoubleTap]
+        Height = 433.000000000000000000
+        Position.X = 8.000000000000000000
+        Position.Y = 248.000000000000000000
+        TabOrder = 4
+        Width = 513.000000000000000000
+      end
+      object WritePipeButton: TButton
+        Height = 44.000000000000000000
+        Position.X = 144.000000000000000000
+        Position.Y = 80.000000000000000000
+        TabOrder = 5
+        Text = 'Write Pipe'
+        Trimming = ttCharacter
+        Width = 105.000000000000000000
+        OnClick = WritePipeButtonClick
+      end
+      object ReadPipeButton: TButton
+        Height = 44.000000000000000000
+        Position.X = 144.000000000000000000
+        Position.Y = 128.000000000000000000
+        TabOrder = 6
+        Text = 'Read Pipe'
+        Trimming = ttCharacter
+        Width = 105.000000000000000000
+        OnClick = ReadPipeButtonClick
+      end
+    end
+    object TabItem2: TTabItem
+      WordWrap = False
+      StyledSettings = []
+      Height = 49.000000000000000000
+      IsSelected = False
+      Position.X = 133.000000000000000000
+      StyleLookup = 'tabitemcontacts'
+      TabOrder = 1
+      Text = 'TabItem2'
+      Width = 133.000000000000000000
+      object Button2: TButton
+        StyledSettings = [ssFamily]
+        Height = 44.000000000000000000
+        Position.X = 40.000000000000000000
+        Position.Y = 40.000000000000000000
+        TabOrder = 0
+        Text = 'Test Socket'
+        Trimming = ttCharacter
+        Width = 89.000000000000000000
+        OnClick = Button2Click
+      end
+    end
+    object TabItem3: TTabItem
+      WordWrap = False
+      StyledSettings = []
+      Height = 49.000000000000000000
+      IsSelected = False
+      Position.X = 266.000000000000000000
+      StyleLookup = 'tabitemsearch'
+      TabOrder = 2
+      Text = 'TabItem3'
+      Width = 133.000000000000000000
+    end
+    object TabItem4: TTabItem
+      WordWrap = False
+      StyledSettings = []
+      Height = 49.000000000000000000
+      IsSelected = False
+      Position.X = 399.000000000000000000
+      StyleLookup = 'tabitembookmarks'
+      TabOrder = 3
+      Text = 'TabItem4'
+      Width = 133.000000000000000000
+    end
+  end
+end
