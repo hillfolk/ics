@@ -235,12 +235,14 @@ type
     FRefCnt               : Integer;
     FOnMessage            : TIcsMessageEvent;
     FOnIdle               : TIcsMessagePumpIdleEvent;
+  {$IFDEF MACOS}
     FRunLoopRef           : CFRunLoopRef;
     FWorkSourceRef        : CFRunLoopSourceRef;
     FIdleWorkSourceRef    : CFRunLoopSourceRef;
     FPreWaitObserverRef   : CFRunLoopObserverRef;
     //FPreSourceObserverRef : CFRunLoopObserverRef;
     FEnterExitObserverRef : CFRunLoopObserverRef;
+  {$ENDIF}
     FThreadID             : TThreadID;
     FMessageQueue         : TMessageQueue;
     FRunning              : Boolean;
@@ -336,8 +338,10 @@ type
   function CreateWindow: HWND;
   function DestroyWindow(AHwnd: HWND): Boolean;
   function IsWindow(AHwnd: HWND): Boolean;
+{$IFDEF MACOS}
   function SetTimer(AHwnd: HWND; nIDEvent: NativeUInt; uElapse: UINT; lpTimerFunc: Pointer): NativeUInt;
   function KillTimer(AHwnd: HWND; nIDEvent: NativeUInt): Boolean;
+{$ENDIF}
   function IcsClearMessages(AHWnd: HWND; AMsg: UINT; AWParam: WParam): Boolean;
   function DefWindowProc(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; //dummy
     {$IFDEF USE_INLINE} inline; {$ENDIF}
@@ -480,6 +484,7 @@ end;
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 function TIcsMessagePump.ProcessMessage(AWaitTimeoutSec: LongWord = 0): Boolean;
 begin
+{$IFDEF MACOS}
 {$IFNDEF NOFORMS}
   if (FThreadID = MainThreadID) and THackApplication(Application).FRunning then
     Result := ProcessCocoaAppMessageWithTimeout(AWaitTimeoutSec)
@@ -489,6 +494,7 @@ begin
     Result := CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, True) = kCFRunLoopRunHandledSource
   else
     Result := CFRunLoopRunInMode(kCFRunLoopDefaultMode, AWaitTimeoutSec, True) = kCFRunLoopRunHandledSource;
+{$ENDIF MACOS}
 end;
 
 
@@ -506,6 +512,7 @@ begin
   begin
     FRunning := True;
     try
+    {$IFDEF MACOS}
     {$IFDEF NOFORMS}
       while CFRunLoopRunInMode(kCFRunLoopDefaultMode, MaxDouble, False) <> kCFRunLoopRunStopped do
         {loop};
@@ -517,6 +524,7 @@ begin
         while CFRunLoopRunInMode(kCFRunLoopDefaultMode, MaxDouble, False) <> kCFRunLoopRunStopped do
           {loop};
     {$ENDIF}
+    {$ENDIF MACOS}
     finally
       FRunning := False;
     end;
@@ -535,6 +543,7 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+{$IFDEF MACOS}
 procedure EnterExitObserver(observer: CFRunLoopObserverRef;
   activity: CFRunLoopActivity; info: Pointer); cdecl;
 begin
@@ -554,7 +563,7 @@ begin
     raise EIcsMessagePump.Create('RunWorkSource invalid info pointer');
   TIcsMessagePump(info).RunWork;
 end;
-
+{$ENDIF MACOS}
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure TIcsMessagePump.RunWork;
@@ -573,13 +582,16 @@ begin
         HandleException(Self);
       end;
     finally
+    {$IFDEF MACOS}
       CFRunLoopSourceSignal(FWorkSourceRef);
+    {$ENDIF}
     end;
   end;
 end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+{$IFDEF MACOS}
 procedure PreWaitObserver(observer: CFRunLoopObserverRef;
   activity: CFRunLoopActivity; info: Pointer); cdecl;
 begin
@@ -608,6 +620,7 @@ begin
   P := TIcsMessagePump.PMessagePumpHandle(info);
   P^.MessagePump.TriggerMessage(P^.hWindow, WM_TIMER, WParam(P^.ID), 0);
 end;
+{$ENDIF}
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
@@ -620,16 +633,25 @@ begin
     if Assigned(FOnIdle) then
       FOnIdle(Self, Done);
     if (not Done) then
-      CFRunLoopSourceSignal(FIdleWorkSourceRef)
+    begin
+    {$IFDEF MACOS}
+      CFRunLoopSourceSignal(FIdleWorkSourceRef);
+    {$ENDIF}
+    end
     else begin
       if Self.CheckForSyncMessages then
       begin
+      {$IFDEF MACOS}
         CFRunLoopSourceSignal(FIdleWorkSourceRef);
+      {$ENDIF}
         Exit;
       end;
-      if FHookedWakeMainThread and
-         System.Classes.CheckSynchronize then
+      if FHookedWakeMainThread and System.Classes.CheckSynchronize then
+      begin
+      {$IFDEF MACOS}
         CFRunLoopSourceSignal(FIdleWorkSourceRef);
+      {$ENDIF}
+      end;
     end;
   except
     HandleException(Self);
@@ -677,9 +699,11 @@ end;
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure TIcsMessagePump.AfterConstruction;
+{$IFDEF MACOS}
 var
   LSourceContext: CFRunLoopSourceContext;
   LObserverContext: CFRunLoopObserverContext;
+{$ENDIF}
 begin
   if FRefCnt > 1 then
     Exit;
@@ -693,7 +717,7 @@ begin
   FMessageQueue := TMessageQueue.Create;
   FMessageQueue.FMessagePump := Self;
   FThreadID := GetCurrentThreadID;
-
+{$IFDEF MACOS}
   FRunLoopRef := CFRunLoopGetCurrent;
   CFRetain(FRunLoopRef); //Get ownership
 
@@ -719,17 +743,6 @@ begin
                                                PreWaitObserver,
                                                @LObserverContext);
   CFRunLoopAddObserver(FRunLoopRef, FPreWaitObserverRef, kCFRunLoopCommonModes);
- (*
-  { Create and add a pre-source observer }
-  LObserverContext.info := Self;
-  FPreSourceObserverRef := CFRunLoopObserverCreate(nil,  // allocator
-                                               kCFRunLoopBeforeSources,
-                                               True,  // repeat
-                                               0,     // priority
-                                               PreSourceObserver,
-                                               @LObserverContext);
-  CFRunLoopAddObserver(FRunLoopRef, FPreSourceObserverRef, kCFRunLoopCommonModes);
-  *)
   { Create and add a Enter/Exit observer }
   LObserverContext.info := Self;
   FEnterExitObserverRef := CFRunLoopObserverCreate(nil,  // allocator
@@ -739,6 +752,8 @@ begin
                                                EnterExitObserver,
                                                @LObserverContext);
   CFRunLoopAddObserver(FRunLoopRef, FEnterExitObserverRef, kCFRunLoopCommonModes);
+{$ENDIF MACOS}
+
 
 {$IFDEF NOFORMS}
   if (FThreadID = MainThreadID) and (not Assigned(WakeMainThread)) then
@@ -752,7 +767,7 @@ begin
     GLMessagePumps.Add(FThreadID, Self);
   finally
     GlobalSync.EndWrite
-  end;  
+  end;
 end;
 
 
@@ -778,6 +793,7 @@ begin
     GlobalSync.EndWrite;
   end;
 
+{$IFDEF MACOS}
   { Release RunLoop stuff }
   CFRunLoopRemoveObserver(FRunLoopRef, FEnterExitObserverRef, kCFRunLoopCommonModes);
   CFRelease(FEnterExitObserverRef);
@@ -789,13 +805,16 @@ begin
   CFRelease(FIdleWorkSourceRef);
   CFRunLoopRemoveSource(FRunLoopRef, FWorkSourceRef, kCFRunLoopCommonModes);
   CFRelease(FWorkSourceRef);
-      
+{$ENDIF}
+
   { Clear the message queue }
   FMessageQueue.Free;
   { Clear all handles }
   FHandles.Free; // removes timer refs from runloop
 
+{$IFDEF MACOS}
   CFRelease(FRunLoopRef); // retained, so release
+{$ENDIF}
 
   FCurrentMessagePump := nil;
 
@@ -818,7 +837,9 @@ begin
   Result := 0;
   if auMsg = WM_QUIT then begin
     FTerminated := True;
+  {$IFDEF MACOS}
     CFRunLoopStop(FRunLoopRef);
+  {$ENDIF}
   end;
   Handled := FALSE;
   if Assigned(FOnMessage) then
@@ -840,7 +861,9 @@ end;
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 procedure TIcsMessagePump.Wakeup(Sender: TObject);
 begin
+{$IFDEF MACOS}
   CFRunLoopWakeUp(FRunLoopRef);
+{$ENDIF}
 end;
 
 
@@ -1165,8 +1188,10 @@ begin
     Result := True;
     if FCount = 1 then
     begin
+    {$IFDEF MACOS}
       CFRunLoopSourceSignal(FMessagePump.FWorkSourceRef);
       CFRunLoopWakeUp(FMessagePump.FRunLoopRef);
+    {$ENDIF}
     end;
   finally
     FLock.Leave;
@@ -1233,8 +1258,10 @@ begin
     Result := True;
     if FCount = 1 then
     begin
+    {$IFDEF MACOS}
       CFRunLoopSourceSignal(FMessagePump.FWorkSourceRef);
       CFRunLoopWakeUp(FMessagePump.FRunLoopRef);
+    {$ENDIF}
     end;
   finally
     FLock.Leave;
@@ -1568,6 +1595,7 @@ end;
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
+{$IFDEF MACOS}
 function SetTimer(AHwnd: HWND; nIDEvent: NativeUInt; uElapse: UINT;
   lpTimerFunc: Pointer): NativeUInt;
 var
@@ -1648,6 +1676,7 @@ begin
     GlobalSync.EndRead;
   end;
 end;
+{$ENDIF MACOS}
 
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
@@ -1674,19 +1703,6 @@ begin
         CFRelease(P^.CFRef);
       end;
     end;
-    {rfCFRunLoopSocket:
-    begin
-      if P^.UData <> 0 then
-      begin
-        CFSocketInvalidate(CFSocketRef(P^.UData));
-        CFRelease(CFSocketRef(P^.UData));
-      end;
-      if P^.CFRef <> nil then
-      begin
-        CFRunLoopRemoveSource(FMessagePump.FRunLoopRef, P^.CFRef, kCFRunLoopCommonModes);
-        CFRelease(P^.CFRef);
-      end;
-    end;}
   end;
 end;
 
