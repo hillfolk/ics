@@ -10,7 +10,8 @@ uses
   Androidapi.AppGlue,
   Androidapi.Looper,
   OverbyteIcsAnsiStrings,
-  OverbyteIcsMD5;
+  OverbyteIcsMD5,
+  Ics.Android.MessageQueue;
 
 type
   TTabbedForm = class(TForm)
@@ -30,6 +31,7 @@ type
     WritePipeButton: TButton;
     ReadPipeButton: TButton;
     InstallEventHandlerButton: TButton;
+    CreateMqButton: TButton;
     procedure DontClickButtonClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure TestLibButtonClick(Sender: TObject);
@@ -38,9 +40,11 @@ type
     procedure WritePipeButtonClick(Sender: TObject);
     procedure ReadPipeButtonClick(Sender: TObject);
     procedure InstallEventHandlerButtonClick(Sender: TObject);
+    procedure CreateMqButtonClick(Sender: TObject);
   protected
     FPipeFD  : TPipeDescriptors;
     FData : Byte;
+    FMq : TIcsMessageQueue;
     procedure DisplayProc(const Msg : String);
     function CreatePipe : Integer;
     function ClosePipe : Integer;
@@ -116,6 +120,14 @@ procedure TTabbedForm.ClosePipeButtonClick(Sender: TObject);
 begin
     if ClosePipe = 0 then
         Display('Pipe now closed');
+end;
+
+procedure TTabbedForm.CreateMqButtonClick(Sender: TObject);
+var
+    AndroidApp: PAndroid_app;
+begin
+    AndroidApp := GetAndroidApp;
+    FMq := TIcsMessageQueue.Create(AndroidApp.looper);
 end;
 
 function TTabbedForm.CreatePipe: Integer;

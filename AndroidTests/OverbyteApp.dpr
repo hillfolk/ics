@@ -2,7 +2,8 @@ program OverbyteApp;
 
 uses
   FMX.Forms,
-  TabbedTemplate in 'TabbedTemplate.pas' {TabbedForm};
+  TabbedTemplate in 'TabbedTemplate.pas' {TabbedForm},
+  Ics.Android.MessageQueue in '..\Source\Ics.Android.MessageQueue.pas';
 
 {$R *.res}
 
